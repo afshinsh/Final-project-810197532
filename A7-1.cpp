@@ -4,6 +4,8 @@
 
 using namespace std;
 
+class film;
+
 class BadRequest {
 public:
   void what()
@@ -36,6 +38,7 @@ public:
   bool get_publisher() { return publish; }
   string get_username() { return username; }
   string get_password() { return password; }
+  virtual void regist_new_film(film* new_film) { return; };
 protected:
   string email;
   string username;
@@ -47,8 +50,8 @@ protected:
 
 customer::customer(string _email, string _username, string _password
 , string _age, int _ID_counter, bool _publisher) : email(_email), 
-username(_username), password(_password), age(_age), ID_counter(_ID_counter),
-publish(publisher) {}
+username(_username), password(_password), age(_age), ID(_ID_counter),
+publish(_publisher) {}
 
 class publisher : public customer
 {
@@ -60,7 +63,7 @@ private:
   vector<film*> my_films;
 };
 
-publish::publisher(string _email, string _username, string _password
+publisher::publisher(string _email, string _username, string _password
 , string _age, int _ID_counter, bool _publisher) : customer(_email, 
 _username, _password, _age, _ID_counter, _publisher) {}
 
@@ -72,19 +75,21 @@ void publisher::regist_new_film(film* new_film)
 class film
 {
 public:
-  film(string _name, string _year, string _price, string _summary
-, string _length, int _ID_counter_film);
+  film(string _name, string _year, string _price
+, string _length, string _summary, string _director, int _ID_counter_film);
 private:
   string name;
   string year;
   string summary;
   string price;
   string length;
-}
+  string director;
+  int ID;
+};
 
-film::film(string _name, string _year, string _price, string _summary
-, string _length, int _ID_counter_film)
- : name(), year(), price(), summary(), length(), ID_counter_film() {}
+film::film(string _name, string _year, string _price, string _length, string _summary , string _director
+, int _ID_counter_film)
+ : name(_name), year(_year), price(_price), length(_length), summary(_summary), director(_director), ID(_ID_counter_film) {}
 
 class interface
 {
@@ -103,27 +108,31 @@ public:
   void POST_signup();
   void process_DELETE_command();
   void process_PUT_command();
+  void initialize_film(string name, string year, string length
+, string price, string summary, string director);
   void set_info(string &info);
   void initialize_user(string &email, string &username
   , string &password, string &age, string &publisher);
   void find_user(string username, string password);
-  void POST_signup();
   void POST_login();
   void reset();
   void regist_film();
   void set_command(string _command) ;
-  string achive_part()
+  void check_POST_second_part();
+  void check_first_part();
+  string achive_part();
+  void check_repeated_username(string username);
 private:
   vector<film*> films;
-  vactor<customer*> users;
+  vector<customer*> users;
   vector<customer*> customers;
   vector<customer*> publishers;
   string command;
   int command_chars_counter = 0;
   int ID_counter = 1;
   int ID_counter_film = 1;
-  customer* current_user;
-  string first_part = "" 
+  customer* current_user = NULL;
+  string first_part = "" ;
   string second_part = "";
   string part;
 };
@@ -142,6 +151,15 @@ void interface::set_command(string _command)
   command = _command;
 }
 
+void interface::check_repeated_username(string username)
+{
+  for(int i = 0; i < users.size(); i++)
+  {
+    if(username == users[i]->get_username())
+      throw BadRequest();
+  }
+}
+
 void interface::reset()
 {
   first_part = "";
@@ -156,16 +174,16 @@ void interface::set_info(string &info)
 }
 
 void interface::initialize_user(string &email, string &username
-, string &password, string &age, string &publisher)
+, string &password, string &age, string &publish)
 {
-  if(publisher == "" || publisher == "false")
+  if(publish == "" || publish == "false")
   {
     current_user = new customer(email, username, password, age, ID_counter, false);
     ID_counter++;
     users.push_back(current_user);
     customers.push_back(current_user);
   }
-  else if(publisher == "true")
+  else if(publish == "true")
   {
     current_user = new publisher(email, username, password, age, ID_counter, true);
     ID_counter++;
@@ -187,24 +205,26 @@ void interface::find_user(string username, string password)
   if(current_user == NULL)
   {
     current_user = previous_user;
-    throw NotFound();
+    throw BadRequest();
   }
   previous_user = NULL;
 }
 void interface::POST_login()
 {
-  if(second_part == "login" && achive_part() == "?")
+  if(second_part == "login")
   {
+    if(achive_part() != "?")
+      throw BadRequest();
     string username, password;
     while(true)
     {
       part = achive_part();
-      if(part == "username")
-        username = achive_part();
+      if(part == "")
+        break;
       else if(part == "password")
         password = achive_part();
-      else if(part == "")
-        break;
+      else if(part == "username")
+        username = achive_part();
       else 
         throw BadRequest();
     }
@@ -215,8 +235,10 @@ void interface::POST_login()
 
 void interface::POST_signup()
 {
-  if(second_part == "signup" && achive_part() == "?")
+  if(second_part == "signup" )
   {
+    if(achive_part() != "?")
+      throw BadRequest();
     string email, username, password, age, publisher = "";
     while(true)
     {
@@ -225,34 +247,35 @@ void interface::POST_signup()
         break;
       else if(part == "email")
         set_info(email);
-      else if(part == "username")
+      else if(part == "username")/////////////check arguments
         set_info(username);
       else if(part == "password")
         set_info(password);
-      else if(part == "age")//check age
+      else if(part == "age")
         set_info(age);
       else if(part == "publisher")
         set_info(publisher);
       else 
-      throw BadRequest();
+        throw BadRequest();
     }
+    check_repeated_username(username);
     initialize_user(email, username, password, age, publisher);
     cout<<"OK"<<endl;
   }
 }
 
 void interface::initialize_film(string name, string year, string length
-, string price, string film)
+, string price, string summary, string director)
 {
-  film* new_film = new film(name, year, price, summary, length, ID_counter_film);
+  film* new_film = new film(name, year, price, length, summary, director, ID_counter_film);
   ID_counter_film++;
   films.push_back(new_film);
-  current_user->regist_new_film(film);
+  current_user->regist_new_film(new_film);
 }
 
 void interface::regist_film()
 {
-  string name, year, price, summary, length;
+  string name, year, price, summary, length, director;
   while(true)
   {
     part = achive_part();
@@ -268,25 +291,38 @@ void interface::regist_film()
       set_info(price);
     else if(part == "summary")
       set_info(summary);
+    else if(part == "director")
+      set_info(director);
     else 
       throw BadRequest();
   }
-  initialize_film(name, year, length, price, film);
+  initialize_film(name, year, length, price, summary, director);
 }
 
 void interface::POST_film()
 {
-  if(second_part == "films" && achive_part() == "?")
+  if(second_part == "films")
   {
-    if(!current_user->get_publisher())
+    if(achive_part() != "?")
+      throw BadRequest();
+    if(!current_user->get_publisher() || current_user == NULL)
       throw PermissionDenied();
-    regist_film()
+    regist_film();
     cout<<"OK"<<endl;
   }
 }
 
+void interface::check_POST_second_part()
+{
+  if(second_part != "signup" && second_part != "login" && second_part != "films" &&
+  second_part != "money" && second_part != "replies" && second_part != "followers"
+  && second_part != "buy" && second_part != "rate" && second_part != "comments")
+    throw NotFound();
+}
+
 void interface::process_POST_command()
 {
+  check_POST_second_part();
   POST_signup();
   POST_login();
   POST_film();
@@ -297,24 +333,31 @@ void interface::set_first_part()
 {
   skip_space();
   int begin_of_word = command_chars_counter;
-  while(command[command_chars_counter] != ' ' command[command_chars_counter] != '\0')
+  while(command[command_chars_counter] != ' ' && command[command_chars_counter] != '\0')
     command_chars_counter++;
   first_part = command.substr(begin_of_word, 
   command_chars_counter - begin_of_word);
+  check_first_part();
+}
+
+void interface::check_first_part()
+{
+  if(first_part != "GET" && first_part != "POST" && first_part != "PUT" && first_part != "DELETE")
+    throw BadRequest();
 }
 
 void interface::process_command()
 {
-  if(first_part == "GET")
-    process_GET_command();
-  else if(first_part == "POST")
+  //if(first_part == "GET")
+    //process_GET_command();
+  /*else */if(first_part == "POST")
     process_POST_command();
-  else if(first_part == "PUT")
-    process_PUT_command();
-  else if(first_part == "DELETE")
-    process_DELETE_command();
-  else
-    throw BadRequest();
+  //else if(first_part == "PUT")
+    //process_PUT_command();
+  //else if(first_part == "DELETE")
+    //process_DELETE_command();
+  //else
+    //throw BadRequest();
 }
 
 void interface::skip_space()
@@ -339,17 +382,17 @@ void interface::process_begin_of_command()
   set_second_part();
 }
 
-void interface::process_customers()
-{
+//void interface::process_customers()
+//{
 
-}
+//}
 
 
 string interface::achive_part()
 {
   skip_space();
   int begin_of_word = command_chars_counter;
-  while(command[command_chars_counter] != ' ')
+  while(command[command_chars_counter] != ' ' && command[command_chars_counter] != '\0')
     command_chars_counter++;
   string str = command.substr(begin_of_word, 
   command_chars_counter - begin_of_word);
@@ -365,13 +408,14 @@ void interface::process_publisher()
 int main()
 {
   string command;
-  interface my_interface();
+  interface my_interface = interface();
   while(getline(cin, command))
   {
     try {
-      interface.set_command(command);
-      my_interface.process_customers(command);
-      my_interface.process_publisher(command);
+      my_interface.set_command(command);
+      //cout<<command<<endl;
+      //my_interface.process_customers();
+      my_interface.process_publisher();
     } catch(PermissionDenied ex) {
       ex.what();
     } catch(NotFound ex) {
