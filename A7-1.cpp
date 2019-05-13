@@ -492,6 +492,18 @@ void interface::process_DELETE_command()
   DELETE_film();
 }
 
+void interface::GET_followers()
+{
+
+}
+
+void interface::check_GET_second_part()
+{
+  if(second_part != "followers" && second_part != "published" && second_part != "films"
+  && second_part != "purchased"&& second_part != "notifications")
+    throw BadRequest();
+}
+
 void interface::process_GET_command()
 {
   check_GET_second_part();
