@@ -42,10 +42,12 @@ public:
   bool get_publisher() { return publish; }
   string get_username() { return username; }
   string get_password() { return password; }
+  string get_email() { return email; }
   virtual void regist_new_film(film* new_film) { return; }
   virtual void edit_films(string name, string year, string price
 , string summary, string length, string director, int film_id) { return; }
   virtual void delete_film(int film_id) { return; }
+  virtual void show_followers() { return; }
 protected:
   string email;
   string username;
@@ -69,8 +71,10 @@ public:
   void edit_films(string name, string year, string price
 , string summary, string length, string director, int film_id);
 void delete_film(int film_id);
+void show_followers()
 private:
   vector<film*> my_films;
+  vector<customer*> followers;
 };
 
 publisher::publisher(string _email, string _username, string _password
@@ -134,6 +138,7 @@ public:
   void check_GET_second_part();
   void GET_followers();
   void set_info(string &info);
+  void show_head()
   void initialize_user(string &email, string &username
   , string &password, string &age, string &publisher);
   void find_user(string username, string password);
@@ -442,6 +447,16 @@ void publisher::edit_films(string name, string year, string price
   throw PermissionDenied();
 }
 
+void publisher::show_followers()
+{
+  for(int i = 0;i < followers.size();i++)
+  {
+    cout<<i + 1<<". ";
+    cout<<followers[i]->get_ID()<<" | "<<followers[i]->get_username()
+    <<" | "<<followers[i]->get_email()<<endl;
+  }
+}
+
 void interface::check_DELETE_second_part()
 {
   if(second_part != "films")
@@ -492,9 +507,16 @@ void interface::process_DELETE_command()
   DELETE_film();
 }
 
+void interface::show_head()
+{
+  cout<<"List of Followers"<<endl;
+  cout<<"#. User Id | User Username | User Email"<<endl;
+}
+
 void interface::GET_followers()
 {
-
+  show_head();
+  current_user->show_followers();
 }
 
 void interface::check_GET_second_part()
