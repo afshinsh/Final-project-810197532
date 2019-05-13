@@ -51,6 +51,7 @@ public:
   virtual void show_followers() { return; }
   void follow_publisher(customer* new_publisher);
   virtual void set_followers(customer* new_follower) { return; }
+  void increase_money(int amount) { money += amount; }
 protected:
   string email;
   string username;
@@ -133,11 +134,13 @@ public:
   void check_DELETE_second_part();
   void POST_film();
   void POST_signup();
+  void POST_money();
   void process_DELETE_command();
   void process_PUT_command();
   void GET_followers();
   void POST_followers();
   void DELETE_film();
+  void charge_account();
   void check_command_for_PUT(string &name, string &year, string &price
   , string &summary, string &length, string &director, string &film_id);
   void initialize_film(string name, string year, string length
@@ -171,6 +174,7 @@ private:
   string first_part = EMPTEY_STRING ;
   string second_part = EMPTEY_STRING;
   string part;
+  int money;
 };
 
 interface::interface()
@@ -368,7 +372,7 @@ void interface::POST_followers()
     while(true)
     {
       part = achieve_part();
-      if(part == "")
+      if(part == EMPTEY_STRING)
         break;
       else if(part == "user_id")
         user_id = achieve_part();
@@ -387,6 +391,35 @@ void publisher::set_followers(customer* new_follower)
   followers.push_back(new_follower);
 }
 
+void interface::charge_account()
+{
+  string amount;
+  while(true)
+  {
+    part = achieve_part();
+    if(part == "")
+      break;
+    else if(part == "amount")
+      amount = achieve_part();
+    else 
+      throw BadRequest();
+  }
+  current_user->increase_money(stoi(amount));
+}
+
+void interface::POST_money()
+{
+  if(second_part == "money")
+  {
+    if(achieve_part() == QUERY)
+      charge_account();
+   // else if(achieve_part() == EMPTEY_STRING)
+     // catch_money();
+    else 
+      throw BadRequest();
+  }
+}
+
 void interface::process_POST_command()
 {
   check_POST_second_part();
@@ -394,6 +427,7 @@ void interface::process_POST_command()
   POST_login();
   POST_film();
   POST_followers();
+  POST_money();
   //...check_NOT_found
 }
 
