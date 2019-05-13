@@ -55,6 +55,7 @@ protected:
   int ID;
   string age;
   bool publish;
+  vector<customer*> followed_publisher;
 };
 
 customer::customer(string _email, string _username, string _password
@@ -329,6 +330,8 @@ void interface::regist_film()
   initialize_film(name, year, length, price, summary, director);
 }
 
+
+
 void interface::POST_film()
 {
   if(second_part == "films")
@@ -350,12 +353,34 @@ void interface::check_POST_second_part()
     throw NotFound();
 }
 
+void interface::POST_followers()
+{
+  if(second_part == "followers")
+  {
+    if(achive_part() != QUERY)
+      throw BadRequest();
+    string user_id;
+    while(true)
+    {
+      part = achive_part();
+      if(part == "")
+        break;
+      else if(part == "user_id")
+        user_id = achive_part();
+      else
+        throw BadRequest();
+    }///some check
+    current_user->follow_publisher(users[user_id]);
+  }
+}
+
 void interface::process_POST_command()
 {
   check_POST_second_part();
   POST_signup();
   POST_login();
   POST_film();
+  POST_followers();
   //...check_NOT_found
 }
 
@@ -447,6 +472,11 @@ void publisher::edit_films(string name, string year, string price
   throw PermissionDenied();
 }
 
+void customer::follow_publisher(customer* new_publisher)
+{
+  followed_publisher.push_back(new_publisher);
+}
+
 void publisher::show_followers()
 {
   for(int i = 0;i < followers.size();i++)
@@ -534,7 +564,6 @@ void interface::process_GET_command()
 
 void interface::process_command()
 {
-
   if(first_part == "POST")
     process_POST_command();
   else if(first_part == "GET")
@@ -569,10 +598,11 @@ void interface::process_begin_of_command()
   set_second_part();
 }
 
-//void interface::process_customers()
-//{
-
-//}
+void interface::process_customers()
+{
+  process_begin_of_command();
+  process_command();
+}
 
 
 string interface::achive_part()
@@ -601,7 +631,7 @@ int main()
     try {
       my_interface.set_command(command);
       //cout<<command<<endl;
-      //my_interface.process_customers();
+      my_interface.process_customers();
       my_interface.process_publisher();
     } catch(PermissionDenied ex) {
       ex.what();
