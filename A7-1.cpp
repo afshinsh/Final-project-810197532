@@ -4,6 +4,8 @@
 #define SPACE ' '
 #define QUERY "?"
 #define EMPTEY_STRING ""
+#define NONE '\0'
+
 using namespace std;
 
 class film;
@@ -126,9 +128,11 @@ public:
   void process_PUT_command();
   void DELETE_film();
   void check_command_for_PUT(string &name, string &year, string &price
-, string &summary, string &length, string &director, string &film_id);
+  , string &summary, string &length, string &director, string &film_id);
   void initialize_film(string name, string year, string length
-, string price, string summary, string director);
+  , string price, string summary, string director);
+  void check_GET_second_part();
+  void GET_followers();
   void set_info(string &info);
   void initialize_user(string &email, string &username
   , string &password, string &age, string &publisher);
@@ -354,7 +358,7 @@ void interface::set_first_part()
 {
   skip_space();
   int begin_of_word = command_chars_counter;
-  while(command[command_chars_counter] != SPACE && command[command_chars_counter] != '\0')
+  while(command[command_chars_counter] != SPACE && command[command_chars_counter] != NONE)
     command_chars_counter++;
   first_part = command.substr(begin_of_word, 
   command_chars_counter - begin_of_word);
@@ -488,13 +492,19 @@ void interface::process_DELETE_command()
   DELETE_film();
 }
 
+void interface::process_GET_command()
+{
+  check_GET_second_part();
+  GET_followers();
+}
+
 void interface::process_command()
 {
 
   if(first_part == "POST")
     process_POST_command();
-//else if(first_part == "GET")
-    //process_GET_command();
+  else if(first_part == "GET")
+    process_GET_command();
   else if(first_part == "PUT")
     process_PUT_command();
   else if(first_part == "DELETE")
@@ -535,7 +545,7 @@ string interface::achive_part()
 {
   skip_space();
   int begin_of_word = command_chars_counter;
-  while(command[command_chars_counter] != SPACE && command[command_chars_counter] != '\0')
+  while(command[command_chars_counter] != SPACE && command[command_chars_counter] != NONE)
     command_chars_counter++;
   string str = command.substr(begin_of_word, 
   command_chars_counter - begin_of_word);
