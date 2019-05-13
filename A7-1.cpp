@@ -43,11 +43,14 @@ public:
   string get_username() { return username; }
   string get_password() { return password; }
   string get_email() { return email; }
+  int get_ID() { return ID; }
   virtual void regist_new_film(film* new_film) { return; }
   virtual void edit_films(string name, string year, string price
 , string summary, string length, string director, int film_id) { return; }
   virtual void delete_film(int film_id) { return; }
   virtual void show_followers() { return; }
+  void follow_publisher(customer* new_publisher);
+  virtual void set_followers(customer* new_follower) { return; }
 protected:
   string email;
   string username;
@@ -55,7 +58,8 @@ protected:
   int ID;
   string age;
   bool publish;
-  vector<customer*> followed_publisher;
+  vector<customer*> followed_publishers;
+  int money = 0;
 };
 
 customer::customer(string _email, string _username, string _password
@@ -72,7 +76,8 @@ public:
   void edit_films(string name, string year, string price
 , string summary, string length, string director, int film_id);
 void delete_film(int film_id);
-void show_followers()
+void show_followers();
+void set_followers(customer* new_follower);
 private:
   vector<film*> my_films;
   vector<customer*> followers;
@@ -118,7 +123,6 @@ class interface
 public:
   interface();
   void process_customers();
-  void process_publisher();
   void process_begin_of_command();
   void skip_space();
   void set_first_part();
@@ -131,15 +135,16 @@ public:
   void POST_signup();
   void process_DELETE_command();
   void process_PUT_command();
+  void GET_followers();
+  void POST_followers();
   void DELETE_film();
   void check_command_for_PUT(string &name, string &year, string &price
   , string &summary, string &length, string &director, string &film_id);
   void initialize_film(string name, string year, string length
   , string price, string summary, string director);
   void check_GET_second_part();
-  void GET_followers();
   void set_info(string &info);
-  void show_head()
+  void show_head();
   void initialize_user(string &email, string &username
   , string &password, string &age, string &publisher);
   void find_user(string username, string password);
@@ -149,7 +154,7 @@ public:
   void set_command(string _command) ;
   void check_POST_second_part();
   void check_first_part();
-  string achive_part();
+  string achieve_part();
   void check_PUT_second_part();
   void PUT_film();
   void check_repeated_username(string username);
@@ -200,7 +205,7 @@ void interface::reset()
 
 void interface::set_info(string &info)
 {
-  part = achive_part();
+  part = achieve_part();
   info = part;
 }
 
@@ -244,18 +249,18 @@ void interface::POST_login()
 {
   if(second_part == "login")
   {
-    if(achive_part() != QUERY)
+    if(achieve_part() != QUERY)
       throw BadRequest();
     string username, password;
     while(true)
     {
-      part = achive_part();
+      part = achieve_part();
       if(part == EMPTEY_STRING)
         break;
       else if(part == "password")
-        password = achive_part();
+        password = achieve_part();
       else if(part == "username")
-        username = achive_part();
+        username = achieve_part();
       else 
         throw BadRequest();
     }
@@ -268,12 +273,12 @@ void interface::POST_signup()
 {
   if(second_part == "signup" )
   {
-    if(achive_part() != QUERY)
+    if(achieve_part() != QUERY)
       throw BadRequest();
     string email, username, password, age, publisher = EMPTEY_STRING;
     while(true)
     {
-      part = achive_part();
+      part = achieve_part();
       if(part == EMPTEY_STRING)
         break;
       else if(part == "email")
@@ -309,7 +314,7 @@ void interface::regist_film()
   string name, year, price, summary, length, director;
   while(true)
   {
-    part = achive_part();
+    part = achieve_part();
     if(part == EMPTEY_STRING)
       break;
     else if(part == "name")
@@ -336,7 +341,7 @@ void interface::POST_film()
 {
   if(second_part == "films")
   {
-    if(achive_part() != QUERY)
+    if(achieve_part() != QUERY)
       throw BadRequest();
     if(!current_user->get_publisher() || current_user == NULL)
       throw PermissionDenied();
@@ -357,21 +362,29 @@ void interface::POST_followers()
 {
   if(second_part == "followers")
   {
-    if(achive_part() != QUERY)
+    if(achieve_part() != QUERY)
       throw BadRequest();
     string user_id;
     while(true)
     {
-      part = achive_part();
+      part = achieve_part();
       if(part == "")
         break;
       else if(part == "user_id")
-        user_id = achive_part();
+        user_id = achieve_part();
       else
         throw BadRequest();
     }///some check
-    current_user->follow_publisher(users[user_id]);
+    customer* followed_publisher = users[stoi(user_id)];
+    current_user->follow_publisher(followed_publisher);
+    followed_publisher->set_followers(current_user);
+    cout<<"OK"<<endl;
   }
+}
+
+void publisher::set_followers(customer* new_follower)
+{
+  followers.push_back(new_follower);
 }
 
 void interface::process_POST_command()
@@ -412,7 +425,7 @@ void interface::check_command_for_PUT(string &name, string &year, string &price
 {
   while(true)
   {
-    part = achive_part();
+    part = achieve_part();
     if(part == EMPTEY_STRING)
       break;
     else if(part == "film_id")
@@ -438,7 +451,7 @@ void interface::PUT_film()
 {
   if(second_part == "films")
   {
-    if(achive_part() != QUERY)
+    if(achieve_part() != QUERY)
       throw BadRequest();
     string name, year, price, summary, length, director, film_id;    
     check_command_for_PUT(name, year, price, summary, length, director, film_id);
@@ -474,7 +487,7 @@ void publisher::edit_films(string name, string year, string price
 
 void customer::follow_publisher(customer* new_publisher)
 {
-  followed_publisher.push_back(new_publisher);
+  followed_publishers.push_back(new_publisher);
 }
 
 void publisher::show_followers()
@@ -514,12 +527,12 @@ void publisher::delete_film(int film_id)
 
 void interface::DELETE_film()
 {
-  if(achive_part() != QUERY)
+  if(achieve_part() != QUERY)
     throw BadRequest();
   string film_id;
   while(true)
   {
-    part = achive_part();
+    part = achieve_part();
     if(part == EMPTEY_STRING)
       break;
     else if(part == "film_id")
@@ -605,7 +618,7 @@ void interface::process_customers()
 }
 
 
-string interface::achive_part()
+string interface::achieve_part()
 {
   skip_space();
   int begin_of_word = command_chars_counter;
@@ -614,12 +627,6 @@ string interface::achive_part()
   string str = command.substr(begin_of_word, 
   command_chars_counter - begin_of_word);
   return str;
-}
-
-void interface::process_publisher()
-{
-  process_begin_of_command();
-  process_command();
 }
 
 int main()
@@ -632,7 +639,7 @@ int main()
       my_interface.set_command(command);
       //cout<<command<<endl;
       my_interface.process_customers();
-      my_interface.process_publisher();
+      //my_interface.process_publisher();
     } catch(PermissionDenied ex) {
       ex.what();
     } catch(NotFound ex) {
