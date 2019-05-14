@@ -6,6 +6,8 @@
 #define QUERY "?"
 #define EMPTEY_STRING ""
 #define NONE '\0'
+#define MAX_POINT 10\
+#define MIN_POINT 0
 
 using namespace std;
 
@@ -450,7 +452,10 @@ void interface::POST_money()
 void customer::buy_film(film* new_film)
 {
   bought_films.push_back(new_film);
-  money -= new_film->get_price();
+  if(money >= new_film->get_price())
+    money -= new_film->get_price();
+  else
+    throw BadRequest();
 }
 
 void interface::POST_buy()
@@ -496,6 +501,12 @@ void customer::score_watched_film(int film_id, double score)
   throw BadRequest();
 }
 
+void interface::check_score(double score)
+{
+  if(score < MIN_POINT || score > MAX_POINT)
+    throw BadRequest();
+}
+
 void interface::POST_rate()
 {
   if(second_part == "rate")
@@ -515,6 +526,7 @@ void interface::POST_rate()
       else 
         throw BadRequest();
     }
+    check_score(stod(score));
     current_user->score_watched_film(stoi(film_id), stod(score));
   }
 }
