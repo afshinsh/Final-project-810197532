@@ -505,6 +505,7 @@ void interface::POST_rate()
     string film_id, score;
     while(true)
     {
+      part = achieve_part();
       if(part == EMPTEY_STRING)
         break;
       else if(part == "film_id")
@@ -514,7 +515,6 @@ void interface::POST_rate()
       else 
         throw BadRequest();
     }
-    cout<<score;
     current_user->score_watched_film(stoi(film_id), stod(score));
   }
 }
