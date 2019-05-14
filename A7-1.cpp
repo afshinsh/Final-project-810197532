@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <map>
 #define SPACE ' '
 #define QUERY "?"
 #define EMPTEY_STRING ""
@@ -53,6 +54,8 @@ public:
   virtual void set_followers(customer* new_follower) { return; }
   void increase_money(int amount) { money += amount; }
   void buy_film(film* new_film);
+  void score_watched_film(int film_id, double score);
+  double get_rate(int film_id) { return scores[film_id]; }
 protected:
   string email;
   string username;
@@ -62,6 +65,7 @@ protected:
   bool publish;
   vector<customer*> followed_publishers;
   vector<film*> bought_films;
+  map <int,double> scores;
   int money = 0;
 };
 
@@ -108,6 +112,8 @@ public:
   void set_director(string _director) { director = _director; }
   int get_ID() { return ID; }
   int get_price() { return stoi(price); }
+  void set_owner(customer* new_custormer);
+  double give_avrage_rate();
 private:
   string name;
   string year;
@@ -115,9 +121,10 @@ private:
   string price;
   string length;
   string director;
+  vector<customer*> owners;
   bool paid_money = false;
   int ID;
-  double rate = 0;
+  //double rate = 0;
 };
 
 film::film(string _name, string _year, string _price, string _length
@@ -147,6 +154,7 @@ public:
   void POST_followers();
   void DELETE_film();
   void charge_account();
+  void POST_rate();
   void check_command_for_PUT(string &name, string &year, string &price
   , string &summary, string &length, string &director, string &film_id);
   void initialize_film(string name, string year, string length
@@ -218,6 +226,11 @@ void interface::set_info(string &info)
 {
   part = achieve_part();
   info = part;
+}
+
+void film::set_owner(customer* new_custormer)
+{
+  owners.push_back(new_custormer);
 }
 
 void interface::initialize_user(string &email, string &username
@@ -410,7 +423,7 @@ void interface::charge_account()
   while(true)
   {
     part = achieve_part();
-    if(part == "")
+    if(part == EMPTEY_STRING)
       break;
     else if(part == "amount")
       amount = achieve_part();
@@ -450,7 +463,7 @@ void interface::POST_buy()
     while(true)
     {
       part = achieve_part();
-      if(part == "")
+      if(part == EMPTEY_STRING)
         break;
       else if(part == "film_id")
         film_id = achieve_part();
@@ -458,8 +471,51 @@ void interface::POST_buy()
         throw BadRequest();
     }//some check
     current_user->buy_film(films[stoi(film_id)]);
+    films[stoi(film_id)]->set_owner(current_user);
     property +=  films[stoi(film_id)]->get_price();
     cout<<"OK"<<endl;
+  }
+}
+
+double film::give_avrage_rate()
+{
+  double sum = 0;
+  for(int i = 0;i < owners.size();i++)
+    sum += owners[i]->get_rate(ID);
+  return sum / owners.size();
+}
+
+void customer::score_watched_film(int film_id, double score)
+{
+  for(int i = 0; i < bought_films.size(); i++)
+    if(bought_films[i]->get_ID() == film_id)
+    {
+      scores[film_id] = score;
+      return;
+    }
+  throw BadRequest();
+}
+
+void interface::POST_rate()
+{
+  if(second_part == "rate")
+  {
+    if(achieve_part() != QUERY)
+      throw BadRequest();
+    string film_id, score;
+    while(true)
+    {
+      if(part == EMPTEY_STRING)
+        break;
+      else if(part == "film_id")
+        film_id = achieve_part();
+      else if(part == "score")//some check this
+        score = achieve_part();
+      else 
+        throw BadRequest();
+    }
+    cout<<score;
+    current_user->score_watched_film(stoi(film_id), stod(score));
   }
 }
 
@@ -472,7 +528,7 @@ void interface::process_POST_command()
   POST_followers();
   POST_money();
   POST_buy();
-  
+  POST_rate();
   //...check_NOT_found
 }
 
