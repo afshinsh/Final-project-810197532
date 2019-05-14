@@ -60,6 +60,7 @@ protected:
   string age;
   bool publish;
   vector<customer*> followed_publishers;
+  vector<film*> bought_films;
   int money = 0;
 };
 
@@ -123,7 +124,7 @@ class interface
 {
 public:
   interface();
-  void process_customers();
+  void process_users();
   void process_begin_of_command();
   void skip_space();
   void set_first_part();
@@ -310,7 +311,8 @@ void interface::initialize_film(string name, string year, string length
   film* new_film = new film(name, year, price, length, summary, director, ID_counter_film);
   ID_counter_film++;
   films.push_back(new_film);
-  current_user->regist_new_film(new_film);
+  film* my_film = new film(name , year, price, summary, director, ID_counter_film);
+  current_user->regist_new_film(my_film);
 }
 
 void interface::regist_film()
@@ -388,7 +390,7 @@ void interface::POST_followers()
 
 void publisher::set_followers(customer* new_follower)
 {
-  for(int i = 0;i < followers,size(); i++)
+  for(int i = 0;i < followers.size(); i++)
   {
     if(new_follower->get_ID() == followers[i]->get_ID())
       return;
@@ -410,6 +412,7 @@ void interface::charge_account()
       throw BadRequest();
   }
   current_user->increase_money(stoi(amount));
+  cout<<"OK"<<endl;
 }
 
 void interface::POST_money()
@@ -433,6 +436,7 @@ void interface::process_POST_command()
   POST_film();
   POST_followers();
   POST_money();
+  
   //...check_NOT_found
 }
 
@@ -526,7 +530,9 @@ void publisher::edit_films(string name, string year, string price
 
 void customer::follow_publisher(customer* new_publisher)
 {
-  for(int i = 0;i < followed_publishers,size(); i++)
+  if(!new_publisher->get_publisher())
+    throw BadRequest();
+  for(int i = 0;i < followed_publishers.size(); i++)
   {
     if(new_publisher->get_ID() == followed_publishers[i]->get_ID())
       return;
@@ -655,7 +661,7 @@ void interface::process_begin_of_command()
   set_second_part();
 }
 
-void interface::process_customers()
+void interface::process_users()
 {
   process_begin_of_command();
   process_command();
@@ -682,8 +688,7 @@ int main()
     try {
       my_interface.set_command(command);
       //cout<<command<<endl;
-      my_interface.process_customers();
-      //my_interface.process_publisher();
+      my_interface.process_users();
     } catch(PermissionDenied ex) {
       ex.what();
     } catch(NotFound ex) {
