@@ -52,6 +52,7 @@ public:
   void follow_publisher(customer* new_publisher);
   virtual void set_followers(customer* new_follower) { return; }
   void increase_money(int amount) { money += amount; }
+  void buy_film(film* new_film);
 protected:
   string email;
   string username;
@@ -106,6 +107,7 @@ public:
   void set_length(string _length) { length = _length; }
   void set_director(string _director) { director = _director; }
   int get_ID() { return ID; }
+  int get_price() { return stoi(price); }
 private:
   string name;
   string year;
@@ -113,12 +115,15 @@ private:
   string price;
   string length;
   string director;
+  bool paid_money = false;
   int ID;
+  double rate = 0;
 };
 
-film::film(string _name, string _year, string _price, string _length, string _summary , string _director
-, int _ID_counter_film)
- : name(_name), year(_year), price(_price), length(_length), summary(_summary), director(_director), ID(_ID_counter_film) {}
+film::film(string _name, string _year, string _price, string _length
+, string _summary , string _director, int _ID_counter_film)
+ : name(_name), year(_year), price(_price), length(_length), summary(_summary)
+ , director(_director), ID(_ID_counter_film) {}
 
 class interface
 {
@@ -162,6 +167,7 @@ public:
   void check_PUT_second_part();
   void PUT_film();
   void check_repeated_username(string username);
+  void POST_buy();
 private:
   vector<film*> films;
   vector<customer*> users;
@@ -175,7 +181,7 @@ private:
   string first_part = EMPTEY_STRING ;
   string second_part = EMPTEY_STRING;
   string part;
-  int money;
+  int property = 0;
 };
 
 interface::interface()
@@ -311,7 +317,7 @@ void interface::initialize_film(string name, string year, string length
   film* new_film = new film(name, year, price, length, summary, director, ID_counter_film);
   ID_counter_film++;
   films.push_back(new_film);
-  film* my_film = new film(name , year, price, summary, director, ID_counter_film);
+  film* my_film = new film(name , year, price, length, summary, director, ID_counter_film);
   current_user->regist_new_film(my_film);
 }
 
@@ -428,6 +434,35 @@ void interface::POST_money()
   }
 }
 
+void customer::buy_film(film* new_film)
+{
+  bought_films.push_back(new_film);
+  money -= new_film->get_price();
+}
+
+void interface::POST_buy()
+{
+  if(second_part == "buy")
+  {
+    if(achieve_part() != QUERY)
+      throw BadRequest();
+    string film_id;
+    while(true)
+    {
+      part = achieve_part();
+      if(part == "")
+        break;
+      else if(part == "film_id")
+        film_id = achieve_part();
+      else 
+        throw BadRequest();
+    }//some check
+    current_user->buy_film(films[stoi(film_id)]);
+    property +=  films[stoi(film_id)]->get_price();
+    cout<<"OK"<<endl;
+  }
+}
+
 void interface::process_POST_command()
 {
   check_POST_second_part();
@@ -436,6 +471,7 @@ void interface::process_POST_command()
   POST_film();
   POST_followers();
   POST_money();
+  POST_buy();
   
   //...check_NOT_found
 }
@@ -672,7 +708,8 @@ string interface::achieve_part()
 {
   skip_space();
   int begin_of_word = command_chars_counter;
-  while(command[command_chars_counter] != SPACE && command[command_chars_counter] != NONE)
+  while(command[command_chars_counter] != SPACE 
+  && command[command_chars_counter] != NONE)
     command_chars_counter++;
   string str = command.substr(begin_of_word, 
   command_chars_counter - begin_of_word);
