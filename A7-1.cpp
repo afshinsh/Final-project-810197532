@@ -388,6 +388,11 @@ void interface::POST_followers()
 
 void publisher::set_followers(customer* new_follower)
 {
+  for(int i = 0;i < followers,size(); i++)
+  {
+    if(new_follower->get_ID() == followers[i]->get_ID())
+      return;
+  }
   followers.push_back(new_follower);
 }
 
@@ -521,6 +526,11 @@ void publisher::edit_films(string name, string year, string price
 
 void customer::follow_publisher(customer* new_publisher)
 {
+  for(int i = 0;i < followed_publishers,size(); i++)
+  {
+    if(new_publisher->get_ID() == followed_publishers[i]->get_ID())
+      return;
+  }
   followed_publishers.push_back(new_publisher);
 }
 
