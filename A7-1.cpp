@@ -163,7 +163,7 @@ public:
   , string price, string summary, string director);
   void check_GET_second_part();
   void set_info(string &info);
-  void show_head();
+  void show_head_followers();
   void initialize_user(string &email, string &username
   , string &password, string &age, string &publisher);
   void find_user(string username, string password);
@@ -704,7 +704,7 @@ void interface::process_DELETE_command()
   DELETE_film();
 }
 
-void interface::show_head()
+void interface::show_head_followers()
 {
   cout<<"List of Followers"<<endl;
   cout<<"#. User Id | User Username | User Email"<<endl;
@@ -712,8 +712,11 @@ void interface::show_head()
 
 void interface::GET_followers()
 {
-  show_head();
-  current_user->show_followers();
+  if(second_part == "followers")
+  {
+    show_head_followers();
+    current_user->show_followers();
+  }
 }
 
 void interface::check_GET_second_part()
@@ -723,10 +726,28 @@ void interface::check_GET_second_part()
     throw BadRequest();
 }
 
+/*void publisher
+
+void interface::show_head_published()
+{
+  cout<<"#. Film Id | film Length | Film Price | Rate | 
+  Production Year | Film Director"<<endl;
+}
+
+void interface::GET_published()
+{
+  if(second_part == "published")
+  {
+    show_head_published();
+    current_user->show_published_film();
+  }
+}
+*/
 void interface::process_GET_command()
 {
   check_GET_second_part();
   GET_followers();
+  //GET_published();
 }
 
 void interface::process_command()
