@@ -134,10 +134,10 @@ film::film(string _name, string _year, string _price, string _length
  : name(_name), year(_year), price(_price), length(_length), summary(_summary)
  , director(_director), ID(_ID_counter_film) {}
 
-class interface
+class manager
 {
 public:
-  interface();
+  manager();
   void process_users();
   void process_begin_of_command();
   void skip_space();
@@ -195,7 +195,7 @@ private:
   int property = 0;
 };
 
-interface::interface()
+manager::manager()
 {
   customer* root = new customer("root", "root", "root", "root", 0, false);
   users.push_back(root);
@@ -204,12 +204,12 @@ interface::interface()
   films.push_back(new film("root", "root", "root", "root", "root", "root", 0));
 }
 
-void interface::set_command(string _command)
+void manager::set_command(string _command)
 {
   command = _command;
 }
 
-void interface::check_repeated_username(string username)
+void manager::check_repeated_username(string username)
 {
   for(int i = 0; i < users.size(); i++)
   {
@@ -218,21 +218,21 @@ void interface::check_repeated_username(string username)
   }
 }
 
-void interface::reset()
+void manager::reset()
 {
   first_part = EMPTEY_STRING;
   second_part = EMPTEY_STRING;
   command_chars_counter = 0;
 }
 
-void interface::set_info(string &info)
+void manager::set_info(string &info)
 {
   part = achieve_part();
   info = part;
 }
 
 
-void interface::check_integer(string s)
+void manager::check_integer(string s)
 {
   for(int i = 0;i < s.length();i++)
     if(!isdigit(s[i]))
@@ -244,7 +244,7 @@ void film::set_owner(customer* new_custormer)
   owners.push_back(new_custormer);
 }
 
-void interface::initialize_user(string &email, string &username
+void manager::initialize_user(string &email, string &username
 , string &password, string &age, string &publish)
 {
   if(publish == EMPTEY_STRING || publish == "false")
@@ -263,7 +263,7 @@ void interface::initialize_user(string &email, string &username
   }
 }
 
-void interface::find_user(string username, string password)
+void manager::find_user(string username, string password)
 {
   customer* previous_user = current_user;
   current_user = NULL;
@@ -280,7 +280,7 @@ void interface::find_user(string username, string password)
   }
   previous_user = NULL;
 }
-void interface::POST_login()
+void manager::POST_login()
 {
   if(second_part == "login")
   {
@@ -304,7 +304,7 @@ void interface::POST_login()
   }
 }
 
-void interface::POST_signup()
+void manager::POST_signup()
 {
   if(second_part == "signup" )
   {
@@ -335,7 +335,7 @@ void interface::POST_signup()
   }
 }
 
-void interface::initialize_film(string name, string year, string length
+void manager::initialize_film(string name, string year, string length
 , string price, string summary, string director)
 {
   film* new_film = new film(name, year, price, length, summary, director, ID_counter_film);
@@ -345,7 +345,7 @@ void interface::initialize_film(string name, string year, string length
   current_user->regist_new_film(my_film);
 }
 
-void interface::regist_film()
+void manager::regist_film()
 {
   string name, year, price, summary, length, director;
   while(true)
@@ -373,7 +373,7 @@ void interface::regist_film()
 
 
 
-void interface::POST_film()
+void manager::POST_film()
 {
   if(second_part == "films")
   {
@@ -386,7 +386,7 @@ void interface::POST_film()
   }
 }
 
-void interface::check_POST_second_part()
+void manager::check_POST_second_part()
 {
   if(second_part != "signup" && second_part != "login" && second_part != "films" &&
   second_part != "money" && second_part != "replies" && second_part != "followers"
@@ -394,7 +394,7 @@ void interface::check_POST_second_part()
     throw NotFound();
 }
 
-void interface::POST_followers()
+void manager::POST_followers()
 {
   if(second_part == "followers")
   {
@@ -428,7 +428,7 @@ void publisher::set_followers(customer* new_follower)
   followers.push_back(new_follower);
 }
 
-void interface::charge_account()
+void manager::charge_account()
 {
   string amount;
   while(true)
@@ -445,7 +445,7 @@ void interface::charge_account()
   cout<<"OK"<<endl;
 }
 
-void interface::POST_money()
+void manager::POST_money()
 {
   if(second_part == "money")
   {
@@ -467,7 +467,7 @@ void customer::buy_film(film* new_film)
     throw BadRequest();
 }
 
-void interface::POST_buy()
+void manager::POST_buy()
 {
   if(second_part == "buy")
   {
@@ -510,13 +510,13 @@ void customer::score_watched_film(int film_id, double score)
   throw BadRequest();
 }
 
-void interface::check_score(double score)
+void manager::check_score(double score)
 {
   if(score < MIN_POINT || score > MAX_POINT)
     throw BadRequest();
 }
 
-void interface::POST_rate()
+void manager::POST_rate()
 {
   if(second_part == "rate")
   {
@@ -540,7 +540,7 @@ void interface::POST_rate()
   }
 }
 
-void interface::process_POST_command()
+void manager::process_POST_command()
 {
   check_POST_second_part();
   POST_signup();
@@ -553,7 +553,7 @@ void interface::process_POST_command()
   //...check_NOT_found
 }
 
-void interface::set_first_part()
+void manager::set_first_part()
 {
   skip_space();
   int begin_of_word = command_chars_counter;
@@ -564,19 +564,19 @@ void interface::set_first_part()
   check_first_part();
 }
 
-void interface::check_first_part()
+void manager::check_first_part()
 {
   if(first_part != "GET" && first_part != "POST" && first_part != "PUT" && first_part != "DELETE")
     throw BadRequest();
 }
 
-void interface::check_PUT_second_part()
+void manager::check_PUT_second_part()
 {
   if(second_part != "films")
     throw BadRequest();
 }
 
-void interface::check_command_for_PUT(string &name, string &year, string &price
+void manager::check_command_for_PUT(string &name, string &year, string &price
 , string &summary, string &length, string &director, string &film_id)
 {
   while(true)
@@ -603,7 +603,7 @@ void interface::check_command_for_PUT(string &name, string &year, string &price
   }
 }
 
-void interface::PUT_film()
+void manager::PUT_film()
 {
   if(second_part == "films")
   {
@@ -663,13 +663,13 @@ void publisher::show_followers()
   }
 }
 
-void interface::check_DELETE_second_part()
+void manager::check_DELETE_second_part()
 {
   if(second_part != "films")
     throw BadRequest();
 }
 
-void interface::process_PUT_command()
+void manager::process_PUT_command()
 {
   check_PUT_second_part();
   PUT_film();
@@ -688,7 +688,7 @@ void publisher::delete_film(int film_id)
   throw PermissionDenied();
 }
 
-void interface::DELETE_film()
+void manager::DELETE_film()
 {
   if(achieve_part() != QUERY)
     throw BadRequest();
@@ -707,19 +707,19 @@ void interface::DELETE_film()
   cout<<"OK"<<endl;
 }
 
-void interface::process_DELETE_command()
+void manager::process_DELETE_command()
 {
   check_DELETE_second_part();
   DELETE_film();
 }
 
-void interface::show_head_followers()
+void manager::show_head_followers()
 {
   cout<<"List of Followers"<<endl;
   cout<<"#. User Id | User Username | User Email"<<endl;
 }
 
-void interface::GET_followers()
+void manager::GET_followers()
 {
   if(second_part == "followers")
   {
@@ -728,7 +728,7 @@ void interface::GET_followers()
   }
 }
 
-void interface::check_GET_second_part()
+void manager::check_GET_second_part()
 {
   if(second_part != "followers" && second_part != "published" && second_part != "films"
   && second_part != "purchased"&& second_part != "notifications")
@@ -737,13 +737,13 @@ void interface::check_GET_second_part()
 
 /*void publisher
 
-void interface::show_head_published()
+void manager::show_head_published()
 {
   cout<<"#. Film Id | film Length | Film Price | Rate | 
   Production Year | Film Director"<<endl;
 }
 
-void interface::GET_published()
+void manager::GET_published()
 {
   if(second_part == "published")
   {
@@ -752,14 +752,14 @@ void interface::GET_published()
   }
 }
 */
-void interface::process_GET_command()
+void manager::process_GET_command()
 {
   check_GET_second_part();
   GET_followers();
   //GET_published();
 }
 
-void interface::process_command()
+void manager::process_command()
 {
   if(first_part == "POST")
     process_POST_command();
@@ -773,13 +773,13 @@ void interface::process_command()
     throw BadRequest();
 }
 
-void interface::skip_space()
+void manager::skip_space()
 {
   while(command[command_chars_counter] == SPACE)
     command_chars_counter++;
 }
 
-void interface::set_second_part()
+void manager::set_second_part()
 {
   skip_space();
   int begin_of_word = command_chars_counter;
@@ -789,20 +789,20 @@ void interface::set_second_part()
   command_chars_counter - begin_of_word);
 }
 
-void interface::process_begin_of_command()
+void manager::process_begin_of_command()
 {
   set_first_part();
   set_second_part();
 }
 
-void interface::process_users()
+void manager::process_users()
 {
   process_begin_of_command();
   process_command();
 }
 
 
-string interface::achieve_part()
+string manager::achieve_part()
 {
   skip_space();
   int begin_of_word = command_chars_counter;
@@ -817,13 +817,13 @@ string interface::achieve_part()
 int main()
 {
   string command;
-  interface my_interface = interface();
+  manager Manager = manager();
   while(getline(cin, command))
   {
     try {
-      my_interface.set_command(command);
+      Manager.set_command(command);
       //cout<<command<<endl;
-      my_interface.process_users();
+      Manager.process_users();
     } catch(PermissionDenied ex) {
       ex.what();
     } catch(NotFound ex) {
@@ -831,7 +831,7 @@ int main()
     } catch(BadRequest ex) {
       ex.what();
     }
-    my_interface.reset();
+    Manager.reset();
   }
 
   }
