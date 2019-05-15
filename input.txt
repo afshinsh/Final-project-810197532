@@ -6,7 +6,5 @@ POST followers ? user_id 1
 POST buy ? film_id 1
 POST rate ? film_id 1 score 4 
 POST login ? username b password c
-POST money 
+POST money
 GET followers
-
-
