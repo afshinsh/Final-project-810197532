@@ -1,0 +1,12 @@
+POST signup ? email a username b password c age 22 publisher true 
+POST films ? name gray year 2323 length 322 price 233 summary affaf director ada
+POST signup ? email f username ff password ff age 23 publisher true
+POST money ? amount 2222
+POST followers ? user_id 1
+POST buy ? film_id 1
+POST rate ? film_id 1 score 4 
+POST login ? username b password c
+POST money 
+GET followers
+
+
