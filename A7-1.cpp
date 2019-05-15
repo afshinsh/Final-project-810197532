@@ -169,6 +169,7 @@ public:
   void find_user(string username, string password);
   void POST_login();
   void reset();
+  void check_integer(string s);
   void regist_film();
   void set_command(string _command) ;
   void check_POST_second_part();
@@ -228,6 +229,14 @@ void interface::set_info(string &info)
 {
   part = achieve_part();
   info = part;
+}
+
+
+void interface::check_integer(string s)
+{
+  for(int i = 0;i < s.length();i++)
+    if(!isdigit(s[i]))
+      throw BadRequest();
 }
 
 void film::set_owner(customer* new_custormer)
