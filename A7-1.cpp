@@ -479,9 +479,10 @@ void manager::POST_money()
 {
   if(second_part == "money")
   {
-    if(achieve_part() == QUERY)
+    string part = achieve_part();
+    if(part == QUERY)
       charge_account();
-    else if(achieve_part() == EMPTEY_STRING)
+    else if(part == EMPTEY_STRING)
       catch_money();
     else 
       throw BadRequest();
@@ -568,6 +569,7 @@ void manager::POST_rate()
     }
     check_score(stod(score));
     current_user->score_watched_film(stoi(film_id), stod(score));
+    cout<<"OK"<<endl;
   }
 }
 
@@ -814,7 +816,8 @@ void manager::set_second_part()
 {
   skip_space();
   int begin_of_word = command_chars_counter;
-  while(command[command_chars_counter] != SPACE)
+  while(command[command_chars_counter] != SPACE &&
+   command[command_chars_counter] != NONE)
     command_chars_counter++;
   second_part = command.substr(begin_of_word, 
   command_chars_counter - begin_of_word);
