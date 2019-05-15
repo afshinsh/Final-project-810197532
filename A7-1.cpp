@@ -458,6 +458,7 @@ void manager::pay_money(double percent, int i)
 {
   current_user->increase_money(percent * films[i]->get_price());
   property -= percent * films[i]->get_price();
+  cout<<"OK"<<endl;
 }
 
 void manager::catch_money()
