@@ -6,7 +6,7 @@
 #define QUERY "?"
 #define EMPTEY_STRING ""
 #define NONE '\0'
-#define MAX_POINT 10\
+#define MAX_POINT 10
 #define MIN_POINT 0
 
 using namespace std;
@@ -104,8 +104,8 @@ void publisher::regist_new_film(film* new_film)
 class film
 {
 public:
-  film(string _name, string _year, string _price
-, string _length, string _summary, string _director, int _ID_counter_film);
+  film(string _name, string _year, string _price, string _length,
+  string _summary, string _director, int _ID_counter_film, customer* _publisher);
   void set_name(string _name) { name = _name; }
   void set_summary(string _summary) { summary = _summary; }
   void set_year(string _year) { year = _year; }
@@ -115,7 +115,10 @@ public:
   int get_ID() { return ID; }
   int get_price() { return stoi(price); }
   void set_owner(customer* new_custormer);
+  customer* get_publisher() { return publisher; }
   double give_avrage_rate();
+  void increase_unpaid_money() { unpaid_money++; }
+  void reset_unpaid_money() { unpaid_money = 0; }
 private:
   string name;
   string year;
@@ -123,16 +126,17 @@ private:
   string price;
   string length;
   string director;
+  customer* publisher;
   vector<customer*> owners;
-  bool paid_money = false;
+  int unpaid_money = 0;
   int ID;
   //double rate = 0;
 };
 
 film::film(string _name, string _year, string _price, string _length
-, string _summary , string _director, int _ID_counter_film)
+, string _summary , string _director, int _ID_counter_film, customer* _publisher)
  : name(_name), year(_year), price(_price), length(_length), summary(_summary)
- , director(_director), ID(_ID_counter_film) {}
+ , director(_director), ID(_ID_counter_film), publisher(_publisher) {}
 
 class manager
 {
@@ -153,6 +157,7 @@ public:
   void process_DELETE_command();
   void process_PUT_command();
   void GET_followers();
+  void check_score(double score);
   void POST_followers();
   void DELETE_film();
   void charge_account();
@@ -177,6 +182,8 @@ public:
   string achieve_part();
   void check_PUT_second_part();
   void PUT_film();
+  void catch_money();
+  void pay_money(double percent, int i);
   void check_repeated_username(string username);
   void POST_buy();
 private:
@@ -201,7 +208,7 @@ manager::manager()
   users.push_back(root);
   customers.push_back(root);
   publishers.push_back(root);
-  films.push_back(new film("root", "root", "root", "root", "root", "root", 0));
+  films.push_back(new film("root", "root", "root", "root", "root", "root", 0, NULL));
 }
 
 void manager::set_command(string _command)
@@ -338,10 +345,12 @@ void manager::POST_signup()
 void manager::initialize_film(string name, string year, string length
 , string price, string summary, string director)
 {
-  film* new_film = new film(name, year, price, length, summary, director, ID_counter_film);
-  ID_counter_film++;
+  film* new_film = new film(name, year, price, length, summary, 
+  director, ID_counter_film, current_user);
   films.push_back(new_film);
-  film* my_film = new film(name , year, price, length, summary, director, ID_counter_film);
+  film* my_film = new film(name , year, price, length, summary, 
+  director, ID_counter_film, current_user);
+  ID_counter_film++;
   current_user->regist_new_film(my_film);
 }
 
@@ -445,14 +454,34 @@ void manager::charge_account()
   cout<<"OK"<<endl;
 }
 
+void manager::pay_money(double percent, int i)
+{
+  current_user->increase_money(percent * films[i]->get_price());
+  property -= percent * films[i]->get_price();
+}
+
+void manager::catch_money()
+{
+  for(int i = 0;i < films.size();i++)
+    if(films[i]->get_publisher() == current_user)
+    {
+      if(films[i]->give_avrage_rate() >= 8)
+        pay_money(0.95, i);
+      else if(films[i]->give_avrage_rate() >= 5 && films[i]->give_avrage_rate() < 8)
+        pay_money(0.90, i);
+      else if(films[i]->give_avrage_rate() >=0 && films[i]->give_avrage_rate() < 5)
+        pay_money(0.80, i);
+    }
+}
+
 void manager::POST_money()
 {
   if(second_part == "money")
   {
     if(achieve_part() == QUERY)
       charge_account();
-   // else if(achieve_part() == EMPTEY_STRING)
-     // catch_money();
+    else if(achieve_part() == EMPTEY_STRING)
+      catch_money();
     else 
       throw BadRequest();
   }
@@ -461,6 +490,7 @@ void manager::POST_money()
 void customer::buy_film(film* new_film)
 {
   bought_films.push_back(new_film);
+  new_film->increase_unpaid_money();
   if(money >= new_film->get_price())
     money -= new_film->get_price();
   else
@@ -822,7 +852,6 @@ int main()
   {
     try {
       Manager.set_command(command);
-      //cout<<command<<endl;
       Manager.process_users();
     } catch(PermissionDenied ex) {
       ex.what();
