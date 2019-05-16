@@ -8,3 +8,4 @@ POST rate ? film_id 1 score 4
 POST login ? username b password c
 POST money
 GET followers
+POST comments ? film_id 1 content it|was|amazing
