@@ -9,3 +9,5 @@ POST login ? username b password c
 POST money
 GET followers
 POST comments ? film_id 1 content it|was|amazing
+POST login ? username b password c
+POST replies ? film_id 1 comment_id 1 content thancks!
