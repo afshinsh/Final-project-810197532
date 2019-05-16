@@ -634,8 +634,36 @@ void manager::POST_comments()
         film_id = achieve_part();
       else if(sentence_part == "content")
         content = achieve_part();
+      else 
+        throw BadRequest();
     }
     initialize_comment(stoi(film_id), content);
+    cout<<"OK"<<endl;
+  }
+}
+
+void manager::POST_replies()
+{
+  if(second_part == "replies")
+  {
+    if(achieve_part() != QUERY)
+      throw BadRequest();
+    string film_id, comment_id, content;
+    while(true)
+    {
+      part = achieve_part();
+      if(part == EMPTEY_STRING)
+        break;
+      else if(part == "film_id")
+        film_id = achieve_part();
+      else if(part == "comment_id")
+        comment_id = achieve_part();
+      else if(part == "content")
+        content = achieve_part();
+      else 
+        throw BadRequest();
+    }
+    
     cout<<"OK"<<endl;
   }
 }
@@ -651,6 +679,7 @@ void manager::process_POST_command()
   POST_buy();
   POST_rate();
   POST_comments();
+  POST_replies();
   //...check_NOT_found
 }
 
