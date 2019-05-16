@@ -114,6 +114,12 @@ public:
   void set_director(string _director) { director = _director; }
   int get_ID() { return ID; }
   int get_price() { return stoi(price); }
+  string get_name() { return name; }
+  string get_year() { return year; }
+  string get_summary() { return summary; }
+  string get_length() { return length; }
+  string get_director() { return director; }
+  string get_price_s() { return price; } 
   void set_owner(customer* new_custormer);
   customer* get_publisher() { return publisher; }
   double give_avrage_rate();
@@ -348,10 +354,11 @@ void manager::initialize_film(string name, string year, string length
   film* new_film = new film(name, year, price, length, summary, 
   director, ID_counter_film, current_user);
   films.push_back(new_film);
-  film* my_film = new film(name , year, price, length, summary, 
-  director, ID_counter_film, current_user);
+  current_user->regist_new_film(new_film);
+  //film* my_film = new film(name , year, price, length, summary, 
+  //director, ID_counter_film, current_user);
   ID_counter_film++;
-  current_user->regist_new_film(my_film);
+  
 }
 
 void manager::regist_film()
@@ -491,7 +498,10 @@ void manager::POST_money()
 
 void customer::buy_film(film* new_film)
 {
-  bought_films.push_back(new_film);
+  film * bought_film = new film(new_film->get_name() , new_film->get_year()
+  , new_film->get_price_s(), new_film->get_length(), new_film->get_summary(), 
+  new_film->get_director(), new_film->get_ID(), new_film->get_publisher())
+  bought_films.push_back(bought_film);
   new_film->increase_unpaid_money();
   if(money >= new_film->get_price())
     money -= new_film->get_price();
@@ -654,7 +664,7 @@ void publisher::edit_films(string name, string year, string price
 {
   for(int i = 0;i < my_films.size(); i++)
   {
-    if(my_films[i]->get_ID() == film_id)
+    if(my_films[i] != NULL && my_films[i]->get_ID() == film_id)
     {
       if(name != EMPTEY_STRING)
         my_films[i]->set_name(name);
@@ -712,9 +722,10 @@ void publisher::delete_film(int film_id)
 {
   for(int i = 0 ;i < my_films.size(); i++)
   {
-    if(my_films[i]->get_ID() == film_id)
+    if(my_films[i] != NULL && my_films[i]->get_ID() == film_id)
     {
-      delete my_films[i];
+      //delete my_films[i];
+      my_films[i] = NULL;
       return;
     }
   }
