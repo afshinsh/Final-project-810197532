@@ -58,6 +58,7 @@ public:
   virtual void set_followers(customer* new_follower) { return; }
   void increase_money(int amount) { money += amount; }
   void buy_film(film* new_film);
+  void check_bought_film(film* bought_film);
   void score_watched_film(int film_id, double score);
   double get_rate(int film_id) { return scores[film_id]; }
 protected:
@@ -127,8 +128,8 @@ public:
   double give_avrage_rate();
   void increase_unpaid_money() { unpaid_money++; }
   void reset_unpaid_money() { unpaid_money = 0; }
-  void set_comment(comment* new_comment);
-  void reply_cm(int comment_id);
+  void set_comment(int film_id, string content);
+  void reply_cm(int comment_id, string content);
 private:
   string name;
   string year;
@@ -153,6 +154,8 @@ class comment
 {
 public:
   comment(int _film_id, string _content, int _ID) : film_id(_film_id), content(_content), ID(_ID) {}
+  int get_ID() { return ID; }
+  void set_reply(string _content);
 private:
   int film_id;
   string content;
@@ -175,7 +178,6 @@ public:
   void check_DELETE_second_part();
   void POST_film();
   void POST_signup();
-  void initialize_comment(int film_id, string content);
   void POST_money();
   void process_DELETE_command();
   void process_PUT_command();
@@ -602,17 +604,19 @@ void manager::POST_rate()
   }
 }
 
-void film::set_comment(comment* new_comment)
+void film::set_comment(int film_id, string content)
 {
+  comment* new_comment = new comment(film_id, content, ID_counter_comment);
   comments.push_back(new_comment);
   ID_counter_comment++;
 }
 
-void manager::initialize_comment(int film_id, string content)
+void customer::check_bought_film(film* bought_film)
 {
-  comment* new_comment = new comment(film_id, content, ID_counter_comment);
-  films[film_id]->set_comment(new_comment);
-  comments.push_back(new_comment);
+  for(int i = 0;i < bought_films.size();i++)
+    if(bought_film->get_ID() == bought_films[i]->get_ID())
+      return;
+  throw BadRequest();
 }
 
 void manager::POST_comments()
@@ -634,12 +638,28 @@ void manager::POST_comments()
       else 
         throw BadRequest();
     }
-    initialize_comment(stoi(film_id), content);
+    current_user->check_bought_film(films[stoi(film_id)]);
+    films[stoi(film_id)]->set_comment(stoi(film_id), content);
     cout<<"OK"<<endl;
   }
 }
 
-film::
+void comment::set_reply(string _content)
+{
+  replies.push_back(_content);
+}
+
+void film::reply_cm(int comment_id, string content)
+{
+  for(int i = 0;i < comments.size();i++)
+    if(comments[i]->get_ID() == comment_id)
+    {
+      comments[i]->set_reply(content);
+      return;
+    }
+      
+  throw BadRequest();
+}
 
 void manager::POST_replies()
 {
@@ -650,19 +670,23 @@ void manager::POST_replies()
     string film_id, comment_id, content;
     while(true)
     {
-      part = achieve_part();
-      if(part == EMPTEY_STRING)
+      sentence_part = achieve_part();
+      if(sentence_part == EMPTEY_STRING)
         break;
-      else if(part == "film_id")
+      else if(sentence_part == "film_id")
         film_id = achieve_part();
-      else if(part == "comment_id")
+      else if(sentence_part == "comment_id")
         comment_id = achieve_part();
-      else if(part == "content")
+      else if(sentence_part == "content")
         content = achieve_part();
       else 
         throw BadRequest();
     }
-    films[film_id]->reply_cm(comment_id);
+    
+    if(films[stoi(film_id)]->get_publisher() != current_user)
+      throw BadRequest();
+    
+    films[stoi(film_id)]->reply_cm(stoi(comment_id), content);
     cout<<"OK"<<endl;
   }
 }
