@@ -144,6 +144,15 @@ film::film(string _name, string _year, string _price, string _length
  : name(_name), year(_year), price(_price), length(_length), summary(_summary)
  , director(_director), ID(_ID_counter_film), publisher(_publisher) {}
 
+class comment
+{
+public:
+  comment(string _content, int _ID) : content(_content, _ID) {}
+private:
+  string content;
+  int ID;
+};
+
 class manager
 {
 public:
