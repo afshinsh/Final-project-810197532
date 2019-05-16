@@ -139,13 +139,18 @@ private:
   vector<customer*> owners;
   int unpaid_money = 0;
   vector<comment*> comments;
+  int ID_counter_comment = 1;
   int ID;
 };
 
 film::film(string _name, string _year, string _price, string _length
 , string _summary , string _director, int _ID_counter_film, customer* _publisher)
  : name(_name), year(_year), price(_price), length(_length), summary(_summary)
- , director(_director), ID(_ID_counter_film), publisher(_publisher) {}
+ , director(_director), ID(_ID_counter_film), publisher(_publisher) 
+ {
+   comment* root = new comment(0,"root",0);
+   comments.push_back(root);
+ }
 
 class comment
 {
@@ -154,6 +159,7 @@ public:
 private:
   int film_id;
   string content;
+  vector<string> replies; 
   int ID;
 };
 
@@ -217,7 +223,6 @@ private:
   int command_chars_counter = 0;
   int ID_counter = 1;
   int ID_counter_film = 1;
-  int ID_counter_comment = 1;
   customer* current_user = NULL;
   string first_part = EMPTEY_STRING ;
   string second_part = EMPTEY_STRING;
@@ -603,6 +608,7 @@ void manager::POST_rate()
 void film::set_comment(comment* new_comment)
 {
   comments.push_back(new_comment);
+  ID_counter_comment++;
 }
 
 void manager::initialize_comment(int film_id, string content)
@@ -610,7 +616,6 @@ void manager::initialize_comment(int film_id, string content)
   comment* new_comment = new comment(film_id, content, ID_counter_comment);
   films[film_id]->set_comment(new_comment);
   comments.push_back(new_comment);
-  ID_counter_comment++;
 }
 
 void manager::POST_comments()
@@ -631,6 +636,7 @@ void manager::POST_comments()
         content = achieve_part();
     }
     initialize_comment(stoi(film_id), content);
+    cout<<"OK"<<endl;
   }
 }
 
