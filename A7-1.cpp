@@ -6,8 +6,8 @@
 #define QUERY "?"
 #define EMPTEY_STRING ""
 #define NONE '\0'
-#define MAX_POINT 10
-#define MIN_POINT 0
+#define MAX_POINT 10.0
+#define MIN_POINT 0.0
 
 using namespace std;
 
@@ -128,6 +128,7 @@ public:
   void increase_unpaid_money() { unpaid_money++; }
   void reset_unpaid_money() { unpaid_money = 0; }
   void set_comment(comment* new_comment);
+  void reply_cm(int comment_id);
 private:
   string name;
   string year;
@@ -146,11 +147,7 @@ private:
 film::film(string _name, string _year, string _price, string _length
 , string _summary , string _director, int _ID_counter_film, customer* _publisher)
  : name(_name), year(_year), price(_price), length(_length), summary(_summary)
- , director(_director), ID(_ID_counter_film), publisher(_publisher) 
- {
-   comment* root = new comment(0,"root",0);
-   comments.push_back(root);
- }
+ , director(_director), ID(_ID_counter_film), publisher(_publisher) {}
 
 class comment
 {
@@ -200,6 +197,7 @@ public:
   void find_user(string username, string password);
   void POST_login();
   void reset();
+  void POST_replies();
   void check_integer(string s);
   void regist_film();
   void set_command(string _command) ;
@@ -218,7 +216,6 @@ private:
   vector<customer*> users;
   vector<customer*> customers;
   vector<customer*> publishers;
-  vector<comment*>comments;
   string command;
   int command_chars_counter = 0;
   int ID_counter = 1;
@@ -642,11 +639,13 @@ void manager::POST_comments()
   }
 }
 
+film::
+
 void manager::POST_replies()
 {
   if(second_part == "replies")
   {
-    if(achieve_part() != QUERY)
+    if(achieve_part() != QUERY || !current_user->get_publisher())
       throw BadRequest();
     string film_id, comment_id, content;
     while(true)
@@ -663,7 +662,7 @@ void manager::POST_replies()
       else 
         throw BadRequest();
     }
-    
+    films[film_id]->reply_cm(comment_id);
     cout<<"OK"<<endl;
   }
 }
