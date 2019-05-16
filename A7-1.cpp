@@ -13,6 +13,8 @@ using namespace std;
 
 class film;
 
+class comment;
+
 class BadRequest {
 public:
   void what()
@@ -125,6 +127,7 @@ public:
   double give_avrage_rate();
   void increase_unpaid_money() { unpaid_money++; }
   void reset_unpaid_money() { unpaid_money = 0; }
+  void set_comment(comment* new_comment);
 private:
   string name;
   string year;
@@ -135,8 +138,8 @@ private:
   customer* publisher;
   vector<customer*> owners;
   int unpaid_money = 0;
+  vector<comment*> comments;
   int ID;
-  //double rate = 0;
 };
 
 film::film(string _name, string _year, string _price, string _length
@@ -147,8 +150,9 @@ film::film(string _name, string _year, string _price, string _length
 class comment
 {
 public:
-  comment(string _content, int _ID) : content(_content, _ID) {}
+  comment(int _film_id, string _content, int _ID) : film_id(_film_id), content(_content), ID(_ID) {}
 private:
+  int film_id;
   string content;
   int ID;
 };
@@ -168,6 +172,7 @@ public:
   void check_DELETE_second_part();
   void POST_film();
   void POST_signup();
+  void initialize_comment(int film_id, string content);
   void POST_money();
   void process_DELETE_command();
   void process_PUT_command();
@@ -201,19 +206,22 @@ public:
   void pay_money(double percent, int i);
   void check_repeated_username(string username);
   void POST_buy();
+  void POST_comments();
 private:
   vector<film*> films;
   vector<customer*> users;
   vector<customer*> customers;
   vector<customer*> publishers;
+  vector<comment*>comments;
   string command;
   int command_chars_counter = 0;
   int ID_counter = 1;
   int ID_counter_film = 1;
+  int ID_counter_comment = 1;
   customer* current_user = NULL;
   string first_part = EMPTEY_STRING ;
   string second_part = EMPTEY_STRING;
-  string part;
+  string sentence_part;
   int property = 0;
 };
 
@@ -249,8 +257,8 @@ void manager::reset()
 
 void manager::set_info(string &info)
 {
-  part = achieve_part();
-  info = part;
+  sentence_part = achieve_part();
+  info = sentence_part;
 }
 
 
@@ -311,12 +319,12 @@ void manager::POST_login()
     string username, password;
     while(true)
     {
-      part = achieve_part();
-      if(part == EMPTEY_STRING)
+      sentence_part = achieve_part();
+      if(sentence_part == EMPTEY_STRING)
         break;
-      else if(part == "password")
+      else if(sentence_part == "password")
         password = achieve_part();
-      else if(part == "username")
+      else if(sentence_part == "username")
         username = achieve_part();
       else 
         throw BadRequest();
@@ -335,18 +343,18 @@ void manager::POST_signup()
     string email, username, password, age, publisher = EMPTEY_STRING;
     while(true)
     {
-      part = achieve_part();
-      if(part == EMPTEY_STRING)
+      sentence_part = achieve_part();
+      if(sentence_part == EMPTEY_STRING)
         break;
-      else if(part == "email")
+      else if(sentence_part == "email")
         set_info(email);
-      else if(part == "username")/////////////check arguments
+      else if(sentence_part == "username")/////////////check arguments
         set_info(username);
-      else if(part == "password")
+      else if(sentence_part == "password")
         set_info(password);
-      else if(part == "age")
+      else if(sentence_part == "age")
         set_info(age);
-      else if(part == "publisher")
+      else if(sentence_part == "publisher")
         set_info(publisher);
       else 
         throw BadRequest();
@@ -375,20 +383,20 @@ void manager::regist_film()
   string name, year, price, summary, length, director;
   while(true)
   {
-    part = achieve_part();
-    if(part == EMPTEY_STRING)
+    sentence_part = achieve_part();
+    if(sentence_part == EMPTEY_STRING)
       break;
-    else if(part == "name")
+    else if(sentence_part == "name")
       set_info(name);
-    else if(part == "year")
+    else if(sentence_part == "year")
       set_info(year);
-    else if(part == "length")
+    else if(sentence_part == "length")
       set_info(length);
-    else if(part == "price")
+    else if(sentence_part == "price")
       set_info(price);
-    else if(part == "summary")
+    else if(sentence_part == "summary")
       set_info(summary);
-    else if(part == "director")
+    else if(sentence_part == "director")
       set_info(director);
     else 
       throw BadRequest();
@@ -428,10 +436,10 @@ void manager::POST_followers()
     string user_id;
     while(true)
     {
-      part = achieve_part();
-      if(part == EMPTEY_STRING)
+      sentence_part = achieve_part();
+      if(sentence_part == EMPTEY_STRING)
         break;
-      else if(part == "user_id")
+      else if(sentence_part == "user_id")
         user_id = achieve_part();
       else
         throw BadRequest();
@@ -458,10 +466,10 @@ void manager::charge_account()
   string amount;
   while(true)
   {
-    part = achieve_part();
-    if(part == EMPTEY_STRING)
+    sentence_part = achieve_part();
+    if(sentence_part == EMPTEY_STRING)
       break;
-    else if(part == "amount")
+    else if(sentence_part == "amount")
       amount = achieve_part();
     else 
       throw BadRequest();
@@ -495,10 +503,10 @@ void manager::POST_money()
 {
   if(second_part == "money")
   {
-    string part = achieve_part();
-    if(part == QUERY)
+    string sentence_part = achieve_part();
+    if(sentence_part == QUERY)
       charge_account();
-    else if(part == EMPTEY_STRING)
+    else if(sentence_part == EMPTEY_STRING)
       catch_money();
     else 
       throw BadRequest();
@@ -509,7 +517,7 @@ void customer::buy_film(film* new_film)
 {
   film * bought_film = new film(new_film->get_name() , new_film->get_year()
   , new_film->get_price_s(), new_film->get_length(), new_film->get_summary(), 
-  new_film->get_director(), new_film->get_ID(), new_film->get_publisher())
+  new_film->get_director(), new_film->get_ID(), new_film->get_publisher());
   bought_films.push_back(bought_film);
   new_film->increase_unpaid_money();
   if(money >= new_film->get_price())
@@ -527,10 +535,10 @@ void manager::POST_buy()
     string film_id;
     while(true)
     {
-      part = achieve_part();
-      if(part == EMPTEY_STRING)
+      sentence_part = achieve_part();
+      if(sentence_part == EMPTEY_STRING)
         break;
-      else if(part == "film_id")
+      else if(sentence_part == "film_id")
         film_id = achieve_part();
       else 
         throw BadRequest();
@@ -576,12 +584,12 @@ void manager::POST_rate()
     string film_id, score;
     while(true)
     {
-      part = achieve_part();
-      if(part == EMPTEY_STRING)
+      sentence_part = achieve_part();
+      if(sentence_part == EMPTEY_STRING)
         break;
-      else if(part == "film_id")
+      else if(sentence_part == "film_id")
         film_id = achieve_part();
-      else if(part == "score")//some check this
+      else if(sentence_part == "score")//some check this
         score = achieve_part();
       else 
         throw BadRequest();
@@ -589,6 +597,40 @@ void manager::POST_rate()
     check_score(stod(score));
     current_user->score_watched_film(stoi(film_id), stod(score));
     cout<<"OK"<<endl;
+  }
+}
+
+void film::set_comment(comment* new_comment)
+{
+  comments.push_back(new_comment);
+}
+
+void manager::initialize_comment(int film_id, string content)
+{
+  comment* new_comment = new comment(film_id, content, ID_counter_comment);
+  films[film_id]->set_comment(new_comment);
+  comments.push_back(new_comment);
+  ID_counter_comment++;
+}
+
+void manager::POST_comments()
+{
+  if(second_part == "comments")
+  {
+    if(achieve_part() != QUERY)
+      throw BadRequest();
+    string film_id, content;
+    while(true)
+    {
+      sentence_part = achieve_part();
+      if(sentence_part == EMPTEY_STRING)
+        break;
+      else if(sentence_part == "film_id")
+        film_id = achieve_part();
+      else if(sentence_part == "content")
+        content = achieve_part();
+    }
+    initialize_comment(stoi(film_id), content);
   }
 }
 
@@ -602,6 +644,7 @@ void manager::process_POST_command()
   POST_money();
   POST_buy();
   POST_rate();
+  POST_comments();
   //...check_NOT_found
 }
 
@@ -633,22 +676,22 @@ void manager::check_command_for_PUT(string &name, string &year, string &price
 {
   while(true)
   {
-    part = achieve_part();
-    if(part == EMPTEY_STRING)
+    sentence_part = achieve_part();
+    if(sentence_part == EMPTEY_STRING)
       break;
-    else if(part == "film_id")
+    else if(sentence_part == "film_id")
       set_info(film_id);
-    else if(part == "name")
+    else if(sentence_part == "name")
       set_info(name);
-    else if(part == "year")
+    else if(sentence_part == "year")
       set_info(year);
-    else if(part == "length")
+    else if(sentence_part == "length")
       set_info(length);
-    else if(part == "price")
+    else if(sentence_part == "price")
       set_info(price);
-    else if(part == "summary")
+    else if(sentence_part == "summary")
       set_info(summary);
-    else if(part == "director")
+    else if(sentence_part == "director")
       set_info(director);
     else 
       throw BadRequest();
@@ -748,10 +791,10 @@ void manager::DELETE_film()
   string film_id;
   while(true)
   {
-    part = achieve_part();
-    if(part == EMPTEY_STRING)
+    sentence_part = achieve_part();
+    if(sentence_part == EMPTEY_STRING)
       break;
-    else if(part == "film_id")
+    else if(sentence_part == "film_id")
       set_info(film_id);
     else 
       throw BadRequest();
