@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <algorithm>
 #include <map>
 #define SPACE ' '
 #define QUERY "?"
@@ -142,6 +143,7 @@ private:
   int unpaid_money = 0;
   vector<comment*> comments;
   int ID_counter_comment = 1;
+  bool deleted = false;
   int ID;
 };
 
@@ -218,6 +220,7 @@ private:
   vector<customer*> users;
   vector<customer*> customers;
   vector<customer*> publishers;
+  vector<film*> recommendation_films;
   string command;
   int command_chars_counter = 0;
   int ID_counter = 1;
@@ -579,6 +582,20 @@ void manager::check_score(double score)
     throw BadRequest();
 }
 
+bool manger::compare_rate(film f1, film f2) 
+{ 
+    return (f1.n < f2.n); 
+} 
+
+void manager::set_recommendation()//set it for current user
+{
+  recommendation_films.clear();
+  for(int i = 0;i < films.size();i++)
+    if(check_is_not_bought_or_deleted(films[i]))
+      recommendation_films.push_back(films[i]);
+  sort(recommendation_films, recommendation_films + n, compare_rate); 
+}
+
 void manager::POST_rate()
 {
   if(second_part == "rate")
@@ -857,6 +874,7 @@ void manager::DELETE_film()
     else 
       throw BadRequest();
   }
+  films[stoi(film_id)].deleted = true;
   current_user->delete_film(stoi(film_id));
   cout<<"OK"<<endl;
 }
