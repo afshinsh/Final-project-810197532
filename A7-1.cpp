@@ -250,7 +250,9 @@ manager::manager()
   users.push_back(root);
   customers.push_back(root);
   publishers.push_back(root);
-  films.push_back(new film("root", "root", "root", "root", "root", "root", 0, NULL));
+  film* root_f = new film("root", "root", "root", "root", "root", "root", 0, NULL);
+  root_f->set_delete();
+  films.push_back(root_f);
 }
 
 void manager::set_command(string _command)
@@ -616,7 +618,7 @@ void manager::set_recommendation(film* f)
   for(int i = 0;i < films.size();i++)
     if(current_user->check_is_not_bought(films[i]) && !films[i]->get_deleted() && films[i] != f)
       recommendation_films.push_back(films[i]);
-  sort(recommendation_films.begin(), recommendation_films.end(), compare_rate()); 
+  sort(recommendation_films.begin() + 1, recommendation_films.end(), compare_rate()); 
 }
 
 void manager::POST_rate()
@@ -968,7 +970,7 @@ void manager::show_comments(film* Film)
 void comment::show_replies()
 {
   for(int i = 0;i < replies.size();i++)
-    cout<<ID<<i + 1<<". "<<replies[i]<<endl;
+    cout<<ID<<"."<<i + 1<<". "<<replies[i]<<endl;
 }
 
 void film::show_comment()
