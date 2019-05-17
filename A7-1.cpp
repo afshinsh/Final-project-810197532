@@ -193,7 +193,7 @@ public:
   void check_score(double score);
   void POST_followers();
   void DELETE_film();
-  void set_recommendation();
+  void set_recommendation(film* f);
   void charge_account();
   void POST_rate();
   void check_command_for_PUT(string &name, string &year, string &price
@@ -224,6 +224,7 @@ public:
   void catch_money();
   void pay_money(double percent, int i);
   void check_repeated_username(string username);
+  void GET_films();
   void POST_buy();
   void POST_comments();
 private:
@@ -960,7 +961,7 @@ void manager::show_features(film* Film)
 
 void manager::show_comments(film* Film)
 {
-  cout<<<<endl<<endl<<"Comments"<<endl;
+  cout<<endl<<endl<<"Comments"<<endl;
   Film->show_comment();
 }
 
@@ -972,7 +973,7 @@ void comment::show_replies()
 
 void film::show_comment()
 {
-  for(int i = 0;i < comments,size();i++)
+  for(int i = 0;i < comments.size();i++)
   {
     cout<<comments[i]->get_ID()<<". "<<comments[i]->get_content()<<endl;
     comments[i]->show_replies();
@@ -1000,7 +1001,7 @@ void manager::GET_films()
 {
   if(second_part == "films" )
   {
-    if(achieve_part != achieve_part())
+    if(achieve_part() != QUERY)
       throw BadRequest();
     string film_id; 
     if(achieve_part() == "film_id")
