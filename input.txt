@@ -8,6 +8,12 @@ POST rate ? film_id 1 score 4
 POST login ? username b password c
 POST money
 GET followers
+POST login ? username ff password ff
 POST comments ? film_id 1 content it|was|amazing
+POST comments ? film_id 1 content it|wonderful!
 POST login ? username b password c
 POST replies ? film_id 1 comment_id 1 content thancks!
+POST replies ? film_id 1 comment_id 2 content thanck_you!
+POST films ? name da year 222 length 32 price 23 summary aff director af
+POST signup ? email fsf username 2d password da age 23
+GET films ? film_id 1
