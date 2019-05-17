@@ -59,6 +59,7 @@ public:
   virtual void set_followers(customer* new_follower) { return; }
   void increase_money(int amount) { money += amount; }
   void buy_film(film* new_film);
+  bool check_is_not_bought(film* r_film);
   void check_bought_film(film* bought_film);
   void score_watched_film(int film_id, double score);
   double get_rate(int film_id) { return scores[film_id]; }
@@ -116,6 +117,7 @@ public:
   void set_price(string _price) { price = _price; }
   void set_length(string _length) { length = _length; }
   void set_director(string _director) { director = _director; }
+  void set_delete() { deleted = true; }
   int get_ID() { return ID; }
   int get_price() { return stoi(price); }
   string get_name() { return name; }
@@ -124,6 +126,7 @@ public:
   string get_length() { return length; }
   string get_director() { return director; }
   string get_price_s() { return price; } 
+  bool get_deleted() { return deleted; }
   void set_owner(customer* new_custormer);
   customer* get_publisher() { return publisher; }
   double give_avrage_rate();
@@ -187,7 +190,9 @@ public:
   void check_score(double score);
   void POST_followers();
   void DELETE_film();
+  void set_recommendation();
   void charge_account();
+  bool compare_rate(film f1, film f2); 
   void POST_rate();
   void check_command_for_PUT(string &name, string &year, string &price
   , string &summary, string &length, string &director, string &film_id);
@@ -582,18 +587,26 @@ void manager::check_score(double score)
     throw BadRequest();
 }
 
-bool manger::compare_rate(film f1, film f2) 
+bool manager::compare_rate(film f1, film f2) 
 { 
-    return (f1.n < f2.n); 
+    return (f1.give_avrage_rate() > f2.give_avrage_rate()); 
 } 
+
+bool customer::check_is_not_bought(film* r_film)
+{
+  for(int i = 0;i < bought_films.size();i++)
+    if(r_film->get_ID() == bought_films[i]->get_ID())
+      return false;
+  return true;
+}
 
 void manager::set_recommendation()//set it for current user
 {
   recommendation_films.clear();
   for(int i = 0;i < films.size();i++)
-    if(check_is_not_bought_or_deleted(films[i]))
+    if(current_user->check_is_not_bought(films[i]) && !films[i]->get_deleted())
       recommendation_films.push_back(films[i]);
-  sort(recommendation_films, recommendation_films + n, compare_rate); 
+  sort(recommendation_films.begin(), recommendation_films.end(), compare_rate); 
 }
 
 void manager::POST_rate()
@@ -874,7 +887,7 @@ void manager::DELETE_film()
     else 
       throw BadRequest();
   }
-  films[stoi(film_id)].deleted = true;
+  films[stoi(film_id)]->set_delete();
   current_user->delete_film(stoi(film_id));
   cout<<"OK"<<endl;
 }
