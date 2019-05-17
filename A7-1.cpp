@@ -134,6 +134,7 @@ public:
   void reset_unpaid_money() { unpaid_money = 0; }
   void set_comment(int film_id, string content);
   void reply_cm(int comment_id, string content);
+  void show_comment();
 private:
   string name;
   string year;
@@ -161,6 +162,8 @@ public:
   comment(int _film_id, string _content, int _ID) : film_id(_film_id), content(_content), ID(_ID) {}
   int get_ID() { return ID; }
   void set_reply(string _content);
+  string get_content() { return content; }
+  void show_replies();
 private:
   int film_id;
   string content;
@@ -192,7 +195,6 @@ public:
   void DELETE_film();
   void set_recommendation();
   void charge_account();
-  bool compare_rate(film f1, film f2); 
   void POST_rate();
   void check_command_for_PUT(string &name, string &year, string &price
   , string &summary, string &length, string &director, string &film_id);
@@ -206,7 +208,11 @@ public:
   void find_user(string username, string password);
   void POST_login();
   void reset();
+  void show_details(film* Film);
   void POST_replies();
+  void show_features(film* Film);
+  void show_comments(film* Film);
+  void show_recommendation(film* Film);
   void check_integer(string s);
   void regist_film();
   void set_command(string _command) ;
@@ -587,11 +593,6 @@ void manager::check_score(double score)
     throw BadRequest();
 }
 
-bool manager::compare_rate(film f1, film f2) 
-{ 
-    return (f1.give_avrage_rate() > f2.give_avrage_rate()); 
-} 
-
 bool customer::check_is_not_bought(film* r_film)
 {
   for(int i = 0;i < bought_films.size();i++)
@@ -600,13 +601,21 @@ bool customer::check_is_not_bought(film* r_film)
   return true;
 }
 
-void manager::set_recommendation()//set it for current user
+struct compare_rate
+{
+  inline bool operator() (film* f1, film* f2)
+  {
+    return (f1->give_avrage_rate() > f2->give_avrage_rate());
+  }
+};
+
+void manager::set_recommendation(film* f)
 {
   recommendation_films.clear();
   for(int i = 0;i < films.size();i++)
-    if(current_user->check_is_not_bought(films[i]) && !films[i]->get_deleted())
+    if(current_user->check_is_not_bought(films[i]) && !films[i]->get_deleted() && films[i] != f)
       recommendation_films.push_back(films[i]);
-  sort(recommendation_films.begin(), recommendation_films.end(), compare_rate); 
+  sort(recommendation_films.begin(), recommendation_films.end(), compare_rate()); 
 }
 
 void manager::POST_rate()
@@ -937,10 +946,77 @@ void manager::GET_published()
   }
 }
 */
+void manager::show_features(film* Film)
+{
+  cout<<"Details of Film "<<Film->get_name()<<endl;
+  cout<<"Id = "<<Film->get_ID()<<endl;
+  cout<<"Director = "<<Film->get_director()<<endl;
+  cout<<"Length = "<<Film->get_length()<<endl;
+  cout<<"Year = "<<Film->get_year()<<endl;
+  cout<<"Summary = "<<Film->get_summary()<<endl;
+  cout<<"Rate = "<<Film->give_avrage_rate()<<endl;
+  cout<<"Price = "<<Film->get_price()<<endl;
+}
+
+void manager::show_comments(film* Film)
+{
+  cout<<<<endl<<endl<<"Comments"<<endl;
+  Film->show_comment();
+}
+
+void comment::show_replies()
+{
+  for(int i = 0;i < replies.size();i++)
+    cout<<ID<<i + 1<<". "<<replies[i]<<endl;
+}
+
+void film::show_comment()
+{
+  for(int i = 0;i < comments,size();i++)
+  {
+    cout<<comments[i]->get_ID()<<". "<<comments[i]->get_content()<<endl;
+    comments[i]->show_replies();
+  }
+}
+
+void manager::show_recommendation(film* Film)
+{
+  cout<<endl<<endl<<"Recommendation Film"<<endl;
+  cout<<"#. Film Id | Film Name | Film Length | Film Director"<<endl;
+  for(int i = 0;i < recommendation_films.size();i++)
+    cout<<i + 1<<". "<<recommendation_films[i]->get_ID()<<" | "<<
+    recommendation_films[i]->get_name()<<" | "<<recommendation_films[i]->get_length()
+    <<" | "<<recommendation_films[i]->get_director()<<endl;
+}
+
+void manager::show_details(film* Film)
+{
+  show_features(Film);
+  show_comments(Film);
+  show_recommendation(Film);
+}
+
+void manager::GET_films()
+{
+  if(second_part == "films" )
+  {
+    if(achieve_part != achieve_part())
+      throw BadRequest();
+    string film_id; 
+    if(achieve_part() == "film_id")
+      film_id = achieve_part();
+    else
+      throw BadRequest();
+    set_recommendation(films[stoi(film_id)]);
+    show_details(films[stoi(film_id)]);
+  }
+}
+
 void manager::process_GET_command()
 {
   check_GET_second_part();
   GET_followers();
+  GET_films();
   //GET_published();
 }
 
