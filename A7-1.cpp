@@ -354,6 +354,7 @@ void manager::find_user(string username, string password)
 
 void manager::process_command_login(string &username, string &password)
 {
+  int parametr_counter = 2;
   while(true)
   {
     sentence_part = achieve_part();
@@ -365,7 +366,10 @@ void manager::process_command_login(string &username, string &password)
       username = achieve_part();
     else 
       throw BadRequest();
+    parametr_counter--;
   }
+  if(parametr_counter > 0)
+    throw BadRequest();
 }
 
 void manager::POST_login()
@@ -384,6 +388,7 @@ void manager::POST_login()
 void manager::process_command_signup(string &email, string &username
 , string &password, string &age, string &publisher)
 {
+  int parametr_counter = 5;
   while(true)
   {
     sentence_part = achieve_part();
@@ -401,7 +406,10 @@ void manager::process_command_signup(string &email, string &username
       set_info(publisher);
     else 
       throw BadRequest();
+    parametr_counter--;
   }
+  if(parametr_counter > 1)
+    throw BadRequest();
 }
 
 void manager::POST_signup()
@@ -483,6 +491,7 @@ void manager::check_POST_second_part()
 
 void manager::process_command_followers(string &user_id)
 {
+  int parametr_counter = 1;
   while(true)
   {
     sentence_part = achieve_part();
@@ -492,7 +501,10 @@ void manager::process_command_followers(string &user_id)
       user_id = achieve_part();
     else
       throw BadRequest();
+    parametr_counter--;
   }
+  if(parametr_counter > 0)
+    throw BadRequest();
 }
 
 void manager::POST_followers()
@@ -526,6 +538,7 @@ void publisher::set_followers(customer* new_follower)
 
 void manager::process_command_money(string &amount)
 {
+  int parametr_counter = 1;
   while(true)
   {
     sentence_part = achieve_part();
@@ -535,7 +548,10 @@ void manager::process_command_money(string &amount)
       amount = achieve_part();
     else 
       throw BadRequest();
+    parametr_counter--;
   }
+  if(parametr_counter > 0)
+    throw BadRequest();
 }
 void manager::charge_account()
 {
@@ -614,6 +630,7 @@ void manager::check_for_buy(string film_id)
 
 void manager::process_command_buy(string &film_id)
 {
+  int parametr_counter = 1;
   while(true)
   {
     sentence_part = achieve_part();
@@ -623,7 +640,10 @@ void manager::process_command_buy(string &film_id)
       film_id = achieve_part();
     else 
       throw BadRequest();
+    parametr_counter--;
   }
+  if(parametr_counter > 0)
+    throw BadRequest();
 } 
 
 void manager::POST_buy()
@@ -702,6 +722,7 @@ void manager::set_recommendation(film* f)
 
 void manager::process_command_rate(string &film_id,string &score)
 {
+  int parametr_counter = 2;
   while(true)
   {
     sentence_part = achieve_part();
@@ -713,7 +734,10 @@ void manager::process_command_rate(string &film_id,string &score)
       score = achieve_part();
     else 
       throw BadRequest();
+    parametr_counter--;
   }
+  if(parametr_counter > 0)
+    throw BadRequest();
 }
 
 void manager::POST_rate()
@@ -797,6 +821,7 @@ void film::reply_cm(int comment_id, string content)
 
 void manager::process_command_replies(string &film_id, string &comment_id, string &content)
 {
+  int parametr_counter = 3;
   while(true)
   {
     sentence_part = achieve_part();
@@ -810,7 +835,10 @@ void manager::process_command_replies(string &film_id, string &comment_id, strin
       content = achieve_part();
     else 
       throw BadRequest();
+    parametr_counter--;
   }
+  if(parametr_counter > 0)
+    throw BadRequest();
 }
 
 void manager::POST_replies()
@@ -862,7 +890,7 @@ void manager::set_first_part()
 void manager::check_first_part()
 {
   if(first_part != "GET" && first_part != "POST" && first_part != "PUT" 
-  && first_part != "DELETE")
+  && first_part != "DELETE" && first_part != EMPTEY_STRING)
     throw BadRequest();
 }
 
@@ -988,6 +1016,7 @@ void publisher::delete_film(int film_id)
 
 void manager::process_command_delete(string &film_id)
 {
+  int parametr_counter = 1;
   while(true)
   {
     sentence_part = achieve_part();
@@ -997,7 +1026,10 @@ void manager::process_command_delete(string &film_id)
       set_info(film_id);
     else 
       throw BadRequest();
+    parametr_counter--;
   }
+  if(parametr_counter > 0)
+    throw BadRequest();
 }
 
 void manager::DELETE_film()
@@ -1182,9 +1214,7 @@ void manager::process_begin_of_command()
 
 void manager::check_user_for_command()
 {
-  if(second_part != "signup" && current_user == NULL)
-    throw PermissionDenied();
-  if(second_part == "login" && current_user == NULL)
+  if(current_user == NULL && second_part != "signup" && first_part != EMPTEY_STRING)///change
     throw PermissionDenied();
 }
 
