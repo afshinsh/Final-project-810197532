@@ -122,6 +122,7 @@ public:
   int get_price() { return stoi(price); }
   string get_name() { return name; }
   string get_year() { return year; }
+  int get_CM_ID_counter() { return ID_counter_film; }
   string get_summary() { return summary; }
   string get_length() { return length; }
   string get_director() { return director; }
@@ -130,7 +131,9 @@ public:
   void set_owner(customer* new_custormer);
   customer* get_publisher() { return publisher; }
   double give_avrage_rate();
+  int get_unpaid_money() { return unpaid_money; }
   void increase_unpaid_money() { unpaid_money++; }
+  void decrease_unpaid_mpney() { unpaid_money--; }
   void reset_unpaid_money() { unpaid_money = 0; }
   void set_comment(int film_id, string content);
   void reply_cm(int comment_id, string content);
@@ -544,9 +547,13 @@ void manager::charge_account()
 
 void manager::pay_money(double percent, int i)
 {
-  current_user->increase_money(percent * films[i]->get_price());
-  property -= percent * films[i]->get_price();
-  cout<<"OK"<<endl;
+  while(films[i]->get_unpaid_money() > 0)
+  {
+    current_user->increase_money(percent * films[i]->get_price());
+    property -= percent * films[i]->get_price();
+    films[i]->decrease_unpaid_mpney();
+  }  
+  films[i]->reset_unpaid_money();
 }
 
 void manager::catch_money()
@@ -563,6 +570,7 @@ void manager::catch_money()
       else if(films[i]->give_avrage_rate() >=0 && films[i]->give_avrage_rate() < 5)
         pay_money(0.80, i);
     }
+  cout<<"OK"<<endl;
 }
 
 void manager::POST_money()
@@ -589,7 +597,7 @@ void customer::buy_film(film* new_film)
   if(money >= new_film->get_price())
     money -= new_film->get_price();
   else
-    throw BadRequest();
+    throw PermissionDenied();
 }
 
 void manager::check_for_buy(string film_id)
@@ -659,6 +667,8 @@ void manager::check_inputs_for_rate(string score, string film_id)
     throw NotFound();
   if(stoi(score) < MIN_POINT || stoi(score) > MAX_POINT)
     throw BadRequest();
+  if(current_user->check_is_not_bought(films[film_id]))
+    throw PermissionDenied();
 }
 
 bool customer::check_is_not_bought(film* r_film)
@@ -780,7 +790,6 @@ void film::reply_cm(int comment_id, string content)
       comments[i]->set_reply(content);
       return;
     }
-      
   throw BadRequest();
 }
 
@@ -812,10 +821,11 @@ void manager::POST_replies()
     process_command_replies(film_id, comment_id, content);
     if(check_is_not_integer(film_id) || check_is_not_integer(comment_id))
       throw BadRequest();
-    if(stoi(film_id) >= ID_counter_film)
-      throw NotFound();
     if(films[stoi(film_id)]->get_publisher() != current_user)
       throw PermissionDenied();
+    if(stoi(film_id) >= ID_counter_film || stoi(comment_id) 
+    >= films[film_id]->get_CM_ID_counter())
+      throw NotFound();
     films[stoi(film_id)]->reply_cm(stoi(comment_id), content);
     cout<<"OK"<<endl;
   }
