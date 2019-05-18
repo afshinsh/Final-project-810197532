@@ -185,6 +185,7 @@ public:
   void process_GET_command();
   void process_POST_command();
   void check_DELETE_second_part();
+  void process_command_buy(string &film_id);
   void POST_film();
   void POST_signup();
   void POST_money();
@@ -196,6 +197,7 @@ public:
   void DELETE_film();
   void set_recommendation(film* f);
   void charge_account();
+  void process_commamd_comments(string &film_id, string &content);
   void POST_rate();
   void process_command_delete(string &film_id);
   void check_command_for_PUT(string &name, string &year, string &price
@@ -575,6 +577,20 @@ void manager::check_for_buy(string film_id)
     throw NotFound();
 }
 
+void manager::process_command_buy(string &film_id)
+{
+  while(true)
+  {
+    sentence_part = achieve_part();
+    if(sentence_part == EMPTEY_STRING)
+      break;
+    else if(sentence_part == "film_id")
+      film_id = achieve_part();
+    else 
+      throw BadRequest();
+  }
+} 
+
 void manager::POST_buy()
 {
   if(second_part == "buy")
@@ -582,16 +598,7 @@ void manager::POST_buy()
     if(achieve_part() != QUERY)
       throw BadRequest();
     string film_id;
-    while(true)
-    {
-      sentence_part = achieve_part();
-      if(sentence_part == EMPTEY_STRING)
-        break;
-      else if(sentence_part == "film_id")
-        film_id = achieve_part();
-      else 
-        throw BadRequest();
-    }
+    process_command_buy(film_id);
     check_for_buy(film_id);
     current_user->buy_film(films[stoi(film_id)]);
     films[stoi(film_id)]->set_owner(current_user);
@@ -700,7 +707,7 @@ void customer::check_bought_film(film* bought_film)
   throw BadRequest();
 }
 
-void manager::process_commamd_comments()
+void manager::process_commamd_comments(string &film_id, string &content)
 {
   while(true)
   {
@@ -723,7 +730,7 @@ void manager::POST_comments()
     if(achieve_part() != QUERY)
       throw BadRequest();
     string film_id, content;
-    process_commamd_comments();
+    process_commamd_comments(film_id, content);
     if(check_is_not_integer(film_id) || stoi(film_id) >= ID_counter_film))
       throw BadRequest();
     current_user->check_bought_film(films[stoi(film_id)]);
