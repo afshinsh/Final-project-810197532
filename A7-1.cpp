@@ -7,8 +7,8 @@
 #define QUERY "?"
 #define EMPTEY_STRING ""
 #define NONE '\0'
-#define MAX_POINT 10.0
-#define MIN_POINT 0.0
+#define MAX_POINT 10
+#define MIN_POINT 0
 
 using namespace std;
 
@@ -122,7 +122,7 @@ public:
   int get_price() { return stoi(price); }
   string get_name() { return name; }
   string get_year() { return year; }
-  int get_CM_ID_counter() { return ID_counter_film; }
+  int get_CM_ID_counter() { return ID_counter_comment; }
   string get_summary() { return summary; }
   string get_length() { return length; }
   string get_director() { return director; }
@@ -226,7 +226,7 @@ public:
   void show_features(film* Film);
   void show_comments(film* Film);
   void show_recommendation(film* Film);
-  void check_is_not_integer(string s);
+  bool check_is_not_integer(string s);
   void regist_film();
   void set_command(string _command) ;
   void check_POST_second_part();
@@ -300,8 +300,10 @@ void manager::set_info(string &info)
 }
 
 
-void manager::check_is_not_integer(string s)
+bool manager::check_is_not_integer(string s)
 {
+  if(s == EMPTEY_STRING)
+    return false;
   for(int i = 0;i < s.length();i++)
     if(!isdigit(s[i]))
       return true;
@@ -350,7 +352,7 @@ void manager::find_user(string username, string password)
   previous_user = NULL;
 }
 
-void manger::process_command_login(string &username, string &password)
+void manager::process_command_login(string &username, string &password)
 {
   while(true)
   {
@@ -479,7 +481,7 @@ void manager::check_POST_second_part()
     throw NotFound();
 }
 
-void manger::process_command_followers(string &user_id)
+void manager::process_command_followers(string &user_id)
 {
   while(true)
   {
@@ -503,7 +505,7 @@ void manager::POST_followers()
     process_command_followers(user_id);
     if(check_is_not_integer(user_id))
       throw BadRequest();
-    if(user_id >= ID_counter)
+    if(stoi(user_id) >= ID_counter)
       throw NotFound();
     customer* followed_publisher = users[stoi(user_id)];
     current_user->follow_publisher(followed_publisher);
@@ -522,7 +524,7 @@ void publisher::set_followers(customer* new_follower)
   followers.push_back(new_follower);
 }
 
-void managr::process_command_money(string &amount)
+void manager::process_command_money(string &amount)
 {
   while(true)
   {
@@ -667,7 +669,7 @@ void manager::check_inputs_for_rate(string score, string film_id)
     throw NotFound();
   if(stoi(score) < MIN_POINT || stoi(score) > MAX_POINT)
     throw BadRequest();
-  if(current_user->check_is_not_bought(films[film_id]))
+  if(current_user->check_is_not_bought(films[stoi(film_id)]))
     throw PermissionDenied();
 }
 
@@ -790,7 +792,7 @@ void film::reply_cm(int comment_id, string content)
       comments[i]->set_reply(content);
       return;
     }
-  throw BadRequest();
+  throw NotFound();
 }
 
 void manager::process_command_replies(string &film_id, string &comment_id, string &content)
@@ -821,11 +823,10 @@ void manager::POST_replies()
     process_command_replies(film_id, comment_id, content);
     if(check_is_not_integer(film_id) || check_is_not_integer(comment_id))
       throw BadRequest();
+    if(stoi(film_id) >= ID_counter_film )
+      throw NotFound();
     if(films[stoi(film_id)]->get_publisher() != current_user)
       throw PermissionDenied();
-    if(stoi(film_id) >= ID_counter_film || stoi(comment_id) 
-    >= films[film_id]->get_CM_ID_counter())
-      throw NotFound();
     films[stoi(film_id)]->reply_cm(stoi(comment_id), content);
     cout<<"OK"<<endl;
   }
@@ -905,7 +906,7 @@ void manager::PUT_film()
     if(achieve_part() != QUERY)
       throw BadRequest();
     if(!current_user->get_publisher())
-      throw PermissionDenied()
+      throw PermissionDenied();
     string name, year, price, summary, length, director, film_id;    
     check_command_for_PUT(name, year, price, summary, length, director, film_id);
     if(check_is_not_integer(year) || check_is_not_integer(length) || 
@@ -948,10 +949,8 @@ void customer::follow_publisher(customer* new_publisher)
   if(!new_publisher->get_publisher())
     throw BadRequest();
   for(int i = 0;i < followed_publishers.size(); i++)
-  {
     if(new_publisher->get_ID() == followed_publishers[i]->get_ID())
       return;
-  }
   followed_publishers.push_back(new_publisher);
 }
 
@@ -987,7 +986,7 @@ void publisher::delete_film(int film_id)
   throw PermissionDenied();
 }
 
-void manger::process_command_delete(string &film_id)
+void manager::process_command_delete(string &film_id)
 {
   while(true)
   {
