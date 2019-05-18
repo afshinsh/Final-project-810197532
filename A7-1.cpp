@@ -221,6 +221,7 @@ public:
   string achieve_part();
   void check_PUT_second_part();
   void PUT_film();
+  void check_user_for_command();
   void catch_money();
   void pay_money(double percent, int i);
   void check_repeated_username(string username);
@@ -828,6 +829,8 @@ void manager::PUT_film()
   {
     if(achieve_part() != QUERY)
       throw BadRequest();
+    if(!current_user->get_publisher())
+      throw BA
     string name, year, price, summary, length, director, film_id;    
     check_command_for_PUT(name, year, price, summary, length, director, film_id);
     current_user->edit_films(name, year, price, summary, length, director, stoi(film_id));
@@ -1034,6 +1037,8 @@ void manager::GET_films()
       film_id = achieve_part();
     else
       throw BadRequest();
+    if(check_is_not_integer(film_id))
+      throw BadRequest();
     set_recommendation(films[stoi(film_id)]);
     show_details(films[stoi(film_id)]);
   }
@@ -1084,9 +1089,18 @@ void manager::process_begin_of_command()
   set_second_part();
 }
 
+void manager::check_user_for_command()
+{
+  if(second_part != "signup" && current_user == NULL)
+    throw PermissionDenied();
+  if(second_part == "login" && current_user == NULL)
+    throw PermissionDenied();
+}
+
 void manager::process_users()
 {
   process_begin_of_command();
+  check_user_for_command();
   process_command();
 }
 
