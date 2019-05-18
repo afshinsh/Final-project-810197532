@@ -997,8 +997,10 @@ void manager::DELETE_film()
     throw BadRequest();
   string film_id;
   process_command_delete(film_id);
-  if(check_is_not_integer(film_id) || stoi(film_id) >= ID_counter_film)
+  if(check_is_not_integer(film_id))
     throw BadRequest();
+  if(stoi(film_id) >= ID_counter_film)
+    throw NotFound();
   if(current_user != films[stoi(film_id)]->get_publisher())
     throw PermissionDenied();
   current_user->delete_film(stoi(film_id));
@@ -1113,8 +1115,10 @@ void manager::GET_films()
       film_id = achieve_part();
     else
       throw BadRequest();
-    if(check_is_not_integer(film_id) || stoi(film_id) >= ID_counter_film))
+    if(check_is_not_integer(film_id))
       throw BadRequest();
+    if(stoi(film_id) >= ID_counter_film)
+      throw NotFound();
     set_recommendation(films[stoi(film_id)]);
     show_details(films[stoi(film_id)]);
   }
@@ -1138,6 +1142,8 @@ void manager::process_command()
     process_PUT_command();
   else if(first_part == "DELETE")
     process_DELETE_command();
+  else if(first_part == EMPTEY_STRING)
+    return;
   else
     throw BadRequest();
 }
