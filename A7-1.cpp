@@ -188,6 +188,7 @@ public:
   void process_command_buy(string &film_id);
   void POST_film();
   void POST_signup();
+  void process_command_money(string &amount);
   void POST_money();
   void process_DELETE_command();
   void process_PUT_command();
@@ -498,9 +499,8 @@ void publisher::set_followers(customer* new_follower)
   followers.push_back(new_follower);
 }
 
-void manager::charge_account()
+void managr::process_command_money(string &amount)
 {
-  string amount;
   while(true)
   {
     sentence_part = achieve_part();
@@ -511,6 +511,11 @@ void manager::charge_account()
     else 
       throw BadRequest();
   }
+}
+void manager::charge_account()
+{
+  string amount;
+  process_command_money(amount);
   if(check_is_not_integer(amount))
     throw BadRequest();
   current_user->increase_money(stoi(amount));
