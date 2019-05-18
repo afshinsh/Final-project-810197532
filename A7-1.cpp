@@ -61,7 +61,7 @@ public:
   void buy_film(film* new_film);
   bool check_is_not_bought(film* r_film);
   void check_bought_film(film* bought_film);
-  void score_watched_film(int film_id, double score);
+  void score_watched_film(int film_id, int score);
   double get_rate(int film_id) { return scores[film_id]; }
 protected:
   string email;
@@ -72,7 +72,7 @@ protected:
   bool publish;
   vector<customer*> followed_publishers;
   vector<film*> bought_films;
-  map <int,double> scores;
+  map <int,int> scores;
   int money = 0;
 };
 
@@ -190,7 +190,7 @@ public:
   void process_DELETE_command();
   void process_PUT_command();
   void GET_followers();
-  void check_score(double score);
+  void check_inputs_for_rate(string score, string film_id);
   void POST_followers();
   void DELETE_film();
   void set_recommendation(film* f);
@@ -213,7 +213,7 @@ public:
   void show_features(film* Film);
   void show_comments(film* Film);
   void show_recommendation(film* Film);
-  void check_integer(string s);
+  void check_is_not_integer(string s);
   void regist_film();
   void set_command(string _command) ;
   void check_POST_second_part();
@@ -227,6 +227,7 @@ public:
   void GET_films();
   void POST_buy();
   void POST_comments();
+  void check_for_buy(string film_id);
 private:
   vector<film*> films;
   vector<customer*> users;
@@ -283,11 +284,12 @@ void manager::set_info(string &info)
 }
 
 
-void manager::check_integer(string s)
+void manager::check_is_not_integer(string s)
 {
   for(int i = 0;i < s.length();i++)
     if(!isdigit(s[i]))
-      throw BadRequest();
+      return true;
+  return false;
 }
 
 void film::set_owner(customer* new_custormer)
@@ -298,6 +300,8 @@ void film::set_owner(customer* new_custormer)
 void manager::initialize_user(string &email, string &username
 , string &password, string &age, string &publish)
 {
+  if(check_is_not_integer(age))
+    throw BadRequest();
   if(publish == EMPTEY_STRING || publish == "false")
   {
     current_user = new customer(email, username, password, age, ID_counter, false);
@@ -389,6 +393,8 @@ void manager::POST_signup()
 void manager::initialize_film(string name, string year, string length
 , string price, string summary, string director)
 {
+  if(check_is_not_integer(year) || check_is_not_integer(length) || check_is_not_integer(price))
+    throw BadRequest();
   film* new_film = new film(name, year, price, length, summary, 
   director, ID_counter_film, current_user);
   films.push_back(new_film);
@@ -464,7 +470,9 @@ void manager::POST_followers()
         user_id = achieve_part();
       else
         throw BadRequest();
-    }///some check
+    }
+    if(check_is_not_integer(user_id))
+      throw BadRequest();
     customer* followed_publisher = users[stoi(user_id)];
     current_user->follow_publisher(followed_publisher);
     followed_publisher->set_followers(current_user);
@@ -495,6 +503,8 @@ void manager::charge_account()
     else 
       throw BadRequest();
   }
+  if(check_is_not_integer(amount))
+    throw BadRequest();
   current_user->increase_money(stoi(amount));
   cout<<"OK"<<endl;
 }
@@ -547,6 +557,16 @@ void customer::buy_film(film* new_film)
     throw BadRequest();
 }
 
+void manager::check_for_buy(string film_id)
+{
+  if(check_is_not_integer(film_id))
+    throw BadRequest();
+  if(stoi(film_id) >= ID_counter_film)
+    throw NotFound();
+  if(films[stoi(film_id)]->get_deleted())
+    throw NotFound();
+}
+
 void manager::POST_buy()
 {
   if(second_part == "buy")
@@ -563,7 +583,7 @@ void manager::POST_buy()
         film_id = achieve_part();
       else 
         throw BadRequest();
-    }//some check
+    }
     current_user->buy_film(films[stoi(film_id)]);
     films[stoi(film_id)]->set_owner(current_user);
     property +=  films[stoi(film_id)]->get_price();
@@ -579,7 +599,7 @@ double film::give_avrage_rate()
   return sum / owners.size();
 }
 
-void customer::score_watched_film(int film_id, double score)
+void customer::score_watched_film(int film_id, int score)
 {
   for(int i = 0; i < bought_films.size(); i++)
     if(bought_films[i]->get_ID() == film_id)
@@ -590,9 +610,11 @@ void customer::score_watched_film(int film_id, double score)
   throw BadRequest();
 }
 
-void manager::check_score(double score)
+void manager::check_inputs_for_rate(string score, string film_id)
 {
-  if(score < MIN_POINT || score > MAX_POINT)
+  if(check_is_not_integer(score) || check_is_not_integer(film_id))
+    throw BadRequest();
+  if(stoi(score) < MIN_POINT || stoi(score) > MAX_POINT)
     throw BadRequest();
 }
 
@@ -640,8 +662,8 @@ void manager::POST_rate()
       else 
         throw BadRequest();
     }
-    check_score(stod(score));
-    current_user->score_watched_film(stoi(film_id), stod(score));
+    check_inputs_for_rate(score, film_id);
+    current_user->score_watched_film(stoi(film_id), stoi(score));
     cout<<"OK"<<endl;
   }
 }
@@ -680,6 +702,8 @@ void manager::POST_comments()
       else 
         throw BadRequest();
     }
+    if(check_is_not_integer(film_id))
+      throw BadRequest();
     current_user->check_bought_film(films[stoi(film_id)]);
     films[stoi(film_id)]->set_comment(stoi(film_id), content);
     cout<<"OK"<<endl;
@@ -724,10 +748,10 @@ void manager::POST_replies()
       else 
         throw BadRequest();
     }
-    
+    if(check_is_not_integer(film_id) || check_is_not_integer(comment_id))
+      throw BadRequest();
     if(films[stoi(film_id)]->get_publisher() != current_user)
       throw BadRequest();
-    
     films[stoi(film_id)]->reply_cm(stoi(comment_id), content);
     cout<<"OK"<<endl;
   }
@@ -986,7 +1010,7 @@ void manager::show_recommendation(film* Film)
 {
   cout<<endl<<endl<<"Recommendation Film"<<endl;
   cout<<"#. Film Id | Film Name | Film Length | Film Director"<<endl;
-  for(int i = 0;i < recommendation_films.size();i++)
+  for(int i = 0;i < recommendation_films.size() && i < 4;i++)
     cout<<i + 1<<". "<<recommendation_films[i]->get_ID()<<" | "<<
     recommendation_films[i]->get_name()<<" | "<<recommendation_films[i]->get_length()
     <<" | "<<recommendation_films[i]->get_director()<<endl;
