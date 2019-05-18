@@ -443,6 +443,7 @@ void manager::initialize_film(string name, string year, string length
 void manager::regist_film()
 {
   string name, year, price, summary, length, director;
+  int parametr_counter = 6;
   while(true)
   {
     sentence_part = achieve_part();
@@ -462,7 +463,10 @@ void manager::regist_film()
       set_info(director);
     else 
       throw BadRequest();
+    parametr_counter--;
   }
+  if(parametr_counter > 0)
+    throw BadRequest();
   initialize_film(name, year, length, price, summary, director);
 }
 
@@ -667,6 +671,8 @@ double film::give_avrage_rate()
   double sum = 0;
   for(int i = 0;i < owners.size();i++)
     sum += owners[i]->get_rate(ID);
+  if(owners.size() == 0)
+    return 0;
   return sum / owners.size();
 }
 
@@ -872,7 +878,7 @@ void manager::process_POST_command()
   POST_rate();
   POST_comments();
   POST_replies();
-  //...check_NOT_found
+  //...check_NOT_found  Comments
 }
 
 void manager::set_first_part()
@@ -1109,7 +1115,7 @@ void manager::show_features(film* Film)
 
 void manager::show_comments(film* Film)
 {
-  cout<<endl<<endl<<"Comments"<<endl;
+  cout<<endl<<"Comments"<<endl;
   Film->show_comment();
 }
 
@@ -1130,7 +1136,7 @@ void film::show_comment()
 
 void manager::show_recommendation(film* Film)
 {
-  cout<<endl<<endl<<"Recommendation Film"<<endl;
+  cout<<endl<<"Recommendation Film"<<endl;
   cout<<"#. Film Id | Film Name | Film Length | Film Director"<<endl;
   for(int i = 0;i < recommendation_films.size() && i < 4;i++)
     cout<<i + 1<<". "<<recommendation_films[i]->get_ID()<<" | "<<
@@ -1158,7 +1164,7 @@ void manager::GET_films()
       throw BadRequest();
     if(check_is_not_integer(film_id))
       throw BadRequest();
-    if(stoi(film_id) >= ID_counter_film)
+    if(stoi(film_id) >= ID_counter_film || films[stoi(film_id)]->get_deleted())
       throw NotFound();
     set_recommendation(films[stoi(film_id)]);
     show_details(films[stoi(film_id)]);
