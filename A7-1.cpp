@@ -159,7 +159,8 @@ film::film(string _name, string _year, string _price, string _length
 class comment
 {
 public:
-  comment(int _film_id, string _content, int _ID) : film_id(_film_id), content(_content), ID(_ID) {}
+  comment(int _film_id, string _content, int _ID) : film_id(_film_id), 
+  content(_content), ID(_ID) {}
   int get_ID() { return ID; }
   void set_reply(string _content);
   string get_content() { return content; }
@@ -196,6 +197,7 @@ public:
   void set_recommendation(film* f);
   void charge_account();
   void POST_rate();
+  void process_command_delete(string &film_id);
   void check_command_for_PUT(string &name, string &year, string &price
   , string &summary, string &length, string &director, string &film_id);
   void initialize_film(string name, string year, string length
@@ -225,6 +227,8 @@ public:
   void catch_money();
   void pay_money(double percent, int i);
   void check_repeated_username(string username);
+  void process_command_replies(string &film_id, string &comment_id
+  , string &content);
   void GET_films();
   void POST_buy();
   void POST_comments();
@@ -519,6 +523,8 @@ void manager::pay_money(double percent, int i)
 
 void manager::catch_money()
 {
+  if(!current_user->get_publisher())
+    throw PermissionDenied();
   for(int i = 0;i < films.size();i++)
     if(films[i]->get_publisher() == current_user)
     {
@@ -639,9 +645,11 @@ void manager::set_recommendation(film* f)
 {
   recommendation_films.clear();
   for(int i = 0;i < films.size();i++)
-    if(current_user->check_is_not_bought(films[i]) && !films[i]->get_deleted() && films[i] != f)
+    if(current_user->check_is_not_bought(films[i]) && !films[i]->get_deleted()
+     && films[i] != f)
       recommendation_films.push_back(films[i]);
-  sort(recommendation_films.begin() + 1, recommendation_films.end(), compare_rate()); 
+  sort(recommendation_films.begin() + 1, recommendation_films.end()
+  , compare_rate()); 
 }
 
 void manager::POST_rate()
@@ -728,31 +736,37 @@ void film::reply_cm(int comment_id, string content)
   throw BadRequest();
 }
 
+void manager::process_command_replies(string &film_id, string &comment_id, string &content)
+{
+  while(true)
+  {
+    sentence_part = achieve_part();
+    if(sentence_part == EMPTEY_STRING)
+      break;
+    else if(sentence_part == "film_id")
+      film_id = achieve_part();
+    else if(sentence_part == "comment_id")
+      comment_id = achieve_part();
+    else if(sentence_part == "content")
+      content = achieve_part();
+    else 
+      throw BadRequest();
+  }
+}
+
 void manager::POST_replies()
 {
   if(second_part == "replies")
   {
-    if(achieve_part() != QUERY || !current_user->get_publisher())
+    if(achieve_part() != QUERY)
       throw BadRequest();
     string film_id, comment_id, content;
-    while(true)
-    {
-      sentence_part = achieve_part();
-      if(sentence_part == EMPTEY_STRING)
-        break;
-      else if(sentence_part == "film_id")
-        film_id = achieve_part();
-      else if(sentence_part == "comment_id")
-        comment_id = achieve_part();
-      else if(sentence_part == "content")
-        content = achieve_part();
-      else 
-        throw BadRequest();
-    }
-    if(check_is_not_integer(film_id) || check_is_not_integer(comment_id))
+    process_command_replies(film_id, comment_id, content);
+    if(check_is_not_integer(film_id) || check_is_not_integer(comment_id) 
+    || stoi(film_id) >= ID_counter_film)
       throw BadRequest();
     if(films[stoi(film_id)]->get_publisher() != current_user)
-      throw BadRequest();
+      throw PermissionDenied();
     films[stoi(film_id)]->reply_cm(stoi(comment_id), content);
     cout<<"OK"<<endl;
   }
@@ -777,7 +791,8 @@ void manager::set_first_part()
 {
   skip_space();
   int begin_of_word = command_chars_counter;
-  while(command[command_chars_counter] != SPACE && command[command_chars_counter] != NONE)
+  while(command[command_chars_counter] != SPACE && 
+  command[command_chars_counter] != NONE)
     command_chars_counter++;
   first_part = command.substr(begin_of_word, 
   command_chars_counter - begin_of_word);
@@ -786,7 +801,8 @@ void manager::set_first_part()
 
 void manager::check_first_part()
 {
-  if(first_part != "GET" && first_part != "POST" && first_part != "PUT" && first_part != "DELETE")
+  if(first_part != "GET" && first_part != "POST" && first_part != "PUT" 
+  && first_part != "DELETE")
     throw BadRequest();
 }
 
@@ -830,9 +846,13 @@ void manager::PUT_film()
     if(achieve_part() != QUERY)
       throw BadRequest();
     if(!current_user->get_publisher())
-      throw BA
+      throw PermissionDenied()
     string name, year, price, summary, length, director, film_id;    
     check_command_for_PUT(name, year, price, summary, length, director, film_id);
+    if(check_is_not_integer(year) || check_is_not_integer(length) || 
+    check_is_not_integer(price) || check_is_not_integer(film_id) || 
+    stoi(film_id) >= ID_counter_film)
+      throw BadRequest();
     current_user->edit_films(name, year, price, summary, length, director, stoi(film_id));
     cout<<"OK"<<endl;
   }
@@ -878,11 +898,8 @@ void customer::follow_publisher(customer* new_publisher)
 void publisher::show_followers()
 {
   for(int i = 0;i < followers.size();i++)
-  {
-    cout<<i + 1<<". ";
-    cout<<followers[i]->get_ID()<<" | "<<followers[i]->get_username()
-    <<" | "<<followers[i]->get_email()<<endl;
-  }
+    cout<<i + 1<<". "<<followers[i]->get_ID()<<" | "<<
+    followers[i]->get_username()<<" | "<<followers[i]->get_email()<<endl;
 }
 
 void manager::check_DELETE_second_part()
@@ -903,7 +920,6 @@ void publisher::delete_film(int film_id)
   {
     if(my_films[i] != NULL && my_films[i]->get_ID() == film_id)
     {
-      //delete my_films[i];
       my_films[i] = NULL;
       return;
     }
@@ -911,11 +927,8 @@ void publisher::delete_film(int film_id)
   throw PermissionDenied();
 }
 
-void manager::DELETE_film()
+void manger::process_command_delete(string &film_id)
 {
-  if(achieve_part() != QUERY)
-    throw BadRequest();
-  string film_id;
   while(true)
   {
     sentence_part = achieve_part();
@@ -926,8 +939,20 @@ void manager::DELETE_film()
     else 
       throw BadRequest();
   }
-  films[stoi(film_id)]->set_delete();
+}
+
+void manager::DELETE_film()
+{
+  if(achieve_part() != QUERY)
+    throw BadRequest();
+  string film_id;
+  process_command_delete(film_id);
+  if(check_is_not_integer(film_id) || stoi(film_id) >= ID_counter_film)
+    throw BadRequest();
+  if(current_user != films[stoi(film_id)]->get_publisher())
+    throw PermissionDenied();
   current_user->delete_film(stoi(film_id));
+  films[stoi(film_id)]->set_delete();
   cout<<"OK"<<endl;
 }
 
@@ -954,8 +979,9 @@ void manager::GET_followers()
 
 void manager::check_GET_second_part()
 {
-  if(second_part != "followers" && second_part != "published" && second_part != "films"
-  && second_part != "purchased"&& second_part != "notifications")
+  if(second_part != "followers" && second_part != "published" 
+  && second_part != "films"&& second_part != "purchased"&& 
+  second_part != "notifications")
     throw BadRequest();
 }
 
@@ -1037,7 +1063,7 @@ void manager::GET_films()
       film_id = achieve_part();
     else
       throw BadRequest();
-    if(check_is_not_integer(film_id))
+    if(check_is_not_integer(film_id) || stoi(film_id) >= ID_counter_film))
       throw BadRequest();
     set_recommendation(films[stoi(film_id)]);
     show_details(films[stoi(film_id)]);
@@ -1135,5 +1161,4 @@ int main()
     }
     Manager.reset();
   }
-
-  }
+}
