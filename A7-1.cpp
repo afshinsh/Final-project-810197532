@@ -138,6 +138,7 @@ public:
   void set_comment(int film_id, string content);
   void reply_cm(int comment_id, string content);
   void show_comment();
+  void delete_comment(int comment_id);
 private:
   string name;
   string year;
@@ -186,7 +187,7 @@ public:
   void set_second_part();
   void process_command();
   void process_GET_command();
-  void DELETE_comment();
+  void DELETE_comments();
   void process_POST_command();
   void check_DELETE_second_part();
   void process_command_buy(string &film_id);
@@ -1063,8 +1064,14 @@ void manager::DELETE_film()
   }
 }
 
+void film::delete_comment(int comment_id)
+{
+  for(auto i = comments.begin();i != comments.end();i++)
+    if((*i)->get_ID() == comment_id)
+      comments.erase(i);
+}
 
-void manager::DELETE_comment()
+void manager::DELETE_comments()
 {
   if(second_part == "comments")
   {
@@ -1074,6 +1081,11 @@ void manager::DELETE_comment()
     process_command_comments(film_id, comment_id);
     if(check_is_not_integer(film_id) || check_is_not_integer(comment_id))
       throw BadRequest();
+    if(stoi(film_id) >= ID_counter_film)
+      throw NotFound();
+    if(films[stoi(film_id)]->get_publisher != current_user)
+      throw PermissionDenied();
+    films[stoi(film_id)]->delete_comment(stoi(comment_id));
     cout<<"OK"<<endl;
   }
 }
@@ -1082,7 +1094,7 @@ void manager::process_DELETE_command()
 {
   check_DELETE_second_part();
   DELETE_film();
-  DELETE_comment();
+  DELETE_comments();
 }
 
 void manager::show_head_followers()
