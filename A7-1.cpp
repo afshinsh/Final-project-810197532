@@ -209,6 +209,7 @@ public:
   , string &password, string &age, string &publisher);
   void find_user(string username, string password);
   void POST_login();
+  void process_command_rate(string &film_id,string &score);
   void reset();
   void show_details(film* Film);
   void POST_replies();
@@ -566,7 +567,7 @@ void customer::buy_film(film* new_film)
 
 void manager::check_for_buy(string film_id)
 {
-  if(check_is_not_integer(film_id))
+  if(check_is_not_integer(film_id) || stoi(film_id) >= ID_counter_film))
     throw BadRequest();
   if(stoi(film_id) >= ID_counter_film)
     throw NotFound();
@@ -591,6 +592,7 @@ void manager::POST_buy()
       else 
         throw BadRequest();
     }
+    check_for_buy(film_id);
     current_user->buy_film(films[stoi(film_id)]);
     films[stoi(film_id)]->set_owner(current_user);
     property +=  films[stoi(film_id)]->get_price();
@@ -619,7 +621,8 @@ void customer::score_watched_film(int film_id, int score)
 
 void manager::check_inputs_for_rate(string score, string film_id)
 {
-  if(check_is_not_integer(score) || check_is_not_integer(film_id))
+  if(check_is_not_integer(score) || check_is_not_integer(film_id)
+  || stoi(film_id) >= ID_counter_film))
     throw BadRequest();
   if(stoi(score) < MIN_POINT || stoi(score) > MAX_POINT)
     throw BadRequest();
@@ -648,8 +651,24 @@ void manager::set_recommendation(film* f)
     if(current_user->check_is_not_bought(films[i]) && !films[i]->get_deleted()
      && films[i] != f)
       recommendation_films.push_back(films[i]);
-  sort(recommendation_films.begin() + 1, recommendation_films.end()
+  sort(recommendation_films.begin(), recommendation_films.end()
   , compare_rate()); 
+}
+
+void manager::process_command_rate(string &film_id,string &score)
+{
+  while(true)
+  {
+    sentence_part = achieve_part();
+    if(sentence_part == EMPTEY_STRING)
+      break;
+    else if(sentence_part == "film_id")
+      film_id = achieve_part();
+    else if(sentence_part == "score")
+      score = achieve_part();
+    else 
+      throw BadRequest();
+  }
 }
 
 void manager::POST_rate()
@@ -659,18 +678,7 @@ void manager::POST_rate()
     if(achieve_part() != QUERY)
       throw BadRequest();
     string film_id, score;
-    while(true)
-    {
-      sentence_part = achieve_part();
-      if(sentence_part == EMPTEY_STRING)
-        break;
-      else if(sentence_part == "film_id")
-        film_id = achieve_part();
-      else if(sentence_part == "score")//some check this
-        score = achieve_part();
-      else 
-        throw BadRequest();
-    }
+    process_command_rate(film_id, score);
     check_inputs_for_rate(score, film_id);
     current_user->score_watched_film(stoi(film_id), stoi(score));
     cout<<"OK"<<endl;
@@ -692,6 +700,22 @@ void customer::check_bought_film(film* bought_film)
   throw BadRequest();
 }
 
+void manager::process_commamd_comments()
+{
+  while(true)
+  {
+    sentence_part = achieve_part();
+    if(sentence_part == EMPTEY_STRING)
+      break;
+    else if(sentence_part == "film_id")
+      film_id = achieve_part();
+    else if(sentence_part == "content")
+      content = achieve_part();
+    else 
+      throw BadRequest();
+  }
+}
+
 void manager::POST_comments()
 {
   if(second_part == "comments")
@@ -699,19 +723,8 @@ void manager::POST_comments()
     if(achieve_part() != QUERY)
       throw BadRequest();
     string film_id, content;
-    while(true)
-    {
-      sentence_part = achieve_part();
-      if(sentence_part == EMPTEY_STRING)
-        break;
-      else if(sentence_part == "film_id")
-        film_id = achieve_part();
-      else if(sentence_part == "content")
-        content = achieve_part();
-      else 
-        throw BadRequest();
-    }
-    if(check_is_not_integer(film_id))
+    process_commamd_comments();
+    if(check_is_not_integer(film_id) || stoi(film_id) >= ID_counter_film))
       throw BadRequest();
     current_user->check_bought_film(films[stoi(film_id)]);
     films[stoi(film_id)]->set_comment(stoi(film_id), content);
@@ -763,7 +776,7 @@ void manager::POST_replies()
     string film_id, comment_id, content;
     process_command_replies(film_id, comment_id, content);
     if(check_is_not_integer(film_id) || check_is_not_integer(comment_id) 
-    || stoi(film_id) >= ID_counter_film)
+    || stoi(film_id) >= ID_counter_film))
       throw BadRequest();
     if(films[stoi(film_id)]->get_publisher() != current_user)
       throw PermissionDenied();
