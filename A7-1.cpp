@@ -201,10 +201,13 @@ public:
   void process_commamd_comments(string &film_id, string &content);
   void POST_rate();
   void process_command_delete(string &film_id);
+  void process_command_signup(string &email, string &username
+, string &password, string &age, string &publisher);
   void check_command_for_PUT(string &name, string &year, string &price
   , string &summary, string &length, string &director, string &film_id);
   void initialize_film(string name, string year, string length
   , string price, string summary, string director);
+  void process_command_followers(string &user_id);
   void check_GET_second_part();
   void set_info(string &info);
   void show_head_followers();
@@ -215,6 +218,7 @@ public:
   void process_command_rate(string &film_id,string &score);
   void reset();
   void show_details(film* Film);
+  void process_command_login(string &username, string &password);
   void POST_replies();
   void show_features(film* Film);
   void show_comments(film* Film);
@@ -309,8 +313,6 @@ void film::set_owner(customer* new_custormer)
 void manager::initialize_user(string &email, string &username
 , string &password, string &age, string &publish)
 {
-  if(check_is_not_integer(age))
-    throw BadRequest();
   if(publish == EMPTEY_STRING || publish == "false")
   {
     current_user = new customer(email, username, password, age, ID_counter, false);
@@ -344,6 +346,23 @@ void manager::find_user(string username, string password)
   }
   previous_user = NULL;
 }
+
+void manger::process_command_login(string &username, string &password)
+{
+  while(true)
+  {
+    sentence_part = achieve_part();
+    if(sentence_part == EMPTEY_STRING)
+      break;
+    else if(sentence_part == "password")
+      password = achieve_part();
+    else if(sentence_part == "username")
+      username = achieve_part();
+    else 
+      throw BadRequest();
+  }
+}
+
 void manager::POST_login()
 {
   if(second_part == "login")
@@ -351,20 +370,32 @@ void manager::POST_login()
     if(achieve_part() != QUERY)
       throw BadRequest();
     string username, password;
-    while(true)
-    {
-      sentence_part = achieve_part();
-      if(sentence_part == EMPTEY_STRING)
-        break;
-      else if(sentence_part == "password")
-        password = achieve_part();
-      else if(sentence_part == "username")
-        username = achieve_part();
-      else 
-        throw BadRequest();
-    }
+    process_command_login(username, password);
     find_user(username, password);
     cout<<"OK"<<endl;
+  }
+}
+
+void manager::process_command_signup(string &email, string &username
+, string &password, string &age, string &publisher)
+{
+  while(true)
+  {
+    sentence_part = achieve_part();
+    if(sentence_part == EMPTEY_STRING)
+      break;
+    else if(sentence_part == "email")
+      set_info(email);
+    else if(sentence_part == "username")
+      set_info(username);
+    else if(sentence_part == "password")
+      set_info(password);
+    else if(sentence_part == "age")
+      set_info(age);
+    else if(sentence_part == "publisher")
+      set_info(publisher);
+    else 
+      throw BadRequest();
   }
 }
 
@@ -375,25 +406,10 @@ void manager::POST_signup()
     if(achieve_part() != QUERY)
       throw BadRequest();
     string email, username, password, age, publisher = EMPTEY_STRING;
-    while(true)
-    {
-      sentence_part = achieve_part();
-      if(sentence_part == EMPTEY_STRING)
-        break;
-      else if(sentence_part == "email")
-        set_info(email);
-      else if(sentence_part == "username")/////////////check arguments
-        set_info(username);
-      else if(sentence_part == "password")
-        set_info(password);
-      else if(sentence_part == "age")
-        set_info(age);
-      else if(sentence_part == "publisher")
-        set_info(publisher);
-      else 
-        throw BadRequest();
-    }
+    process_command_signup(email, username, password, age, publisher);
     check_repeated_username(username);
+    if(check_is_not_integer(age))
+      throw BadRequest();
     initialize_user(email, username, password, age, publisher);
     cout<<"OK"<<endl;
   }
@@ -408,10 +424,7 @@ void manager::initialize_film(string name, string year, string length
   director, ID_counter_film, current_user);
   films.push_back(new_film);
   current_user->regist_new_film(new_film);
-  //film* my_film = new film(name , year, price, length, summary, 
-  //director, ID_counter_film, current_user);
   ID_counter_film++;
-  
 }
 
 void manager::regist_film()
@@ -463,6 +476,20 @@ void manager::check_POST_second_part()
     throw NotFound();
 }
 
+void manger::process_command_followers(string &user_id)
+{
+  while(true)
+  {
+    sentence_part = achieve_part();
+    if(sentence_part == EMPTEY_STRING)
+      break;
+    else if(sentence_part == "user_id")
+      user_id = achieve_part();
+    else
+      throw BadRequest();
+  }
+}
+
 void manager::POST_followers()
 {
   if(second_part == "followers")
@@ -470,18 +497,11 @@ void manager::POST_followers()
     if(achieve_part() != QUERY)
       throw BadRequest();
     string user_id;
-    while(true)
-    {
-      sentence_part = achieve_part();
-      if(sentence_part == EMPTEY_STRING)
-        break;
-      else if(sentence_part == "user_id")
-        user_id = achieve_part();
-      else
-        throw BadRequest();
-    }
+    process_command_followers(user_id);
     if(check_is_not_integer(user_id))
       throw BadRequest();
+    if(user_id >= ID_counter)
+      throw NotFound();
     customer* followed_publisher = users[stoi(user_id)];
     current_user->follow_publisher(followed_publisher);
     followed_publisher->set_followers(current_user);
@@ -574,7 +594,7 @@ void customer::buy_film(film* new_film)
 
 void manager::check_for_buy(string film_id)
 {
-  if(check_is_not_integer(film_id) || stoi(film_id) >= ID_counter_film))
+  if(check_is_not_integer(film_id))
     throw BadRequest();
   if(stoi(film_id) >= ID_counter_film)
     throw NotFound();
@@ -633,9 +653,10 @@ void customer::score_watched_film(int film_id, int score)
 
 void manager::check_inputs_for_rate(string score, string film_id)
 {
-  if(check_is_not_integer(score) || check_is_not_integer(film_id)
-  || stoi(film_id) >= ID_counter_film))
+  if(check_is_not_integer(score) || check_is_not_integer(film_id))
     throw BadRequest();
+  if(stoi(film_id) >= ID_counter_film)
+    throw NotFound();
   if(stoi(score) < MIN_POINT || stoi(score) > MAX_POINT)
     throw BadRequest();
 }
@@ -736,8 +757,10 @@ void manager::POST_comments()
       throw BadRequest();
     string film_id, content;
     process_commamd_comments(film_id, content);
-    if(check_is_not_integer(film_id) || stoi(film_id) >= ID_counter_film))
+    if(check_is_not_integer(film_id))
       throw BadRequest();
+    if(stoi(film_id) >= ID_counter_film)
+      throw NotFound();
     current_user->check_bought_film(films[stoi(film_id)]);
     films[stoi(film_id)]->set_comment(stoi(film_id), content);
     cout<<"OK"<<endl;
@@ -787,9 +810,10 @@ void manager::POST_replies()
       throw BadRequest();
     string film_id, comment_id, content;
     process_command_replies(film_id, comment_id, content);
-    if(check_is_not_integer(film_id) || check_is_not_integer(comment_id) 
-    || stoi(film_id) >= ID_counter_film))
+    if(check_is_not_integer(film_id) || check_is_not_integer(comment_id))
       throw BadRequest();
+    if(stoi(film_id) >= ID_counter_film)
+      throw NotFound();
     if(films[stoi(film_id)]->get_publisher() != current_user)
       throw PermissionDenied();
     films[stoi(film_id)]->reply_cm(stoi(comment_id), content);
@@ -875,9 +899,10 @@ void manager::PUT_film()
     string name, year, price, summary, length, director, film_id;    
     check_command_for_PUT(name, year, price, summary, length, director, film_id);
     if(check_is_not_integer(year) || check_is_not_integer(length) || 
-    check_is_not_integer(price) || check_is_not_integer(film_id) || 
-    stoi(film_id) >= ID_counter_film)
+    check_is_not_integer(price) || check_is_not_integer(film_id))
       throw BadRequest();
+    if(stoi(film_id) >= ID_counter_film)
+      throw NotFound();
     current_user->edit_films(name, year, price, summary, length, director, stoi(film_id));
     cout<<"OK"<<endl;
   }
