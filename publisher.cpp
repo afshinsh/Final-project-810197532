@@ -32,8 +32,7 @@ void publisher::edit_films(string name, string year, string price
       if(year != EMPTEY_STRING)
         my_films[i]->set_year(year);
       if(price != EMPTEY_STRING)
-        my_films[i]->set_price
-(price);
+        my_films[i]->set_price(price);
       if(summary != EMPTEY_STRING)
         my_films[i]->set_summary(summary);
       if(length != EMPTEY_STRING)
