@@ -6,6 +6,7 @@
 #define NONE '\0'
 #define MAX_POINT 10
 #define MIN_POINT 0
+#define DOT '.'
 
 #include <iostream>
 #include <string>
