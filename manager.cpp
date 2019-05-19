@@ -1,4 +1,6 @@
 #include "manager.h"
+#include <algorithm>
+
 
 manager::manager()
 {
@@ -45,7 +47,7 @@ bool manager::check_is_not_integer(string s)
   if(s == EMPTEY_STRING)
     return false;
   for(int i = 0;i < s.length();i++)
-    if(!isdigit(s[i]))
+    if(!isdigit(s[i]) && s[i] != DOT)
       return true;
   return false;
 }
@@ -741,7 +743,6 @@ void manager::check_GET_second_part()
     throw BadRequest();
 }
 
-
 void manager::show_features(film* Film)
 {
   cout<<"Details of Film "<<Film->get_name()<<endl;
@@ -750,7 +751,7 @@ void manager::show_features(film* Film)
   cout<<"Length = "<<Film->get_length()<<endl;
   cout<<"Year = "<<Film->get_year()<<endl;
   cout<<"Summary = "<<Film->get_summary()<<endl;
-  cout<<"Rate = "<<Film->give_avrage_rate()<<endl;
+  cout<<"Rate = "<<setprecision(2)<<Film->give_avrage_rate()<<endl;
   cout<<"Price = "<<Film->get_price()<<endl;
 }
 
@@ -759,9 +760,6 @@ void manager::show_comments(film* Film)
   cout<<endl<<"Comments"<<endl;
   Film->show_comment();
 }
-
-
-
 
 
 void manager::show_recommendation(film* Film)
@@ -835,6 +833,18 @@ void manager::check_name(string name)
     for(int i = 0; i < films.size(); i++)
       if(films[i]->get_name() == name && !films[i]->get_deleted())
         search_result.push_back(films[i]);
+}
+
+void manager::check_min_rate(string min_rate)
+{
+  if(min_rate == EMPTEY_STRING)
+    return;
+  if(check_is_not_integer(min_rate))
+    throw BadRequest();
+  for(int i = 0; i < films.size(); i++)
+    if(films[i]->give_avrage_rate() >= stod(min_rate) && 
+    find(search_result.begin(), search_result.end(), films[i]) == search_result.end())
+      search_result.push_back(films[i]);
 }
 
 void manager::GET_films()
