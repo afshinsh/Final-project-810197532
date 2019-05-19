@@ -6,6 +6,7 @@
 #include "exceptions.h"
 #include "publisher.h"
 #include "comment.h"
+#include <bits/stdc++.h>
 
 class manager
 {
@@ -14,11 +15,17 @@ public:
   void process_users();
   void process_begin_of_command();
   void skip_space();
+  void process_command_GET_purchased(string &name, string &min_year
+  , string &price, string &max_year, string &director);
   void set_first_part();
   void set_second_part();
-  void check_year(string min, string max);
+  void get_copy_films();
+  void check_year(string min_year, string max_year);
   void check_price(string price);
+  void set_result_purchased(string name, string min_year, string price
+, string max_year, string director);
   void process_command();
+  void GET_published();
   bool check_is_not_double(string s);
   void process_GET_command();
   void DELETE_comments();
@@ -29,7 +36,7 @@ public:
   void POST_film();
   void POST_signup();
   void check_min_rate(string min_rate);
-  void set_result(string name, string min_year, string price
+  void set_result_films(string name, string min_year, string price
 , string max_year, string min_rate, string director);
   void process_command_money(string &amount);
   void POST_money();
