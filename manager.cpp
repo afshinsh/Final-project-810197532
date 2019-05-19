@@ -1,5 +1,4 @@
 #include "manager.h"
-#include <algorithm>
 
 
 manager::manager()
@@ -895,7 +894,14 @@ void manager::set_result(string name, string min_year, string price
 
 void manager::show_result()
 {
-  
+  cout<<"#. Film Id | Film Name | Film Length | Film price | Rate 
+  | Production Year | Film Director"<<endl;
+  for(int i = 0; i < search_result.size(); i++)
+    cout<<i + 1<<". "<<search_result[i]->get_ID()<<" | "<<
+    search_result[i]->get_name()<<" | "<<search_result[i]->get_length()
+    <<" | "<<search_result[i]->get_price()<<" | "<<setprecision(2)<<
+    search_result[i]->give_avrage_rate()<<" | "<<search_result[i]->get_year()
+    <<" | "<<search_result[i]->get_director()<<endl;
 }
 
 void manager::GET_films()
