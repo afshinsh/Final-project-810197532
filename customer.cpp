@@ -5,6 +5,11 @@ customer::customer(string _email, string _username, string _password
 username(_username), password(_password), age(_age), ID(_ID_counter),
 publish(_publisher) {}
 
+void customer::get_copy_bought_film(vector<film*> &search_result)
+{
+  for(int i = 0; i < bought_films.size(); i++)
+    search_result.push_back(bought_films[i]);
+}
 
 void customer::buy_film(film* new_film)
 {
