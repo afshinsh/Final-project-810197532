@@ -836,12 +836,10 @@ void manager::process_command_GET_films(string &name, string &min_year, string &
   }
 }
 
-void manager::check_name(string name)
+void manager::check_year(string min, string max)
 {
-  if(name != EMPTEY_STRING)
-    for(int i = 0; i < films.size(); i++)
-      if(films[i]->get_name() == name && !films[i]->get_deleted())
-        search_result.push_back(films[i]);
+  if(check_is_not_integer(min) || check_is_not_integer(max))
+    throw BadRequest();
 }
 
 void manager::check_min_rate(string min_rate)
@@ -850,10 +848,6 @@ void manager::check_min_rate(string min_rate)
     return;
   if(check_is_not_double(min_rate))
     throw BadRequest();
-  for(int i = 0; i < films.size(); i++)
-    if(films[i]->give_avrage_rate() >= stod(min_rate) && 
-    find(search_result.begin(), search_result.end(), films[i]) == search_result.end())
-      search_result.push_back(films[i]);
 }
 
 void manager::check_price(string price)
@@ -862,23 +856,46 @@ void manager::check_price(string price)
     return;
   if(check_is_not_integer(price))
     throw BadRequest();
+}
+
+void manager::get_copy_films()
+{
   for(int i = 0; i < films.size(); i++)
-    if(films[i]->get_price() == stoi(price) && find(search_result.begin()
-    , search_result.end(), films[i]) == search_result.end())
-      search_result.push_back(films[i]);
+    search_result.push_back(films[i]);
+}
+
+void manager::set_result(string name, string min_year, string price
+, string max_year, string min_rate, string director)
+{
+  for(auto i = search_result.begin(); i != search_result.end(); i++)
+  {
+    if(name =! EMPTEY_STRING && (*i)->get_name() != name)
+      search_result.erase(i);
+    else if(min_rate != EMPTEY_STRING && (*i)->give_avrage_rate() < stod(min_rate))
+      search_result.erase(i);
+    else if(price != EMPTEY_STRING && (*i)->get_price() != stoi(price))
+      search_result.erase(i);
+    else if(director != EMPTEY_STRING && (*i)->get_director() != director)
+      search_result.erase(i);
+    else if(min_year != EMPTEY_STRING && (*i)->get_year() < stoi(min_year))
+      search_result.erase(i);
+    else if(max_year != EMPTEY_STRING && (*i)->get_year() > stoi(max_year))
+      search_result.erase(i);
+  }
+    
 }
 
 void manager::GET_films()
 {
   if(second_part == "films" && sentence_part == EMPTEY_STRING)
   {
+    search_result.clear();
     string name, min_year, price, max_year, min_rate, director;
     process_command_GET_films(name, min_year, price, max_year, min_rate, director);
-    check_name(name);
     check_min_rate(min_rate);
     check_price(price);
     check_year(min_year,max_year);
-    check_director(director);
+    sort_result();
     show_result();
   }
 }
