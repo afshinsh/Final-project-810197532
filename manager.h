@@ -16,7 +16,9 @@ public:
   void skip_space();
   void set_first_part();
   void set_second_part();
+  void check_price(string price);
   void process_command();
+  bool check_is_not_double(string s);
   void process_GET_command();
   void DELETE_comments();
   void process_POST_command();
