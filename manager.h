@@ -16,6 +16,7 @@ public:
   void skip_space();
   void set_first_part();
   void set_second_part();
+  void check_year(string min, string max);
   void check_price(string price);
   void process_command();
   bool check_is_not_double(string s);
@@ -27,6 +28,8 @@ public:
   void POST_film();
   void POST_signup();
   void check_min_rate(string min_rate);
+  void set_result(string name, string min_year, string price
+, string max_year, string min_rate, string director);
   void process_command_money(string &amount);
   void POST_money();
   void process_DELETE_command();
@@ -84,7 +87,6 @@ public:
   void GET_films();
   void POST_comments();
   void check_for_buy(string film_id);
-  void check_name(string name);
 private:
   vector<film*> films;
   vector<customer*> users;
