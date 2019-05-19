@@ -24,6 +24,7 @@ public:
   void process_command_buy(string &film_id);
   void POST_film();
   void POST_signup();
+  void check_min_rate(string min_rate);
   void process_command_money(string &amount);
   void POST_money();
   void process_DELETE_command();
