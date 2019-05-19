@@ -781,11 +781,14 @@ void manager::show_details(film* Film)
   show_recommendation(Film);
 }
 
-void manager::GET_films()
+void manager::GET_film()
 {
   if(second_part == "films" )
   {
-    if(achieve_part() != QUERY)
+    sentence_part = achieve_part();
+    if(sentence_part == EMPTEY_STRING)
+      return;
+    if(sentence_part != QUERY)
       throw BadRequest();
     string film_id; 
     if(achieve_part() == "film_id")
@@ -801,12 +804,33 @@ void manager::GET_films()
   }
 }
 
+void manager::process_command_GET_films(string &name, string &min_year, string &price
+, string &max_year, string &min_rate, string &director)
+{
+  
+}
+
+void manager::GET_films()
+{
+  if(second_part == "films" && sentence_part == EMPTEY_STRING)
+  {
+    string name, min_year, price, max_year, min_rate, director;
+    process_command_GET_films(name, min_year, price, max_year, min_rate, director);
+    check_name();
+    check_min_rate();
+    check_price();
+    check_year();
+    check_director();
+    show_result();
+  }
+}
+
 void manager::process_GET_command()
 {
   check_GET_second_part();
   GET_followers();
+  GET_film();
   GET_films();
-  //GET_published();
 }
 
 void manager::process_command()
