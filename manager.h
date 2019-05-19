@@ -81,6 +81,7 @@ public:
   void GET_films();
   void POST_comments();
   void check_for_buy(string film_id);
+  void check_name(string name);
 private:
   vector<film*> films;
   vector<customer*> users;
