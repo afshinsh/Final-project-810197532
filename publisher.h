@@ -11,6 +11,7 @@ public:
   publisher(string _email, string _username, string _password
 , string _age, int _ID_counter, bool _publisher);
   void regist_new_film(film* new_film);
+  void get_copy_published_films(vector<film*> &search_result);
   void edit_films(string name, string year, string price
 , string summary, string length, string director, int film_id);
 void delete_film(int film_id);
