@@ -807,8 +807,29 @@ void manager::GET_film()
 void manager::process_command_GET_films(string &name, string &min_year, string &price
 , string &max_year, string &min_rate, string &director)
 {
-  
+  while(true)
+  {
+    sentence_part = achieve_part();
+    if(sentence_part == EMPTEY_STRING)
+      break;
+    else if(sentence_part == "min_year")
+      set_info(min_year);
+    else if(sentence_part == "name")
+      set_info(name);
+    else if(sentence_part == "max_year")
+      set_info(max_year);
+    else if(sentence_part == "price")
+      set_info(price);
+    else if(sentence_part == "min_rate")
+      set_info(min_rate);
+    else if(sentence_part == "director")
+      set_info(director);
+    else 
+      throw BadRequest();
+  }
 }
+
+void manager::
 
 void manager::GET_films()
 {
@@ -816,11 +837,11 @@ void manager::GET_films()
   {
     string name, min_year, price, max_year, min_rate, director;
     process_command_GET_films(name, min_year, price, max_year, min_rate, director);
-    check_name();
-    check_min_rate();
-    check_price();
-    check_year();
-    check_director();
+    check_name(name);
+    check_min_rate(min_rate);
+    check_price(price);
+    check_year(min_year,max_year);
+    check_director(director);
     show_result();
   }
 }
