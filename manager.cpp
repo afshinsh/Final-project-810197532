@@ -864,6 +864,14 @@ void manager::get_copy_films()
     search_result.push_back(films[i]);
 }
 
+struct compare_ID
+{
+  inline bool operator() (film* f1, film* f2)
+  {
+    return (f1->get_ID() < f2->get_ID());
+  }
+};
+
 void manager::set_result(string name, string min_year, string price
 , string max_year, string min_rate, string director)
 {
@@ -885,6 +893,11 @@ void manager::set_result(string name, string min_year, string price
     
 }
 
+void manager::show_result()
+{
+  
+}
+
 void manager::GET_films()
 {
   if(second_part == "films" && sentence_part == EMPTEY_STRING)
@@ -895,7 +908,8 @@ void manager::GET_films()
     check_min_rate(min_rate);
     check_price(price);
     check_year(min_year,max_year);
-    sort_result();
+    set_result(name, min_year, price, max_year, min_rate, director);
+    sort(search_result.begin(), search_result.end(), compare_ID()); 
     show_result();
   }
 }
