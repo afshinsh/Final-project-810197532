@@ -47,11 +47,20 @@ bool manager::check_is_not_integer(string s)
   if(s == EMPTEY_STRING)
     return false;
   for(int i = 0;i < s.length();i++)
-    if(!isdigit(s[i]) && s[i] != DOT)
+    if(!isdigit(s[i]))
       return true;
   return false;
 }
 
+bool manager::check_is_not_double(string s)
+{
+  if(s == EMPTEY_STRING)
+    return false;
+  for(int i = 0;i < s.length();i++)
+    if(!isdigit(s[i]) && s[i] != DOT)
+      return true;
+  return false;
+}
 
 
 void manager::initialize_user(string &email, string &username
@@ -839,12 +848,20 @@ void manager::check_min_rate(string min_rate)
 {
   if(min_rate == EMPTEY_STRING)
     return;
-  if(check_is_not_integer(min_rate))
+  if(check_is_not_double(min_rate))
     throw BadRequest();
   for(int i = 0; i < films.size(); i++)
     if(films[i]->give_avrage_rate() >= stod(min_rate) && 
     find(search_result.begin(), search_result.end(), films[i]) == search_result.end())
       search_result.push_back(films[i]);
+}
+
+void manager::check_price(string price)
+{
+  if(price == EMPTEY_STRING)
+    return;
+  if(check_is_not_integer(price))
+    throw BadRequest();
 }
 
 void manager::GET_films()
