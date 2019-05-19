@@ -862,6 +862,10 @@ void manager::check_price(string price)
     return;
   if(check_is_not_integer(price))
     throw BadRequest();
+  for(int i = 0; i < films.size(); i++)
+    if(films[i]->get_price() == stoi(price) && find(search_result.begin()
+    , search_result.end(), films[i]) == search_result.end())
+      search_result.push_back(films[i]);
 }
 
 void manager::GET_films()
