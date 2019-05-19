@@ -74,8 +74,11 @@ public:
   void check_repeated_username(string username);
   void process_command_replies(string &film_id, string &comment_id
   , string &content);
-  void GET_films();
+  void process_command_GET_films(string &name, string &min_year, string &price
+, string &max_year, string &min_rate, string &director);
+  void GET_film();
   void POST_buy();
+  void GET_films();
   void POST_comments();
   void check_for_buy(string film_id);
 private:
@@ -84,6 +87,7 @@ private:
   vector<customer*> customers;
   vector<customer*> publishers;
   vector<film*> recommendation_films;
+  vector<film*> search_result;
   string command;
   int command_chars_counter = 0;
   int ID_counter = 1;
