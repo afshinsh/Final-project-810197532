@@ -21,10 +21,8 @@ void manager::set_command(string _command)
 void manager::check_repeated_username(string username)
 {
   for(int i = 0; i < users.size(); i++)
-  {
     if(username == users[i]->get_username())
       throw BadRequest();
-  }
 }
 
 void manager::reset()
@@ -216,8 +214,6 @@ void manager::regist_film()
     throw BadRequest();
   initialize_film(name, year, length, price, summary, director);
 }
-
-
 
 void manager::POST_film()
 {
@@ -746,7 +742,7 @@ void manager::GET_followers()
 void manager::check_GET_second_part()
 {
   if(second_part != "followers" && second_part != "published" 
-  && second_part != "films"&& second_part != "purchased"&& 
+  && second_part != "films"&& second_part != "purchased" && 
   second_part != "notifications")
     throw BadRequest();
 }
@@ -759,7 +755,7 @@ void manager::show_features(film* Film)
   cout<<"Length = "<<Film->get_length()<<endl;
   cout<<"Year = "<<Film->get_year()<<endl;
   cout<<"Summary = "<<Film->get_summary()<<endl;
-  cout<<"Rate = "<<setprecision(2)<<Film->give_avrage_rate()<<endl;
+  cout<<"Rate = "<<setprecision(3)<<Film->give_avrage_rate()<<endl;
   cout<<"Price = "<<Film->get_price()<<endl;
 }
 
@@ -835,9 +831,9 @@ void manager::process_command_GET_films(string &name, string &min_year, string &
   }
 }
 
-void manager::check_year(string min, string max)
+void manager::check_year(string min_year, string max_year)
 {
-  if(check_is_not_integer(min) || check_is_not_integer(max))
+  if(check_is_not_integer(min_year) || check_is_not_integer(max_year))
     throw BadRequest();
 }
 
@@ -860,7 +856,8 @@ void manager::check_price(string price)
 void manager::get_copy_films()
 {
   for(int i = 0; i < films.size(); i++)
-    search_result.push_back(films[i]);
+    if(!films[i]->get_deleted())
+      search_result.push_back(films[i]);
 }
 
 struct compare_ID
@@ -871,12 +868,12 @@ struct compare_ID
   }
 };
 
-void manager::set_result(string name, string min_year, string price
+void manager::set_result_films(string name, string min_year, string price
 , string max_year, string min_rate, string director)
 {
   for(auto i = search_result.begin(); i != search_result.end(); i++)
   {
-    if(name =! EMPTEY_STRING && (*i)->get_name() != name)
+    if(name != EMPTEY_STRING && (*i)->get_name() != name)
       search_result.erase(i);
     else if(min_rate != EMPTEY_STRING && (*i)->give_avrage_rate() < stod(min_rate))
       search_result.erase(i);
@@ -884,22 +881,21 @@ void manager::set_result(string name, string min_year, string price
       search_result.erase(i);
     else if(director != EMPTEY_STRING && (*i)->get_director() != director)
       search_result.erase(i);
-    else if(min_year != EMPTEY_STRING && (*i)->get_year() < stoi(min_year))
+    else if(min_year != EMPTEY_STRING && stoi((*i)->get_year()) < stoi(min_year))
       search_result.erase(i);
-    else if(max_year != EMPTEY_STRING && (*i)->get_year() > stoi(max_year))
+    else if(max_year != EMPTEY_STRING && stoi((*i)->get_year()) > stoi(max_year))
       search_result.erase(i);
-  }
-    
+  } 
 }
 
 void manager::show_result()
 {
-  cout<<"#. Film Id | Film Name | Film Length | Film price | Rate 
-  | Production Year | Film Director"<<endl;
+  cout<<"#. Film Id | Film Name | Film Length "<<
+  "| Film price | Rate | Production Year | Film Director"<<endl;
   for(int i = 0; i < search_result.size(); i++)
     cout<<i + 1<<". "<<search_result[i]->get_ID()<<" | "<<
     search_result[i]->get_name()<<" | "<<search_result[i]->get_length()
-    <<" | "<<search_result[i]->get_price()<<" | "<<setprecision(2)<<
+    <<" | "<<search_result[i]->get_price()<<" | "<<setprecision(3)<<
     search_result[i]->give_avrage_rate()<<" | "<<search_result[i]->get_year()
     <<" | "<<search_result[i]->get_director()<<endl;
 }
@@ -909,12 +905,90 @@ void manager::GET_films()
   if(second_part == "films" && sentence_part == EMPTEY_STRING)
   {
     search_result.clear();
+    get_copy_films();
     string name, min_year, price, max_year, min_rate, director;
     process_command_GET_films(name, min_year, price, max_year, min_rate, director);
     check_min_rate(min_rate);
     check_price(price);
     check_year(min_year,max_year);
-    set_result(name, min_year, price, max_year, min_rate, director);
+    set_result_films(name, min_year, price, max_year, min_rate, director);
+    sort(search_result.begin(), search_result.end(), compare_ID()); 
+    cout<<search_result.size()<<endl;
+    show_result();
+  }
+}
+
+void manager::process_command_GET_purchased(string &name, string &min_year, string &price
+, string &max_year, string &director)
+{
+  while(true)
+  {
+    sentence_part = achieve_part();
+    if(sentence_part == EMPTEY_STRING)
+      break;
+    else if(sentence_part == "min_year")
+      set_info(min_year);
+    else if(sentence_part == "name")
+      set_info(name);
+    else if(sentence_part == "max_year")
+      set_info(max_year);
+    else if(sentence_part == "price")
+      set_info(price);
+    else if(sentence_part == "director")
+      set_info(director);
+    else 
+      throw BadRequest();
+  }
+}
+
+void manager::set_result_purchased(string name, string min_year, string price
+, string max_year, string director)
+{
+  for(auto i = search_result.begin(); i != search_result.end(); i++)
+  {
+    if(name != EMPTEY_STRING && (*i)->get_name() != name)
+      search_result.erase(i);
+    else if(price != EMPTEY_STRING && (*i)->get_price() != stoi(price))
+      search_result.erase(i);
+    else if(director != EMPTEY_STRING && (*i)->get_director() != director)
+      search_result.erase(i);
+    else if(min_year != EMPTEY_STRING && stoi((*i)->get_year()) < stoi(min_year))
+      search_result.erase(i);
+    else if(max_year != EMPTEY_STRING && stoi((*i)->get_year()) > stoi(max_year))
+      search_result.erase(i);
+  }
+}
+
+void manager::GET_purchased()
+{
+  if(second_part == "purchased")
+  {
+    search_result.clear();
+    current_user->get_copy_bought_film(search_result);
+    string name, min_year, price, max_year, director;
+    process_command_GET_purchased(name, min_year, price, max_year, director);
+    check_price(price);
+    check_year(min_year,max_year);
+    set_result_purchased(name, min_year, price, max_year, director);
+    sort(search_result.begin(), search_result.end(), compare_ID()); 
+    show_result();
+  }
+}
+
+void manager::GET_published()
+{
+  if(second_part == "published")
+  {
+    if(!current_user->get_publisher())
+      throw PermissionDenied();
+    search_result.clear();
+    current_user->get_copy_published_films(search_result);
+    string name, min_year, price, max_year, min_rate, director;
+    process_command_GET_films(name, min_year, price, max_year, min_rate, director);
+    check_min_rate(min_rate);
+    check_price(price);
+    check_year(min_year,max_year);
+    set_result_films(name, min_year, price, max_year, min_rate, director);
     sort(search_result.begin(), search_result.end(), compare_ID()); 
     show_result();
   }
@@ -926,6 +1000,8 @@ void manager::process_GET_command()
   GET_followers();
   GET_film();
   GET_films();
+  GET_purchased();
+  GET_published();
 }
 
 void manager::process_command()
