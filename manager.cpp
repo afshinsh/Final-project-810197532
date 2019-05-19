@@ -829,7 +829,13 @@ void manager::process_command_GET_films(string &name, string &min_year, string &
   }
 }
 
-void manager::
+void manager::check_name(string name)
+{
+  if(name != EMPTEY_STRING)
+    for(int i = 0; i < films.size(); i++)
+      if(films[i]->get_name() == name && !films[i]->get_deleted())
+        search_result.push_back(films[i]);
+}
 
 void manager::GET_films()
 {
