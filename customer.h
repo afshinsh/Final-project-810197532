@@ -27,6 +27,7 @@ public:
   string get_username() { return username; }
   string get_password() { return password; }
   string get_email() { return email; }
+  void get_copy_bought_film(vector<film*> &search_result);
   int get_ID() { return ID; }
   virtual void regist_new_film(film* new_film) { return; }
   virtual void edit_films(string name, string year, string price
