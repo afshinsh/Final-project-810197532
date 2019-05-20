@@ -17,7 +17,7 @@ customer.o: customer.cpp customer.h  film.h customer.h
 publisher.o: publisher.cpp publisher.h customer.h 
 	$(CC) -c publisher.cpp
 
-comment.o: comment.cpp comment.h 
+comment.o: comment.cpp comment.h customer.h
 	$(CC) -c comment.cpp
 
 film.o: film.cpp film.h customer.h comment.h
