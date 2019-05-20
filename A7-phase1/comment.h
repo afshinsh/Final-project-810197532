@@ -26,7 +26,8 @@ public:
 private:
   int film_id;
   string content;
-  vector<string> replies; 
+  vector<string> replies;
+  customer* owner; 
   int ID;
 };
 
