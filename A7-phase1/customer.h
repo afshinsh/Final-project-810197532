@@ -43,6 +43,7 @@ public:
   void check_bought_film(film* bought_film);
   void score_watched_film(int film_id, int score);
   double get_rate(int film_id) { return scores[film_id]; }
+  film* fget_bought_film(int film_id);
   void add_to_unread_notif(string notif) { unread_notif.push_back(notif); }
   void clear_unread_notif() { unread_notif.clear(); }
   virtual void set_notif_for_follow(customer* follower) { return; }

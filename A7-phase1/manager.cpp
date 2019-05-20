@@ -383,9 +383,9 @@ void manager::POST_buy()
     process_command_buy(film_id);
     check_for_buy(film_id);
     film* bought_film = films[stoi(film_id)];
-    current_user->buy_film(bought_film]);
-    bought_film->get_publisher()->set_notif_for_buy(current_user);
-    films[bought_film]->set_owner(current_user, bought_film);
+    current_user->buy_film(bought_film);
+    bought_film->get_publisher()->set_notif_for_buy(current_user, bought_film);
+    bought_film->set_owner(current_user);
     property +=  bought_film->get_price();
     cout<<"OK"<<endl;
   }
@@ -454,6 +454,7 @@ void manager::POST_rate()
     process_command_rate(film_id, score);
     check_inputs_for_rate(score, film_id);
     current_user->score_watched_film(stoi(film_id), stoi(score));
+    set_notif_for_rate(current_user->get_bought_film(film_id), current_user);
     cout<<"OK"<<endl;
   }
 }

@@ -35,6 +35,14 @@ void customer::score_watched_film(int film_id, int score)
   throw BadRequest();
 }
 
+film* customer::get_bought_film(int film_id)
+{
+  for(int i = 0; i < bought_films.size(); i++)
+    if(bought_films[i]->get_ID() == film_id)
+      return bought_films[i];
+  return NULL;
+}
+
 
 bool customer::check_is_not_bought(film* r_film)
 {
