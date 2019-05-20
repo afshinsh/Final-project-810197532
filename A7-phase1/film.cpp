@@ -20,9 +20,9 @@ double film::give_avrage_rate()
   return sum / owners.size();
 }
 
-void film::set_comment(int film_id, string content)
+void film::set_comment(int film_id, string content, customer* owner)
 {
-  comment* new_comment = new comment(film_id, content, ID_counter_comment);
+  comment* new_comment = new comment(film_id, content, ID_counter_comment, owner);
   comments.push_back(new_comment);
   ID_counter_comment++;
 }
