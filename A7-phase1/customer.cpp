@@ -35,6 +35,30 @@ void customer::score_watched_film(int film_id, int score)
   throw BadRequest();
 }
 
+void customer::show_read_notif(int limit)
+{
+  int counter = 1;
+  cout<<"#. Notification Message"<<endl;
+  for(int i = read_notif.size() - 1; i >= read_notif.size() - limit; i--)
+  {
+    cout<<counter<<". "<<read_notif[i]<<endl;
+    counter++;
+  }
+}
+
+void customer::show_unread_notif()
+{
+  int counter = 0;
+  cout<<"#. Notification Message"<<endl;
+  for(int i = unread_notif.size() - 1; i >= 0; i--)
+  {
+    cout<<counter + 1<<". "<<unread_notif[i]<<endl;
+    read_notif.push_back(unread_notif[counter]);
+    counter++;
+  }
+  unread_notif.clear();
+}
+
 film* customer::get_bought_film(int film_id)
 {
   for(int i = 0; i < bought_films.size(); i++)

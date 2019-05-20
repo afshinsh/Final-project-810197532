@@ -25,6 +25,7 @@ void publisher::set_notif_for_buy(customer* buyer, film* bought_film)
   string msg = "User " + buyer->get_username() + " with id " + 
   to_string(buyer->get_ID()) + " buy your film " + bought_film->get_name()
    + " with id " + to_string(bought_film->get_ID()) + ".";
+   add_to_unread_notif(msg);
 }
 
 void publisher::set_notif_for_follow(customer* follower)

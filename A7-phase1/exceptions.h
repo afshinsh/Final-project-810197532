@@ -5,15 +5,21 @@
 
 using namespace std;
 
-class BadRequest {
+class exceptions
+{
+public:
+  virtual void what() = 0;
+};
+
+class BadRequest : public exceptions {
 public:
   void what()
   {
-    cout<<"BadRequest"<<endl;
+    cout<<"Bad Request"<<endl;
   }
 };
 
-class PermissionDenied {
+class PermissionDenied : public exceptions {
 public:
   void what()
   {
@@ -21,7 +27,7 @@ public:
   }
 };
 
-class NotFound {
+class NotFound : public exceptions {
 public:
   void what()
   {

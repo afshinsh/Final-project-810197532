@@ -13,11 +13,7 @@ int main()
     try {
       Manager.set_command(command);
       Manager.process_users();
-    } catch(PermissionDenied ex) {
-      ex.what();
-    } catch(NotFound ex) {
-      ex.what();
-    } catch(BadRequest ex) {
+    } catch(exceptions &ex) {
       ex.what();
     }
     Manager.reset();

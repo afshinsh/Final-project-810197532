@@ -11,7 +11,7 @@ main.o : main.cpp manager.h
 manager.o: manager.cpp manager.h customer.h comment.h exceptions.h  publisher.h
 	$(CC) -c manager.cpp
 
-customer.o: customer.cpp customer.h  film.h customer.h
+customer.o: customer.cpp customer.h  film.h customer.h exceptions.h
 	$(CC) -c customer.cpp
 
 publisher.o: publisher.cpp publisher.h customer.h 

@@ -20,7 +20,10 @@ public:
   void set_first_part();
   void GET_purchased();
   void set_second_part();
+  void GET_notifications_read();
+  void process_command_GET_notif(string &limit);
   void get_copy_films();
+  void GET_notifications();
   void check_year(string min_year, string max_year);
   void check_price(string price);
   void set_result_purchased(string name, string min_year, string price

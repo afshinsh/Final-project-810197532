@@ -384,8 +384,8 @@ void manager::POST_buy()
     check_for_buy(film_id);
     film* bought_film = films[stoi(film_id)];
     current_user->buy_film(bought_film);
-    bought_film->get_publisher()->set_notif_for_buy(current_user, bought_film);
     bought_film->set_owner(current_user);
+    (bought_film->get_publisher())->set_notif_for_buy(current_user, bought_film);
     property +=  bought_film->get_price();
     cout<<"OK"<<endl;
   }
@@ -511,8 +511,8 @@ void manager::set_notif_for_comment(int film_id)
 {
   customer* owner = films[film_id]->get_publisher();
   string msg = "User " + current_user->get_username() + " with id " 
-  + to_string(current_user->get_ID()) + "comment on your film " + 
-  films[film_id]->get_name() + "with id " + to_string(film_id) + ".";
+  + to_string(current_user->get_ID()) + " comment on your film " + 
+  films[film_id]->get_name() + " with id " + to_string(film_id) + ".";
   owner->add_to_unread_notif(msg);
 }
 
@@ -579,7 +579,6 @@ void manager::process_POST_command()
   POST_rate();
   POST_comments();
   POST_replies();
-  //...check_NOT_found  Comments
 }
 
 void manager::set_first_part()
@@ -737,7 +736,7 @@ void manager::DELETE_comments()
     process_command_delete_comments(film_id, comment_id);
     if(check_is_not_integer(film_id) || check_is_not_integer(comment_id))
       throw BadRequest();
-    if(stoi(film_id) >= ID_counter_film)
+    if(stoi(film_id) >= ID_counter_film || films[stoi(film_id)]->get_deleted())
       throw NotFound();
     if(films[stoi(film_id)]->get_publisher() != current_user)
       throw PermissionDenied();
@@ -1022,6 +1021,48 @@ void manager::GET_published()
   }
 }
 
+void manager::process_command_GET_notif(string &limit)
+{
+  while(true)
+  {
+    sentence_part = achieve_part();
+    if(sentence_part == EMPTEY_STRING)
+      break;
+    else if(sentence_part == "limit")
+      limit = achieve_part();
+    else 
+      throw BadRequest();
+  }
+}
+
+void manager::GET_notifications_read()
+{
+  if(second_part == "notifications")
+  {
+    sentence_part = achieve_part();
+    if(sentence_part == EMPTEY_STRING)
+      return;
+    if(sentence_part != "read" || achieve_part() != QUERY)
+      throw BadRequest();
+    string limit;
+    if(check_is_not_integer(limit))
+      throw BadRequest();
+    process_command_GET_notif(limit);
+    current_user->show_read_notif(stoi(limit));
+  }
+}
+
+void manager::GET_notifications()
+{
+  if(second_part == "notifications" && sentence_part == EMPTEY_STRING)
+  {
+    sentence_part = achieve_part();
+    if(sentence_part != EMPTEY_STRING)
+      return;
+    current_user->show_unread_notif();
+  }
+}
+
 void manager::process_GET_command()
 {
   check_GET_second_part();
@@ -1030,6 +1071,8 @@ void manager::process_GET_command()
   GET_films();
   GET_purchased();
   GET_published();
+  GET_notifications_read();
+  GET_notifications();
 }
 
 void manager::process_command()
