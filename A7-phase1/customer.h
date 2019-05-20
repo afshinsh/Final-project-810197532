@@ -16,7 +16,6 @@ using namespace std;
 
 class film;
 
-//double film::give_avrage_rate();
 
 class customer
 {
