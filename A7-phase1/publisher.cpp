@@ -20,6 +20,13 @@ void publisher::get_copy_published_films(vector<film*> &search_result)
     search_result.push_back(my_films[i]);
 }
 
+void publisher::set_notif_for_buy(customer* buyer, film* bought_film)
+{
+  string msg = "User " + buyer->get_username() + " with id " + 
+  to_string(buyer->get_ID()) + " buy your film " + bought_film->get_name()
+   + " with id " + to_string(bought_film->get_ID()) + ".";
+}
+
 void publisher::set_notif_for_follow(customer* follower)
 {
   string msg = "User " + follower->get_username() + " with id " 

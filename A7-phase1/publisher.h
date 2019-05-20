@@ -18,6 +18,7 @@ public:
   void show_followers();
   void set_followers(customer* new_follower);
   void set_notif_for_follow(customer* follower);
+  void set_notif_for_buy(customer* buyer,, film* bought_film);
 private:
   vector<film*> my_films;
   vector<customer*> followers;

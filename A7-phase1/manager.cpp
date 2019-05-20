@@ -382,9 +382,11 @@ void manager::POST_buy()
     string film_id;
     process_command_buy(film_id);
     check_for_buy(film_id);
-    current_user->buy_film(films[stoi(film_id)]);
-    films[stoi(film_id)]->set_owner(current_user);
-    property +=  films[stoi(film_id)]->get_price();
+    film* bought_film = films[stoi(film_id)];
+    current_user->buy_film(bought_film]);
+    bought_film->get_publisher()->set_notif_for_buy(current_user);
+    films[bought_film]->set_owner(current_user, bought_film);
+    property +=  bought_film->get_price();
     cout<<"OK"<<endl;
   }
 }
