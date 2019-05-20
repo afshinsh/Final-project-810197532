@@ -11,14 +11,14 @@
 #include <iostream>
 #include <string>
 #include <vector>
-
+#include "customer.h"
 using namespace std;
 
 class comment
 {
 public:
-  comment(int _film_id, string _content, int _ID) : film_id(_film_id), 
-  content(_content), ID(_ID) {}
+  comment(int _film_id, string _content, int _ID, customer* _owner)
+  : film_id(_film_id), content(_content), ID(_ID), owner(_owner) {}
   int get_ID() { return ID; }
   void set_reply(string _content);
   string get_content() { return content; }
