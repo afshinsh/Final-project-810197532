@@ -444,6 +444,14 @@ void manager::process_command_rate(string &film_id,string &score)
     throw BadRequest();
 }
 
+void manager::set_notif_for_rate(film* rated_film, customer* rater)
+{
+  string msg = "User " + rater->get_username() + " with id " 
+  + to_string(rater->get_ID()) + " rate your film " + rated_film->get_name()
+  + " with id " + to_string(rated_film->get_ID()) + ".";
+  rated_film->get_publisher()->add_to_unread_notif(msg);
+}
+
 void manager::POST_rate()
 {
   if(second_part == "rate")
@@ -454,7 +462,7 @@ void manager::POST_rate()
     process_command_rate(film_id, score);
     check_inputs_for_rate(score, film_id);
     current_user->score_watched_film(stoi(film_id), stoi(score));
-    set_notif_for_rate(current_user->get_bought_film(film_id), current_user);
+    set_notif_for_rate(current_user->get_bought_film(stoi(film_id)), current_user);
     cout<<"OK"<<endl;
   }
 }
@@ -494,11 +502,19 @@ void manager::POST_comments()
       throw NotFound();
     current_user->check_bought_film(films[stoi(film_id)]);
     films[stoi(film_id)]->set_comment(stoi(film_id), content, current_user);
+    set_notif_for_comment(stoi(film_id));
     cout<<"OK"<<endl;
   }
 }
 
-
+void manager::set_notif_for_comment(int film_id)
+{
+  customer* owner = films[film_id]->get_publisher();
+  string msg = "User " + current_user->get_username() + " with id " 
+  + to_string(current_user->get_ID()) + "comment on your film " + 
+  films[film_id]->get_name() + "with id " + to_string(film_id) + ".";
+  owner->add_to_unread_notif(msg);
+}
 
 
 void manager::process_command_replies(string &film_id, string &comment_id, string &content)
@@ -526,8 +542,8 @@ void manager::process_command_replies(string &film_id, string &comment_id, strin
 void manager::set_notif_for_reply(int film_id, int comment_id)
 {
   customer* owner = films[film_id]->get_comment(comment_id)->get_owner();
-  string msg = "Publisher " + current_user->get_username() + "with id " 
-  + to_string(current_user->get_ID()) + "reply your comment.";
+  string msg = "Publisher " + current_user->get_username() + " with id " 
+  + to_string(current_user->get_ID()) + " reply your comment.";
   owner->add_to_unread_notif(msg);
 }
 

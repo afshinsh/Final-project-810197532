@@ -43,7 +43,6 @@ film* customer::get_bought_film(int film_id)
   return NULL;
 }
 
-
 bool customer::check_is_not_bought(film* r_film)
 {
   for(int i = 0;i < bought_films.size();i++)
@@ -51,7 +50,6 @@ bool customer::check_is_not_bought(film* r_film)
       return false;
   return true;
 }
-
 
 void customer::check_bought_film(film* bought_film)
 {

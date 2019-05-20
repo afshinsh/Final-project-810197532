@@ -29,6 +29,8 @@ public:
   void GET_published();
   bool check_is_not_double(string s);
   void process_GET_command();
+  void set_notif_for_comment(int film_id);
+  void set_notif_for_rate(film* rated_film, customer* rater);
   void DELETE_comments();
   void process_POST_command();
   void set_notif_for_reply(int film_id, int comment_id);
