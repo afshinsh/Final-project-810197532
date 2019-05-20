@@ -53,7 +53,6 @@ void customer::check_bought_film(film* bought_film)
   throw BadRequest();
 }
 
-
 void customer::follow_publisher(customer* new_publisher)
 {
   if(!new_publisher->get_publisher())

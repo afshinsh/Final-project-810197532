@@ -268,6 +268,7 @@ void manager::POST_followers()
       throw NotFound();
     customer* followed_publisher = users[stoi(user_id)];
     current_user->follow_publisher(followed_publisher);
+    followed_publisher->set_notif_for_follow(current_user);
     followed_publisher->set_followers(current_user);
     cout<<"OK"<<endl;
   }

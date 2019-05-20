@@ -45,6 +45,7 @@ public:
   double get_rate(int film_id) { return scores[film_id]; }
   void add_to_unread_notif(string notif) { unread_notif.push_back(notif); }
   void clear_unread_notif() { unread_notif.clear(); }
+  void set_notif_for_follow(customer* follower) { return; }
 protected:
   string email;
   string username;

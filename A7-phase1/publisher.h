@@ -17,6 +17,7 @@ public:
   void delete_film(int film_id);
   void show_followers();
   void set_followers(customer* new_follower);
+  void set_notif_for_follow(customer* follower);
 private:
   vector<film*> my_films;
   vector<customer*> followers;

@@ -20,6 +20,13 @@ void publisher::get_copy_published_films(vector<film*> &search_result)
     search_result.push_back(my_films[i]);
 }
 
+void publisher::set_notif_for_follow(customer* follower)
+{
+  string msg = "User " + follower->get_username() + " with id " 
+  + to_string(follower->get_ID()) + " follow you.";
+  add_to_unread_notif(msg);
+}
+
 void publisher::set_followers(customer* new_follower)
 {
   for(int i = 0;i < followers.size(); i++)
