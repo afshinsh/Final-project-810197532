@@ -10,7 +10,7 @@ void publisher::regist_new_film(film* new_film)
   my_films.push_back(new_film);
 }
 
-void get_copy_published_films(vector<film*> &search_result)
+void publisher::get_copy_published_films(vector<film*> &search_result)
 {
   for(int i = 0; i < my_films.size(); i++)
     search_result.push_back(my_films[i]);

@@ -913,7 +913,6 @@ void manager::GET_films()
     check_year(min_year,max_year);
     set_result_films(name, min_year, price, max_year, min_rate, director);
     sort(search_result.begin(), search_result.end(), compare_ID()); 
-    cout<<search_result.size()<<endl;
     show_result();
   }
 }

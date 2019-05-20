@@ -34,6 +34,8 @@ public:
 , string summary, string length, string director, int film_id) { return; }
   virtual void delete_film(int film_id) { return; }
   virtual void show_followers() { return; }
+  virtual void get_copy_published_films(vector<film*> &search_result)
+  { return; };
   void follow_publisher(customer* new_publisher);
   virtual void set_followers(customer* new_follower) { return; }
   void increase_money(int amount) { money += amount; }

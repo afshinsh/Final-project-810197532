@@ -18,6 +18,7 @@ public:
   void process_command_GET_purchased(string &name, string &min_year
   , string &price, string &max_year, string &director);
   void set_first_part();
+  void GET_purchased();
   void set_second_part();
   void get_copy_films();
   void check_year(string min_year, string max_year);
