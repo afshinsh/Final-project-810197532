@@ -5,6 +5,7 @@
 #include "comment.h"
 
 class customer;
+class comment;
 
 using namespace std;
 

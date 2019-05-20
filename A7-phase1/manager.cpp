@@ -522,8 +522,8 @@ void manager::process_command_replies(string &film_id, string &comment_id, strin
 void manager::set_notif_for_reply(int film_id, int comment_id)
 {
   customer* owner = films[film_id]->get_comment(comment_id)->get_owner();
-  string msg = "Publisher " + current_user->get_name() + "with id " 
-  + current_user->get_ID() + "reply your comment.";
+  string msg = "Publisher " + current_user->get_username() + "with id " 
+  + to_string(current_user->get_ID()) + "reply your comment.";
   owner->add_to_unread_notif(msg);
 }
 

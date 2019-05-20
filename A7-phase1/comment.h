@@ -12,6 +12,9 @@
 #include <string>
 #include <vector>
 #include "customer.h"
+
+class customer;
+
 using namespace std;
 
 class comment
