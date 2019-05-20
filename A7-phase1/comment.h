@@ -23,6 +23,7 @@ public:
   void set_reply(string _content);
   string get_content() { return content; }
   void show_replies(int id);
+  customer* get_owner() { return owner; }
 private:
   int film_id;
   string content;

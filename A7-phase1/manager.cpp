@@ -489,7 +489,7 @@ void manager::POST_comments()
     if(stoi(film_id) >= ID_counter_film)
       throw NotFound();
     current_user->check_bought_film(films[stoi(film_id)]);
-    films[stoi(film_id)]->set_comment(stoi(film_id), content);
+    films[stoi(film_id)]->set_comment(stoi(film_id), content, current_user);
     cout<<"OK"<<endl;
   }
 }
@@ -519,6 +519,14 @@ void manager::process_command_replies(string &film_id, string &comment_id, strin
     throw BadRequest();
 }
 
+void manager::set_notif_for_reply(int film_id, int comment_id)
+{
+  customer* owner = films[film_id]->get_comment(comment_id)->get_owner();
+  string msg = "Publisher " + current_user->get_name() + "with id " 
+  + current_user->get_ID() + "reply your comment.";
+  owner->add_to_unread_notif(msg);
+}
+
 void manager::POST_replies()
 {
   if(second_part == "replies")
@@ -534,6 +542,7 @@ void manager::POST_replies()
     if(films[stoi(film_id)]->get_publisher() != current_user)
       throw PermissionDenied();
     films[stoi(film_id)]->reply_cm(stoi(comment_id), content);
+    set_notif_for_reply(stoi(film_id), stoi(comment_id));
     cout<<"OK"<<endl;
   }
 }

@@ -28,6 +28,7 @@ public:
   string get_summary() { return summary; }
   string get_length() { return length; }
   string get_director() { return director; }
+  comment* get_comment(int comment_id) { return comments[comment_id - 1]; }
   string get_price_s() { return price; } 
   bool get_deleted() { return deleted; }
   void set_owner(customer* new_custormer);

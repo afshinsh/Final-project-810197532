@@ -31,6 +31,7 @@ public:
   void process_GET_command();
   void DELETE_comments();
   void process_POST_command();
+  void set_notif_for_reply(int film_id, int comment_id);
   void show_result();
   void check_DELETE_second_part();
   void process_command_buy(string &film_id);
