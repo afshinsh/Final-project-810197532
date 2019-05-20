@@ -9,9 +9,9 @@ void publisher::regist_new_film_with_notif(film* new_film)
 {
   my_films.push_back(new_film);
   string notif = "Publisher " + username + " with id " 
-  + to_string(ID) + " register new film."
+  + to_string(ID) + " register new film.";
   for(int i = 0; i < followers.size(); i++)
-    followers[i]->add_unread_notif(notif);
+    followers[i]->add_to_unread_notif(notif);
 }
 
 void publisher::get_copy_published_films(vector<film*> &search_result)
