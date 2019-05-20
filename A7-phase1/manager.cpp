@@ -181,7 +181,7 @@ void manager::initialize_film(string name, string year, string length
   film* new_film = new film(name, year, price, length, summary, 
   director, ID_counter_film, current_user);
   films.push_back(new_film);
-  current_user->regist_new_film(new_film);
+  current_user->regist_new_film_with_notif(new_film);
   ID_counter_film++;
 }
 

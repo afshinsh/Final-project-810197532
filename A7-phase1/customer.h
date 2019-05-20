@@ -28,7 +28,7 @@ public:
   string get_email() { return email; }
   void get_copy_bought_film(vector<film*> &search_result);
   int get_ID() { return ID; }
-  virtual void regist_new_film(film* new_film) { return; }
+  virtual void regist_new_film_with_notif(film* new_film) { return; }
   virtual void edit_films(string name, string year, string price
 , string summary, string length, string director, int film_id) { return; }
   virtual void delete_film(int film_id) { return; }
