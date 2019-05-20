@@ -37,7 +37,7 @@ public:
   void increase_unpaid_money() { unpaid_money++; }
   void decrease_unpaid_mpney() { unpaid_money--; }
   void reset_unpaid_money() { unpaid_money = 0; }
-  void set_comment(int film_id, string content);
+  void set_comment(int film_id, string content, customer* owner);
   void reply_cm(int comment_id, string content);
   void show_comment();
   void delete_comment(int comment_id);
