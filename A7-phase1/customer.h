@@ -54,6 +54,8 @@ protected:
   vector<customer*> followed_publishers;
   vector<film*> bought_films;
   map <int,int> scores;
+  vector<string> unread_notifications;
+  vector<string> read_notifications;
   int money = 0;
 };
 
