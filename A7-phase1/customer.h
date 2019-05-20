@@ -46,7 +46,7 @@ public:
   void add_to_unread_notif(string notif) { unread_notif.push_back(notif); }
   void clear_unread_notif() { unread_notif.clear(); }
   virtual void set_notif_for_follow(customer* follower) { return; }
-  virtual void set_notif_for_buy(customer* buyer,, film* bought_film) { return; }
+  virtual void set_notif_for_buy(customer* buyer, film* bought_film) { return; }
 protected:
   string email;
   string username;
