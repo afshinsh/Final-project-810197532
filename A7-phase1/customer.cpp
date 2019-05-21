@@ -11,6 +11,13 @@ void customer::get_copy_bought_film(vector<film*> &search_result)
     search_result.push_back(bought_films[i]);
 }
 
+double customer::get_rate(int film_id)
+{
+  if(scores.find(film_id) != scores.end())
+    return scores[film_id];
+  return 0;
+}
+
 void customer::buy_film(film* new_film)
 {
   film * bought_film = new film(new_film->get_name() , new_film->get_year()

@@ -784,7 +784,7 @@ void manager::show_features(film* Film)
   cout<<"Year = "<<Film->get_year()<<endl;
   cout<<"Summary = "<<Film->get_summary()<<endl;
   cout<<"Rate = "<<setprecision(3)<<Film->give_avrage_rate()<<endl;
-  cout<<"Price = "<<Film->get_price()<<endl;
+  cout<<"Price = "<<Film->get_price_s()<<endl;
 }
 
 void manager::show_comments(film* Film)
