@@ -36,11 +36,10 @@ public:
   void process_GET_command();
   void set_notif_for_comment(int film_id);
   void set_notif_for_rate(film* rated_film, customer* rater);
-  void DELETE_comments();
+  void POST_delete_comments();
   void process_POST_command();
   void set_notif_for_reply(int film_id, int comment_id);
   void show_result();
-  void check_DELETE_second_part();
   void process_command_buy(string &film_id);
   void POST_film();
   void POST_signup();
@@ -49,12 +48,9 @@ public:
 , string max_year, string min_rate, string director);
   void process_command_money(string &amount);
   void POST_money();
-  void process_DELETE_command();
-  void process_PUT_command();
   void GET_followers();
   void check_inputs_for_rate(string score, string film_id);
   void POST_followers();
-  void DELETE_film();
   void set_recommendation(film* f);
   void charge_account();
   void process_command_comments(string &film_id, string &content);
@@ -81,6 +77,7 @@ public:
   void POST_replies();
   void show_features(film* Film);
   void show_comments(film* Film);
+  void POST_delete_film();
   void show_recommendation(film* Film);
   bool check_is_not_integer(string s);
   void regist_film();
@@ -89,8 +86,7 @@ public:
   void check_POST_second_part();
   void check_first_part();
   string achieve_part();
-  void check_PUT_second_part();
-  void PUT_film();
+  void POST_put_film();
   void check_user_for_command();
   void catch_money();
   void pay_money(double percent, int i);

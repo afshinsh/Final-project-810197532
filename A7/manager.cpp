@@ -250,7 +250,8 @@ void manager::check_POST_second_part()
 {
   if(second_part != "signup" && second_part != "login" && second_part != "films" &&
   second_part != "money" && second_part != "replies" && second_part != "followers"
-  && second_part != "buy" && second_part != "rate" && second_part != "comments")
+  && second_part != "buy" && second_part != "rate" && second_part != "comments" &&
+  second_part != "put_films" && second_part != "delete_films" && second_part != "delete_comments")
     throw NotFound();
 }
 
@@ -597,6 +598,9 @@ void manager::process_POST_command()
   POST_rate();
   POST_comments();
   POST_replies();
+  POST_put_film();
+  POST_delete_comments();
+  POST_delete_film();
 }
 
 void manager::set_first_part()
@@ -615,12 +619,6 @@ void manager::check_first_part()
 {
   if(first_part != "GET" && first_part != "POST" && first_part != "PUT" 
   && first_part != "DELETE" && first_part != EMPTEY_STRING)
-    throw BadRequest();
-}
-
-void manager::check_PUT_second_part()
-{
-  if(second_part != "films")
     throw BadRequest();
 }
 
@@ -651,9 +649,9 @@ void manager::check_command_for_PUT(string &name, string &year, string &price
   }
 }
 
-void manager::PUT_film()
+void manager::POST_put_film()
 {
-  if(second_part == "films")
+  if(second_part == "put_films")
   {
     if(achieve_part() != QUERY)
       throw BadRequest();
@@ -670,19 +668,6 @@ void manager::PUT_film()
     cout<<"OK"<<endl;
   }
 }
-
-void manager::check_DELETE_second_part()
-{
-  if(second_part != "films" && second_part != "comments")
-    throw BadRequest();
-}
-
-void manager::process_PUT_command()
-{
-  check_PUT_second_part();
-  PUT_film();
-}
-
 
 void manager::process_command_delete(string &film_id)
 {
@@ -702,9 +687,9 @@ void manager::process_command_delete(string &film_id)
     throw BadRequest();
 }
 
-void manager::DELETE_film()
+void manager::POST_delete_film()
 {
-  if(second_part == "films")
+  if(second_part == "delete_films")
   {
     if(achieve_part() != QUERY)
       throw BadRequest();
@@ -721,8 +706,6 @@ void manager::DELETE_film()
     cout<<"OK"<<endl;
   }
 }
-
-
 
 void manager::process_command_delete_comments(string &film_id,string &comment_id)
 {
@@ -744,9 +727,9 @@ void manager::process_command_delete_comments(string &film_id,string &comment_id
     throw BadRequest();
 }
 
-void manager::DELETE_comments()
+void manager::POST_delete_comments()
 {
-  if(second_part == "comments")
+  if(second_part == "delete_comments")
   {
     if(achieve_part() != QUERY)
       throw BadRequest();
@@ -761,13 +744,6 @@ void manager::DELETE_comments()
     films[stoi(film_id)]->delete_comment(stoi(comment_id));
     cout<<"OK"<<endl;
   }
-}
-
-void manager::process_DELETE_command()
-{
-  check_DELETE_second_part();
-  DELETE_film();
-  DELETE_comments();
 }
 
 void manager::show_head_followers()
@@ -1119,10 +1095,6 @@ void manager::process_command()
     process_POST_command();
   else if(first_part == "GET")
     process_GET_command();
-  else if(first_part == "PUT")
-    process_PUT_command();
-  else if(first_part == "DELETE")
-    process_DELETE_command();
   else if(first_part == EMPTEY_STRING)
     return;
   else
