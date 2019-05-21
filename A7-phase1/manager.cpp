@@ -38,6 +38,17 @@ void manager::set_info(string &info)
   info = sentence_part;
 }
 
+int manager::hash_password(string const &password)
+{ 
+    unsigned int hash = 0;
+    const unsigned int VALUE = password.length();
+    for (auto Letter : password)
+    {
+        srand(VALUE*Letter);
+        hash += 33 + rand() % 92;
+    }
+    return hash;
+}
 
 bool manager::check_is_not_integer(string s)
 {
@@ -77,6 +88,7 @@ void manager::initialize_user(string &email, string &username
     users.push_back(current_user);
     publishers.push_back(current_user);
   }
+  current_user->set_hash_password(hash_password(password));
 }
 
 void manager::find_user(string username, string password)
@@ -86,7 +98,7 @@ void manager::find_user(string username, string password)
   for(int i = 0;i < users.size();i++)
   {
     if(users[i]->get_username() == username 
-    && users[i]->get_password() == password)
+    && users[i]->get_hash_password() == hash_password(password))
       current_user = users[i];
   }
   if(current_user == NULL)
@@ -169,7 +181,11 @@ void manager::POST_signup()
     if(check_is_not_integer(age))
       throw BadRequest();
     if(!check_email(email))
+    {
+      cout<<"aggga\n";
       throw BadRequest();
+    }
+      
     initialize_user(email, username, password, age, publisher);
     cout<<"OK"<<endl;
   }
@@ -923,8 +939,9 @@ bool manager::check_email(string email)
   int dot_offset, ad_offset;
   for(int i = 0; i < email.length(); i++)
   {
-    if(!isdigit(email[i]) || !isalpha(email[i]))
-      return false;
+    if(!isdigit(email[i]) && !isalpha(email[i])) 
+      if(email[i] != DOT && email[i] != AD)
+        return false;
     if(email[i] == DOT)
       dot_offset = i;
     if(email[i] == AD)

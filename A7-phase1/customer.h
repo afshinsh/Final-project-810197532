@@ -50,11 +50,14 @@ public:
   virtual void set_notif_for_follow(customer* follower) { return; }
   virtual void set_notif_for_buy(customer* buyer, film* bought_film) { return; }
   void show_unread_notif();
+  int get_hash_password() { return hashed_password; }
   void show_read_notif(int limit);
+  void set_hash_password(int _hash_password) { hashed_password = _hash_password; }
 protected:
   string email;
   string username;
   string password;
+  int hashed_password;
   int ID;
   string age;
   bool publish;

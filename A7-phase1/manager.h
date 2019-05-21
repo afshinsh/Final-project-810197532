@@ -24,6 +24,7 @@ public:
   void process_command_GET_notif(string &limit);
   void get_copy_films();
   void GET_notifications();
+  int hash_password(string const &password);
   void check_year(string min_year, string max_year);
   void check_price(string price);
   void set_result_purchased(string name, string min_year, string price
