@@ -26,7 +26,7 @@ public:
   string get_username() { return username; }
   string get_password() { return password; }
   string get_email() { return email; }
-  void get_copy_bought_film(vector<film*> &search_result);
+  void get_copy_bought_film(vector<film*> &search_result, vector<film*> films);
   int get_ID() { return ID; }
   virtual void regist_new_film_with_notif(film* new_film) { return; }
   virtual void edit_films(string name, string year, string price
@@ -44,7 +44,7 @@ public:
   void check_bought_film(film* bought_film);
   void set_notif_for_rate(film* rated_film, customer* rater);
   void score_watched_film(int film_id, int score);
-  double get_rate(int film_id);
+  double get_rate(int film_id, double &count);
   film* fget_bought_film(int film_id);
   void add_to_unread_notif(string notif) { unread_notif.push_back(notif); }
   virtual void set_notif_for_follow(customer* follower) { return; }

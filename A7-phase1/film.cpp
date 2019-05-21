@@ -13,11 +13,12 @@ film::film(string _name, string _year, string _price, string _length
 double film::give_avrage_rate()
 {
   double sum = 0;
+  double count = 0;
   for(int i = 0;i < owners.size();i++)
-    sum += owners[i]->get_rate(ID);
-  if(owners.size() == 0)
+      sum += owners[i]->get_rate(ID, count);
+  if(count == 0)
     return 0;
-  return sum / owners.size();
+  return sum / count;
 }
 
 void film::set_comment(int film_id, string content, customer* owner)

@@ -18,5 +18,4 @@ int main()
     }
     Manager.reset();
   }
-  cout<<'\b';
 }

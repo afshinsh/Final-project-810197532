@@ -543,7 +543,7 @@ void manager::set_notif_for_reply(int film_id, int comment_id)
 {
   customer* owner = films[film_id]->get_comment(comment_id)->get_owner();
   string msg = "Publisher " + current_user->get_username() + " with id " 
-  + to_string(current_user->get_ID()) + " reply your comment.";
+  + to_string(current_user->get_ID()) + " reply to your comment.";
   owner->add_to_unread_notif(msg);
 }
 
@@ -991,7 +991,7 @@ void manager::GET_purchased()
   if(second_part == "purchased")
   {
     search_result.clear();
-    current_user->get_copy_bought_film(search_result);
+    current_user->get_copy_bought_film(search_result, films);
     string name, min_year, price, max_year, director;
     process_command_GET_purchased(name, min_year, price, max_year, director);
     check_price(price);

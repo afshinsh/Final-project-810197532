@@ -5,16 +5,21 @@ customer::customer(string _email, string _username, string _password
 username(_username), password(_password), age(_age), ID(_ID_counter),
 publish(_publisher) {}
 
-void customer::get_copy_bought_film(vector<film*> &search_result)
+void customer::get_copy_bought_film(vector<film*> &search_result, vector<film*> films)
 {
-  for(int i = 0; i < bought_films.size(); i++)
-    search_result.push_back(bought_films[i]);
+  for(int i = 0; i < films.size(); i++)
+    for(int j = 0; j < bought_films.size(); j++)
+      if(films[i]->get_ID() == bought_films[j]->get_ID())
+        search_result.push_back(films[i]);
 }
 
-double customer::get_rate(int film_id)
+double customer::get_rate(int film_id, double &count)
 {
   if(scores.find(film_id) != scores.end())
+  {
+    count++;
     return scores[film_id];
+  }
   return 0;
 }
 

@@ -43,6 +43,7 @@ public:
   void reply_cm(int comment_id, string content);
   void show_comment();
   void delete_comment(int comment_id);
+  void set_rated() { is_rated = true; }
 private:
   string name;
   string year;
@@ -53,6 +54,7 @@ private:
   customer* publisher;
   vector<customer*> owners;
   int unpaid_money = 0;
+  bool is_rated = false;
   vector<comment*> comments;
   int ID_counter_comment = 1;
   bool deleted = false;
