@@ -168,6 +168,8 @@ void manager::POST_signup()
     check_repeated_username(username);
     if(check_is_not_integer(age))
       throw BadRequest();
+    if(!check_email(email))
+      throw BadRequest();
     initialize_user(email, username, password, age, publisher);
     cout<<"OK"<<endl;
   }
@@ -914,6 +916,25 @@ void manager::set_result_films(string name, string min_year, string price
     else if(max_year != EMPTEY_STRING && stoi((*i)->get_year()) > stoi(max_year))
       search_result.erase(i);
   } 
+}
+
+bool manager::check_email(string email)
+{
+  int dot_offset, ad_offset;
+  for(int i = 0; i < email.length(); i++)
+  {
+    if(!isdigit(email[i]) || !isalpha(email[i]))
+      return false;
+    if(email[i] == DOT)
+      dot_offset = i;
+    if(email[i] == AD)
+      ad_offset = i;
+  }
+  if(dot_offset < ad_offset)
+    return false;
+  if(dot_offset >= email.length() - 1)
+    return false;
+  return true;
 }
 
 void manager::show_result()

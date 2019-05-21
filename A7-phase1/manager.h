@@ -30,6 +30,7 @@ public:
 , string max_year, string director);
   void process_command();
   void GET_published();
+  bool check_email(string email);
   bool check_is_not_double(string s);
   void process_GET_command();
   void set_notif_for_comment(int film_id);

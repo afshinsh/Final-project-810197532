@@ -7,6 +7,7 @@
 #define MAX_POINT 10
 #define MIN_POINT 0
 #define DOT '.'
+#define AD '@'
 
 #include <iostream>
 #include <string>
