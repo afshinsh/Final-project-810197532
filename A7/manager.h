@@ -75,7 +75,7 @@ public:
   void show_details(film* Film);
   void process_command_login(string &username, string &password);
   void POST_replies();
-  void POST_login();
+  void POST_logout();
   void show_features(film* Film);
   void show_comments(film* Film);
   void POST_delete_film();
@@ -88,7 +88,7 @@ public:
   void check_first_part();
   string achieve_part();
   void POST_put_film();
-  void check_user_for_command();
+  void check_log_status();
   void catch_money();
   void pay_money(double percent, int i);
   void check_repeated_username(string username);

@@ -587,13 +587,14 @@ void manager::POST_replies()
   }
 }
 
-void manager::POST_login()
+void manager::POST_logout()
 {
   if(second_part == "logout")
   {
     if(achieve_part() != EMPTEY_STRING)
       throw BadRequest();
     current_user = NULL;
+    cout<<"OK"<<endl;
   }
 }
 
@@ -1136,20 +1137,21 @@ void manager::process_begin_of_command()
   set_second_part();
 }
 
-void manager::check_user_for_command()
+void manager::check_log_status()
 {
   if(second_part == "logout" && current_user == NULL)
     throw BadRequest();
-    if((second_part == "login" || second_part == "signup") && current_user != NULL)
-      throw BadRequest();
-  if(current_user == NULL  && second_part != "signup" && first_part != EMPTEY_STRING)
+  if((second_part == "login" || second_part == "signup") && current_user != NULL)
     throw BadRequest();
+  if(current_user == NULL  && second_part != "signup" && second_part != "login"
+  && second_part != EMPTEY_STRING)
+    throw PermissionDenied();
 }
 
 void manager::process_users()
 {
   process_begin_of_command();
-  check_user_for_command();
+  check_log_status();
   process_command();
 }
 
