@@ -75,6 +75,7 @@ public:
   void show_details(film* Film);
   void process_command_login(string &username, string &password);
   void POST_replies();
+  void POST_login();
   void show_features(film* Film);
   void show_comments(film* Film);
   void POST_delete_film();

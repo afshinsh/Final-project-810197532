@@ -251,7 +251,8 @@ void manager::check_POST_second_part()
   if(second_part != "signup" && second_part != "login" && second_part != "films" &&
   second_part != "money" && second_part != "replies" && second_part != "followers"
   && second_part != "buy" && second_part != "rate" && second_part != "comments" &&
-  second_part != "put_films" && second_part != "delete_films" && second_part != "delete_comments")
+  second_part != "put_films" && second_part != "delete_films" && 
+  second_part != "delete_comments" && second_part != "logout")
     throw NotFound();
 }
 
@@ -586,6 +587,16 @@ void manager::POST_replies()
   }
 }
 
+void manager::POST_login()
+{
+  if(second_part == "logout")
+  {
+    if(achieve_part() != EMPTEY_STRING)
+      throw BadRequest();
+    current_user = NULL;
+  }
+}
+
 void manager::process_POST_command()
 {
   check_POST_second_part();
@@ -601,6 +612,7 @@ void manager::process_POST_command()
   POST_put_film();
   POST_delete_comments();
   POST_delete_film();
+  POST_logout();
 }
 
 void manager::set_first_part()
