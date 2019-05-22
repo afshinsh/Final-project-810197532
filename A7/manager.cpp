@@ -1126,8 +1126,12 @@ void manager::process_begin_of_command()
 
 void manager::check_user_for_command()
 {
-  if(current_user == NULL && second_part != "signup" && first_part != EMPTEY_STRING)///change
-    throw PermissionDenied();
+  if(second_part == "logout" && current_user == NULL)
+    throw BadRequest();
+    if((second_part == "login" || second_part == "signup") && current_user != NULL)
+      throw BadRequest();
+  if(current_user == NULL  && second_part != "signup" && first_part != EMPTEY_STRING)
+    throw BadRequest();
 }
 
 void manager::process_users()

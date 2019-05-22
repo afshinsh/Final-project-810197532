@@ -24,6 +24,7 @@ film.o: film.cpp film.h customer.h comment.h
 	$(CC) -c film.cpp
 
 .PHONY: clean
+
 clean: 
 	rm *.o
 	
