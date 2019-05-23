@@ -400,6 +400,11 @@ void manager::POST_buy()
     process_command_buy(film_id);
     check_for_buy(film_id);
     film* bought_film = films[stoi(film_id)];
+    if(current_user->check_is_not_bought(bought_film))
+    {
+      cout<<<"OK"<<endl;
+      return;
+    }
     current_user->buy_film(bought_film);
     bought_film->set_owner(current_user);
     (bought_film->get_publisher())->set_notif_for_buy(current_user, bought_film);
