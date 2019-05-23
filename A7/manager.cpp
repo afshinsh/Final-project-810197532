@@ -172,7 +172,7 @@ void manager::process_command_signup(string &email, string &username
 
 void manager::POST_signup()
 {
-  if(second_part == "signup" )
+  if(second_part == "signup" && current_user->get_username() != "admin")
   {
     if(achieve_part() != QUERY)
       throw BadRequest();
@@ -182,11 +182,7 @@ void manager::POST_signup()
     if(check_is_not_integer(age))
       throw BadRequest();
     if(!check_email(email))
-    {
-      cout<<"aggga\n";
       throw BadRequest();
-    }
-      
     initialize_user(email, username, password, age, publisher);
     cout<<"OK"<<endl;
   }
@@ -602,19 +598,24 @@ void manager::POST_logout()
 void manager::process_POST_command()
 {
   check_POST_second_part();
-  POST_signup();
-  POST_login();
-  POST_film();
-  POST_followers();
-  POST_money();
-  POST_buy();
-  POST_rate();
-  POST_comments();
-  POST_replies();
-  POST_put_film();
-  POST_delete_comments();
-  POST_delete_film();
-  POST_logout();
+  if(current_user->get_username() != "admin" 
+  || current_user->password() != "admin")
+  {
+    POST_signup();
+    POST_login();
+    POST_film();
+    POST_followers();
+    POST_money();
+    POST_buy();
+    POST_rate();
+    POST_comments();
+    POST_replies();
+    POST_put_film();
+    POST_delete_comments();
+    POST_delete_film();
+    POST_logout();
+  }
+  
 }
 
 void manager::set_first_part()
@@ -1093,7 +1094,7 @@ void manager::GET_notifications()
 
 void manager::get_money_for_customer()
 {
-  if(current_user->get_username() != "admin" && current_user->get_password() != "admin")
+  if(current_user->get_username() != "admin" || current_user->get_password() != "admin")
     cout<<current_user->get_money()<<endl;
 }
 
@@ -1107,6 +1108,8 @@ void manager::GET_money()
 {
   if(second_part == "money")
   {
+    if(achieve_part() != EMPTEY_STRING)
+      throw BadRequest();
     get_money_for_customer();
     get_property_of_system();
   }
@@ -1114,14 +1117,18 @@ void manager::GET_money()
 
 void manager::process_GET_command()
 {
-  check_GET_second_part();
-  GET_followers();
-  GET_film();
-  GET_films();
-  GET_purchased();
-  GET_published();
-  GET_notifications_read();
-  GET_notifications();
+  if(current_user->get_username() != "admin" 
+  || current_user->get_password() != "admin")
+  {
+    check_GET_second_part();
+    GET_followers();
+    GET_film();
+    GET_films();
+    GET_purchased();
+    GET_published();
+    GET_notifications_read();
+    GET_notifications();
+  }
   GET_money();
 }
 
