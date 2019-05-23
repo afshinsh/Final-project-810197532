@@ -598,24 +598,19 @@ void manager::POST_logout()
 void manager::process_POST_command()
 {
   check_POST_second_part();
-  // if(current_user->get_username() != "admin" 
-  // || current_user->get_password() != "admin")
-  // {
-    POST_signup();
-    POST_login();
-    POST_film();
-    POST_followers();
-    POST_money();
-    POST_buy();
-    POST_rate();
-    POST_comments();
-    POST_replies();
-    POST_put_film();
-    POST_delete_comments();
-    POST_delete_film();
-    POST_logout();
-  // }
-  
+  POST_signup();
+  POST_login();
+  POST_film();
+  POST_followers();
+  POST_money();
+  POST_buy();
+  POST_rate();
+  POST_comments();
+  POST_replies();
+  POST_put_film();
+  POST_delete_comments();
+  POST_delete_film();
+  POST_logout();
 }
 
 void manager::set_first_part()
@@ -1117,18 +1112,14 @@ void manager::GET_money()
 
 void manager::process_GET_command()
 {
-  if(current_user->get_username() != "admin" 
-  || current_user->get_password() != "admin")
-  {
-    check_GET_second_part();
-    GET_followers();
-    GET_film();
-    GET_films();
-    GET_purchased();
-    GET_published();
-    GET_notifications_read();
-    GET_notifications();
-  }
+  check_GET_second_part();
+  GET_followers();
+  GET_film();
+  GET_films();
+  GET_purchased();
+  GET_published();
+  GET_notifications_read();
+  GET_notifications();  
   GET_money();
 }
 
