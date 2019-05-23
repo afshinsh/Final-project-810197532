@@ -3,10 +3,10 @@
 
 manager::manager()
 {
-  customer* root = new customer("root", "root", "root", "root", 0, false);
-  users.push_back(root);
-  customers.push_back(root);
-  publishers.push_back(root);
+  customer* admin = new customer("admin", "admin", "admin", "admin", 0, false);
+  users.push_back(admin);
+  customers.push_back(admin);
+  publishers.push_back(admin);
   film* root_f = new film("root", "root", "root", "root", "root", "root", 0, NULL);
   root_f->set_delete();
   films.push_back(root_f);
@@ -778,7 +778,7 @@ void manager::check_GET_second_part()
 {
   if(second_part != "followers" && second_part != "published" 
   && second_part != "films"&& second_part != "purchased" && 
-  second_part != "notifications")
+  second_part != "notifications" && second_part != "money")
     throw BadRequest();
 }
 
@@ -1090,6 +1090,14 @@ void manager::GET_notifications()
   }
 }
 
+void manager::GET_money()
+{
+  if(second_part == "money")
+  {
+
+  }
+}
+
 void manager::process_GET_command()
 {
   check_GET_second_part();
@@ -1100,6 +1108,7 @@ void manager::process_GET_command()
   GET_published();
   GET_notifications_read();
   GET_notifications();
+  GET_money();
 }
 
 void manager::process_command()
