@@ -77,6 +77,9 @@ public:
   void POST_replies();
   void POST_logout();
   void show_features(film* Film);
+  void get_property_of_system();
+  void get_money_for_customer();
+  void GET_money();
   void show_comments(film* Film);
   void POST_delete_film();
   void show_recommendation(film* Film);

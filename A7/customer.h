@@ -41,6 +41,7 @@ public:
   void buy_film(film* new_film);
   bool check_is_not_bought(film* r_film);
   film* get_bought_film(int film_id);
+  int get_money() { return money; }
   void check_bought_film(film* bought_film);
   void set_notif_for_rate(film* rated_film, customer* rater);
   void score_watched_film(int film_id, int score);

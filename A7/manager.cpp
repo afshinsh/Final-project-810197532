@@ -4,6 +4,7 @@
 manager::manager()
 {
   customer* admin = new customer("admin", "admin", "admin", "admin", 0, false);
+  admin->set_hash_password(hash_password("admin"));
   users.push_back(admin);
   customers.push_back(admin);
   publishers.push_back(admin);
@@ -44,7 +45,7 @@ int manager::hash_password(string const &password)
     const unsigned int VALUE = password.length();
     for (auto Letter : password)
     {
-        srand(VALUE*Letter);
+        srand(VALUE * Letter);
         hash += 33 + rand() % 92;
     }
     return hash;
@@ -1090,11 +1091,24 @@ void manager::GET_notifications()
   }
 }
 
+void manager::get_money_for_customer()
+{
+  if(current_user->get_username() != "admin" && current_user->get_password() != "admin")
+    cout<<current_user->get_money()<<endl;
+}
+
+void manager::get_property_of_system()
+{
+  if(current_user->get_username() == "admin" && current_user->get_password() == "admin")
+    cout<<property<<endl;
+}
+
 void manager::GET_money()
 {
   if(second_part == "money")
   {
-
+    get_money_for_customer();
+    get_property_of_system();
   }
 }
 
