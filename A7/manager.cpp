@@ -598,9 +598,9 @@ void manager::POST_logout()
 void manager::process_POST_command()
 {
   check_POST_second_part();
-  if(current_user->get_username() != "admin" 
-  || current_user->password() != "admin")
-  {
+  // if(current_user->get_username() != "admin" 
+  // || current_user->get_password() != "admin")
+  // {
     POST_signup();
     POST_login();
     POST_film();
@@ -614,7 +614,7 @@ void manager::process_POST_command()
     POST_delete_comments();
     POST_delete_film();
     POST_logout();
-  }
+  // }
   
 }
 
