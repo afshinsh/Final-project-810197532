@@ -3,7 +3,7 @@
 
 manager::manager()
 {
-  customer* admin = new customer("admin", "admin", "admin", "admin", 0, false);
+  customer* admin = new customer("admin", "admin", "admin", "admin", 1, false);
   admin->set_hash_password(hash_password("admin"));
   users.push_back(admin);
   customers.push_back(admin);
@@ -188,6 +188,19 @@ void manager::POST_signup()
   }
 }
 
+void manager::set_matrix()
+{
+  int * raw =(int *)malloc(films.size() * sizeof(int));
+  for(int i = 0 ; i < films.size(); i++)
+    raw[i] = 0;
+  for(int i = 0; i < films_graph.size() - 1; i++)
+  {
+    films_graph[i] = (int*)realloc(films_graph[i], films.size() * sizeof(int));
+    films_graph[i][films.size() - 1] = 0;
+  }
+  films_graph.push_back(raw);
+}
+
 void manager::initialize_film(string name, string year, string length
 , string price, string summary, string director)
 {
@@ -197,6 +210,7 @@ void manager::initialize_film(string name, string year, string length
   director, ID_counter_film, current_user);
   films.push_back(new_film);
   current_user->regist_new_film_with_notif(new_film);
+  set_matrix();
   ID_counter_film++;
 }
 
@@ -402,11 +416,12 @@ void manager::POST_buy()
     film* bought_film = films[stoi(film_id)];
     if(current_user->check_is_not_bought(bought_film))
     {
-      cout<<<"OK"<<endl;
+      cout<<"OK"<<endl;
       return;
     }
     current_user->buy_film(bought_film);
     bought_film->set_owner(current_user);
+    current_user->set_graph_films(films_graph);
     (bought_film->get_publisher())->set_notif_for_buy(current_user, bought_film);
     property +=  bought_film->get_price();
     cout<<"OK"<<endl;
@@ -426,11 +441,13 @@ void manager::check_inputs_for_rate(string score, string film_id)
     throw PermissionDenied();
 }
 
+    // return (films_graph[f->get_ID() - 1][f1->get_ID() - 1] > films_graph[f->get_ID() - 1][f2->get_ID() - 1]);
+
 struct compare_rate
 {
   inline bool operator() (film* f1, film* f2)
   {
-    return (f1->give_avrage_rate() > f2->give_avrage_rate());
+    return (f1->get_graph() > f2->get_graph());
   }
 };
 
@@ -438,10 +455,15 @@ struct compare_rate
 void manager::set_recommendation(film* f)
 {
   recommendation_films.clear();
+  int j = 0;
   for(int i = 0;i < films.size();i++)
     if(current_user->check_is_not_bought(films[i]) && !films[i]->get_deleted()
      && films[i] != f)
-      recommendation_films.push_back(films[i]);
+  {
+    recommendation_films.push_back(films[i]);
+    recommendation_films[j]->set_purpose_film(f)
+    j++;
+  }
   sort(recommendation_films.begin(), recommendation_films.end()
   , compare_rate()); 
 }

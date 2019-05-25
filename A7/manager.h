@@ -101,6 +101,7 @@ public:
 , string &max_year, string &min_rate, string &director);
   void GET_film();
   void POST_buy();
+  void set_matrix();
   void GET_films();
   void POST_comments();
   void check_for_buy(string film_id);
@@ -113,7 +114,8 @@ private:
   vector<film*> search_result;
   string command;
   int command_chars_counter = 0;
-  int ID_counter = 1;
+  vector<int*> films_graph;
+  int ID_counter = 2;
   int ID_counter_film = 1;
   customer* current_user = NULL;
   string first_part = EMPTEY_STRING ;

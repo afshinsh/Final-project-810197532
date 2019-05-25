@@ -43,7 +43,9 @@ public:
   void set_comment(int film_id, string content, customer* owner);
   void reply_cm(int comment_id, string content);
   void show_comment();
+  int get_graph();
   void delete_comment(int comment_id);
+  void set_purpose_film(film* f) { film_purpose = f; }
   void set_rated() { is_rated = true; }
 private:
   string name;
@@ -55,6 +57,7 @@ private:
   customer* publisher;
   vector<customer*> owners;
   int unpaid_money = 0;
+  film* film_purpose;
   bool is_rated = false;
   vector<comment*> comments;
   int ID_counter_comment = 1;

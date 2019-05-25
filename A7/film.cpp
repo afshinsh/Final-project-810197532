@@ -59,3 +59,8 @@ void film::show_comment()
     comments[i]->show_replies(i + 1);
   }
 }
+
+int film::get_graph()
+{
+  return films_graph[film_purpose->get_ID() - 1][ID - 1];
+}
