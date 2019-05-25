@@ -195,8 +195,6 @@ void manager::set_matrix()
     raw[i] = 0;
   for(int i = 0; i < films_graph.size(); i++)
   {
-    // if(films_graph.size() == 0)
-    //   break;
     films_graph[i] = (int*)realloc(films_graph[i], films.size() * sizeof(int));
     films_graph[i][films.size() - 1] = 0;
   }
