@@ -172,7 +172,7 @@ void manager::process_command_signup(string &email, string &username
 
 void manager::POST_signup()
 {
-  if(second_part == "signup" && current_user->get_username() != "admin")
+  if(second_part == "signup" )
   {
     if(achieve_part() != QUERY)
       throw BadRequest();
@@ -193,8 +193,10 @@ void manager::set_matrix()
   int * raw =(int *)malloc(films.size() * sizeof(int));
   for(int i = 0 ; i < films.size(); i++)
     raw[i] = 0;
-  for(int i = 0; i < films_graph.size() - 1; i++)
+  for(int i = 0; i < films_graph.size(); i++)
   {
+    // if(films_graph.size() == 0)
+    //   break;
     films_graph[i] = (int*)realloc(films_graph[i], films.size() * sizeof(int));
     films_graph[i][films.size() - 1] = 0;
   }
@@ -421,7 +423,7 @@ void manager::POST_buy()
     }
     current_user->buy_film(bought_film);
     bought_film->set_owner(current_user);
-    current_user->set_graph_films(films_graph);
+    current_user->set_graph_films(films_graph, bought_film);
     (bought_film->get_publisher())->set_notif_for_buy(current_user, bought_film);
     property +=  bought_film->get_price();
     cout<<"OK"<<endl;
@@ -461,7 +463,8 @@ void manager::set_recommendation(film* f)
      && films[i] != f)
   {
     recommendation_films.push_back(films[i]);
-    recommendation_films[j]->set_purpose_film(f)
+    recommendation_films[j]->set_purpose_film(f);
+    recommendation_films[j]->set_films_graph(films_graph);
     j++;
   }
   sort(recommendation_films.begin(), recommendation_films.end()

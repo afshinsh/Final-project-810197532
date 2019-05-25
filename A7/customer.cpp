@@ -13,9 +13,9 @@ void customer::get_copy_bought_film(vector<film*> &search_result, vector<film*> 
         search_result.push_back(films[i]);
 }
 
-void set_graph_films(vector<int*> &films_graph, film* bought_film)
+void customer::set_graph_films(vector<int*> &films_graph, film* bought_film)
 {
-  for(int i = 0; i < bought_films.size() ;i++)
+  for(int i = 0; i < bought_films.size() ; i++)
   {
     films_graph[bought_film->get_ID() - 1][bought_films[i]->get_ID() - 1]++;
     films_graph[bought_films[i]->get_ID() - 1][bought_film->get_ID() - 1]++;

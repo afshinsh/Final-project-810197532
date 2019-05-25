@@ -53,7 +53,7 @@ public:
   void show_unread_notif();
   int get_hash_password() { return hashed_password; }
   void show_read_notif(int limit);
-  void set_graph_films(vector<int*> &films_graph);
+  void set_graph_films(vector<int*> &films_graph, film* bought_film);
   void set_hash_password(int _hash_password) { hashed_password = _hash_password; }
 protected:
   string email;

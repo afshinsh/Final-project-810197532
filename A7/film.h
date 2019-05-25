@@ -47,6 +47,7 @@ public:
   void delete_comment(int comment_id);
   void set_purpose_film(film* f) { film_purpose = f; }
   void set_rated() { is_rated = true; }
+  void set_films_graph(vector<int*> _films_graph) { films_graph = _films_graph; }
 private:
   string name;
   string year;
@@ -57,6 +58,7 @@ private:
   customer* publisher;
   vector<customer*> owners;
   int unpaid_money = 0;
+  vector<int*> films_graph;
   film* film_purpose;
   bool is_rated = false;
   vector<comment*> comments;
