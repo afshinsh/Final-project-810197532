@@ -62,5 +62,5 @@ void film::show_comment()
 
 int film::get_graph()
 { 
-  return films_graph[ID - 1][film_purpose->get_ID() - 1];
+  return films_graph[film_purpose->get_ID() - 1][ID - 1];
 } 

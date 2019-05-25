@@ -414,7 +414,7 @@ void manager::POST_buy()
     process_command_buy(film_id);
     check_for_buy(film_id);
     film* bought_film = films[stoi(film_id)];
-    if(current_user->check_is_not_bought(bought_film))
+    if(!current_user->check_is_not_bought(bought_film))
     {
       cout<<"OK"<<endl;
       return;
@@ -440,8 +440,6 @@ void manager::check_inputs_for_rate(string score, string film_id)
   if(current_user->check_is_not_bought(films[stoi(film_id)]))
     throw PermissionDenied();
 }
-
-    // return (films_graph[f->get_ID() - 1][f1->get_ID() - 1] > films_graph[f->get_ID() - 1][f2->get_ID() - 1]);
 
 struct compare_rate
 {
