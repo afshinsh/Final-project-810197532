@@ -12,6 +12,34 @@
 
 class TemplateParser;
 
+class Server {
+public:
+  Server(int port = 5000);
+  ~Server();
+  void run();
+  void get(std::string path, RequestHandler *handler);
+  void post(std::string path, RequestHandler *handler);
+  void setNotFoundErrPage(std::string);
+
+  class Exception : public std::exception {
+  public:
+    Exception() {}
+    Exception(const std::string);
+    std::string getMessage();
+
+  private:
+    std::string message;
+  };
+
+private:
+  int sc;
+  int port;
+  std::vector<Route *> routes;
+  RequestHandler *notFoundHandler;
+protected:
+  manager* Manager;
+};
+
 class RequestHandler {
 public:
   virtual ~RequestHandler();
@@ -49,31 +77,5 @@ public:
   virtual std::map<std::string, std::string> handle(Request *req);
 };
 
-class Server {
-public:
-  Server(int port = 5000);
-  ~Server();
-  void run();
-  void get(std::string path, RequestHandler *handler);
-  void post(std::string path, RequestHandler *handler);
-  void setNotFoundErrPage(std::string);
 
-  class Exception : public std::exception {
-  public:
-    Exception() {}
-    Exception(const std::string);
-    std::string getMessage();
-
-  private:
-    std::string message;
-  };
-
-private:
-  int sc;
-  int port;
-  std::vector<Route *> routes;
-  RequestHandler *notFoundHandler;
-protected:
-  manager* Manager;
-};
 #endif

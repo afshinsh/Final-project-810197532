@@ -23,6 +23,7 @@ public:
   void process_command_GET_notif(string &limit);
   void get_copy_films();
   void GET_notifications();
+  customer* get_curr_user() { return current_user; }
   int hash_password(string const &password);
   void check_year(string min_year, string max_year);
   void check_price(string price);
