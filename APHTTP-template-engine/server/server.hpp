@@ -36,14 +36,16 @@ private:
   int port;
   std::vector<Route *> routes;
   RequestHandler *notFoundHandler;
-protected:
-  manager* Manager;
 };
 
 class RequestHandler {
 public:
   virtual ~RequestHandler();
   virtual Response *callback(Request *req) = 0;
+  Response *show_alert_msg(string msg);
+protected:
+  manager* Manager;
+  customer* current_user;
 };
 
 class ShowFile : public RequestHandler {

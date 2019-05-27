@@ -34,6 +34,61 @@ public:
   }
 };
 
+Response *RequestHandler::show_alert_msg(string msg)
+{
+  Response *res = new Response;
+  res->setHeader("Content-Type", "text/html");
+  string body;
+  body += "<!DOCTYPE html>";
+  body += "<html>";
+  body += "<head>";
+  // body += "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">";
+  // body += "<style>";
+  // body += ".alert {";
+  // body += "padding: 20px;";
+  // body += "background-color: grey;";
+  // body += "color: white;";
+  // body += "}";
+  // body += ".closebtn {";
+  // body += "margin-left: 15px;";
+  // body += "color: white;";
+  // body += "font-weight: bold;";
+  // body += "float: right;";
+  // body += "font-size: 22px;";
+  // body += "line-height: 20px;";
+  // body += "cursor: pointer;";
+  // body += "transition: 0.3s;";
+  // body += "}";
+  // body += ".closebtn:hover {";
+  // body += "color: black;";
+  // body += "}";
+  body += "<style>";
+  body += "div{";
+  body += "background-color: red;";
+  body += "}";
+  body += "<div>";
+  body += "</style>";
+  body += "<h2 style = \"color: red; font-size:30px;\">Error!</h2>";
+  body += "</head>";
+  body += "<body style = \"text-align: center;\">";
+  body += "<br>";
+  // body += "<span class=\"closebtn\" onclick =\"this.parentElement.style.display = 'none';\">&times;</span>";
+  body += "<strong>";
+  body += msg;
+  body += "</strong>";
+  body += "</div>";
+  body += "<br>";
+  body += "<a href=\"/signup\">Go to signup page</a>";
+  body += "<br>";
+  body += "<a href=\"/login\">Go to login page</a>";
+  body += "<br>";
+  body += "<a href=\"/\">Go to first page</a>";
+  body += "</body>";
+  body += "</html>";
+  res->setBody(body);
+  return res;
+}
+
 class ServerErrorHandler {
 public:
   static Response *callback(string msg) {

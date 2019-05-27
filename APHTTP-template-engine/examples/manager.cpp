@@ -40,7 +40,7 @@ void manager::set_info(string &info)
 }
 
 int manager::hash_password(string const &password)
-{ 
+{
     unsigned int hash = 0;
     const unsigned int VALUE = password.length();
     for (auto Letter : password)
@@ -98,7 +98,7 @@ void manager::find_user(string username, string password)
   current_user = NULL;
   for(int i = 0;i < users.size();i++)
   {
-    if(users[i]->get_username() == username 
+    if(users[i]->get_username() == username
     && users[i]->get_hash_password() == hash_password(password))
       current_user = users[i];
   }
@@ -122,7 +122,7 @@ void manager::process_command_login(string &username, string &password)
       password = achieve_part();
     else if(sentence_part == "username")
       username = achieve_part();
-    else 
+    else
       throw BadRequest();
     parametr_counter--;
   }
@@ -162,7 +162,7 @@ void manager::process_command_signup(string &email, string &username
       set_info(age);
     else if(sentence_part == "publisher")
       set_info(publisher);
-    else 
+    else
       throw BadRequest();
     parametr_counter--;
   }
@@ -174,8 +174,6 @@ void manager::POST_signup()
 {
   if(second_part == "signup" )
   {
-    if(achieve_part() != QUERY)
-      throw BadRequest();
     string email, username, password, age, publisher = EMPTEY_STRING;
     process_command_signup(email, username, password, age, publisher);
     check_repeated_username(username);
@@ -206,7 +204,7 @@ void manager::initialize_film(string name, string year, string length
 {
   if(check_is_not_integer(year) || check_is_not_integer(length) || check_is_not_integer(price))
     throw BadRequest();
-  film* new_film = new film(name, year, price, length, summary, 
+  film* new_film = new film(name, year, price, length, summary,
   director, ID_counter_film, current_user);
   films.push_back(new_film);
   current_user->regist_new_film_with_notif(new_film);
@@ -235,7 +233,7 @@ void manager::regist_film()
       set_info(summary);
     else if(sentence_part == "director")
       set_info(director);
-    else 
+    else
       throw BadRequest();
     parametr_counter--;
   }
@@ -262,7 +260,7 @@ void manager::check_POST_second_part()
   if(second_part != "signup" && second_part != "login" && second_part != "films" &&
   second_part != "money" && second_part != "replies" && second_part != "followers"
   && second_part != "buy" && second_part != "rate" && second_part != "comments" &&
-  second_part != "put_films" && second_part != "delete_films" && 
+  second_part != "put_films" && second_part != "delete_films" &&
   second_part != "delete_comments" && second_part != "logout")
     throw NotFound();
 }
@@ -316,7 +314,7 @@ void manager::process_command_money(string &amount)
       break;
     else if(sentence_part == "amount")
       amount = achieve_part();
-    else 
+    else
       throw BadRequest();
     parametr_counter--;
   }
@@ -340,7 +338,7 @@ void manager::pay_money(double percent, int i)
     current_user->increase_money(percent * films[i]->get_price());
     property -= percent * films[i]->get_price();
     films[i]->decrease_unpaid_mpney();
-  }  
+  }
   films[i]->reset_unpaid_money();
 }
 
@@ -370,7 +368,7 @@ void manager::POST_money()
       charge_account();
     else if(sentence_part == EMPTEY_STRING)
       catch_money();
-    else 
+    else
       throw BadRequest();
   }
 }
@@ -396,13 +394,13 @@ void manager::process_command_buy(string &film_id)
       break;
     else if(sentence_part == "film_id")
       film_id = achieve_part();
-    else 
+    else
       throw BadRequest();
     parametr_counter--;
   }
   if(parametr_counter > 0)
     throw BadRequest();
-} 
+}
 
 void manager::POST_buy()
 {
@@ -464,7 +462,7 @@ void manager::set_recommendation(film* f)
     j++;
   }
   sort(recommendation_films.begin(), recommendation_films.end()
-  , compare_rate()); 
+  , compare_rate());
 }
 
 void manager::process_command_rate(string &film_id,string &score)
@@ -479,7 +477,7 @@ void manager::process_command_rate(string &film_id,string &score)
       film_id = achieve_part();
     else if(sentence_part == "score")
       score = achieve_part();
-    else 
+    else
       throw BadRequest();
     parametr_counter--;
   }
@@ -489,7 +487,7 @@ void manager::process_command_rate(string &film_id,string &score)
 
 void manager::set_notif_for_rate(film* rated_film, customer* rater)
 {
-  string msg = "User " + rater->get_username() + " with id " 
+  string msg = "User " + rater->get_username() + " with id "
   + to_string(rater->get_ID()) + " rate your film " + rated_film->get_name()
   + " with id " + to_string(rated_film->get_ID()) + ".";
   rated_film->get_publisher()->add_to_unread_notif(msg);
@@ -523,7 +521,7 @@ void manager::process_command_comments(string &film_id, string &content)
       film_id = achieve_part();
     else if(sentence_part == "content")
       content = achieve_part();
-    else 
+    else
       throw BadRequest();
     parametr_counter--;
   }
@@ -553,8 +551,8 @@ void manager::POST_comments()
 void manager::set_notif_for_comment(int film_id)
 {
   customer* owner = films[film_id]->get_publisher();
-  string msg = "User " + current_user->get_username() + " with id " 
-  + to_string(current_user->get_ID()) + " comment on your film " + 
+  string msg = "User " + current_user->get_username() + " with id "
+  + to_string(current_user->get_ID()) + " comment on your film " +
   films[film_id]->get_name() + " with id " + to_string(film_id) + ".";
   owner->add_to_unread_notif(msg);
 }
@@ -574,7 +572,7 @@ void manager::process_command_replies(string &film_id, string &comment_id, strin
       comment_id = achieve_part();
     else if(sentence_part == "content")
       content = achieve_part();
-    else 
+    else
       throw BadRequest();
     parametr_counter--;
   }
@@ -585,7 +583,7 @@ void manager::process_command_replies(string &film_id, string &comment_id, strin
 void manager::set_notif_for_reply(int film_id, int comment_id)
 {
   customer* owner = films[film_id]->get_comment(comment_id)->get_owner();
-  string msg = "Publisher " + current_user->get_username() + " with id " 
+  string msg = "Publisher " + current_user->get_username() + " with id "
   + to_string(current_user->get_ID()) + " reply to your comment.";
   owner->add_to_unread_notif(msg);
 }
@@ -643,17 +641,17 @@ void manager::set_first_part()
 {
   skip_space();
   int begin_of_word = command_chars_counter;
-  while(command[command_chars_counter] != SPACE && 
+  while(command[command_chars_counter] != SPACE &&
   command[command_chars_counter] != NONE)
     command_chars_counter++;
-  first_part = command.substr(begin_of_word, 
+  first_part = command.substr(begin_of_word,
   command_chars_counter - begin_of_word);
   check_first_part();
 }
 
 void manager::check_first_part()
 {
-  if(first_part != "GET" && first_part != "POST" && first_part != "PUT" 
+  if(first_part != "GET" && first_part != "POST" && first_part != "PUT"
   && first_part != "DELETE" && first_part != EMPTEY_STRING)
     throw BadRequest();
 }
@@ -680,7 +678,7 @@ void manager::check_command_for_PUT(string &name, string &year, string &price
       set_info(summary);
     else if(sentence_part == "director")
       set_info(director);
-    else 
+    else
       throw BadRequest();
   }
 }
@@ -693,9 +691,9 @@ void manager::POST_put_film()
       throw BadRequest();
     if(!current_user->get_publisher())
       throw PermissionDenied();
-    string name, year, price, summary, length, director, film_id;    
+    string name, year, price, summary, length, director, film_id;
     check_command_for_PUT(name, year, price, summary, length, director, film_id);
-    if(check_is_not_integer(year) || check_is_not_integer(length) || 
+    if(check_is_not_integer(year) || check_is_not_integer(length) ||
     check_is_not_integer(price) || check_is_not_integer(film_id))
       throw BadRequest();
     if(stoi(film_id) >= ID_counter_film)
@@ -715,7 +713,7 @@ void manager::process_command_delete(string &film_id)
       break;
     else if(sentence_part == "film_id")
       set_info(film_id);
-    else 
+    else
       throw BadRequest();
     parametr_counter--;
   }
@@ -755,7 +753,7 @@ void manager::process_command_delete_comments(string &film_id,string &comment_id
       film_id = achieve_part();
     else if(sentence_part == "comment_id")
       comment_id = achieve_part();
-    else 
+    else
       throw BadRequest();
     parametr_counter--;
   }
@@ -799,8 +797,8 @@ void manager::GET_followers()
 
 void manager::check_GET_second_part()
 {
-  if(second_part != "followers" && second_part != "published" 
-  && second_part != "films"&& second_part != "purchased" && 
+  if(second_part != "followers" && second_part != "published"
+  && second_part != "films"&& second_part != "purchased" &&
   second_part != "notifications" && second_part != "money")
     throw BadRequest();
 }
@@ -850,7 +848,7 @@ void manager::GET_film()
       return;
     if(sentence_part != QUERY)
       throw BadRequest();
-    string film_id; 
+    string film_id;
     if(achieve_part() == "film_id")
       film_id = achieve_part();
     else
@@ -884,7 +882,7 @@ void manager::process_command_GET_films(string &name, string &min_year, string &
       set_info(min_rate);
     else if(sentence_part == "director")
       set_info(director);
-    else 
+    else
       throw BadRequest();
   }
 }
@@ -943,7 +941,7 @@ void manager::set_result_films(string name, string min_year, string price
       search_result.erase(i);
     else if(max_year != EMPTEY_STRING && stoi((*i)->get_year()) > stoi(max_year))
       search_result.erase(i);
-  } 
+  }
 }
 
 bool manager::check_email(string email)
@@ -951,7 +949,7 @@ bool manager::check_email(string email)
   int dot_offset, ad_offset;
   for(int i = 0; i < email.length(); i++)
   {
-    if(!isdigit(email[i]) && !isalpha(email[i])) 
+    if(!isdigit(email[i]) && !isalpha(email[i]))
       if(email[i] != DOT && email[i] != AD)
         return false;
     if(email[i] == DOT)
@@ -990,7 +988,7 @@ void manager::GET_films()
     check_price(price);
     check_year(min_year,max_year);
     set_result_films(name, min_year, price, max_year, min_rate, director);
-    sort(search_result.begin(), search_result.end(), compare_ID()); 
+    sort(search_result.begin(), search_result.end(), compare_ID());
     show_result();
   }
 }
@@ -1013,7 +1011,7 @@ void manager::process_command_GET_purchased(string &name, string &min_year, stri
       set_info(price);
     else if(sentence_part == "director")
       set_info(director);
-    else 
+    else
       throw BadRequest();
   }
 }
@@ -1047,7 +1045,7 @@ void manager::GET_purchased()
     check_price(price);
     check_year(min_year,max_year);
     set_result_purchased(name, min_year, price, max_year, director);
-    sort(search_result.begin(), search_result.end(), compare_ID()); 
+    sort(search_result.begin(), search_result.end(), compare_ID());
     show_result();
   }
 }
@@ -1066,7 +1064,7 @@ void manager::GET_published()
     check_price(price);
     check_year(min_year,max_year);
     set_result_films(name, min_year, price, max_year, min_rate, director);
-    sort(search_result.begin(), search_result.end(), compare_ID()); 
+    sort(search_result.begin(), search_result.end(), compare_ID());
     show_result();
   }
 }
@@ -1080,7 +1078,7 @@ void manager::process_command_GET_notif(string &limit)
       break;
     else if(sentence_part == "limit")
       limit = achieve_part();
-    else 
+    else
       throw BadRequest();
   }
 }
@@ -1145,7 +1143,7 @@ void manager::process_GET_command()
   GET_purchased();
   GET_published();
   GET_notifications_read();
-  GET_notifications();  
+  GET_notifications();
   GET_money();
 }
 
@@ -1174,7 +1172,7 @@ void manager::set_second_part()
   while(command[command_chars_counter] != SPACE &&
    command[command_chars_counter] != NONE)
     command_chars_counter++;
-  second_part = command.substr(begin_of_word, 
+  second_part = command.substr(begin_of_word,
   command_chars_counter - begin_of_word);
 }
 
@@ -1207,10 +1205,10 @@ string manager::achieve_part()
 {
   skip_space();
   int begin_of_word = command_chars_counter;
-  while(command[command_chars_counter] != SPACE 
+  while(command[command_chars_counter] != SPACE
   && command[command_chars_counter] != NONE)
     command_chars_counter++;
-  string str = command.substr(begin_of_word, 
+  string str = command.substr(begin_of_word,
   command_chars_counter - begin_of_word);
   return str;
 }

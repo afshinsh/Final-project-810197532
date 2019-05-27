@@ -16,8 +16,17 @@ class LoginHandler : public RequestHandler {
 public:
   LoginHandler(manager* _Manager) : Manager(_Manager) {}
   Response *callback(Request *);
-  Response *show_alert_msg(string msg);
-  bool check_empety(string u, string p);
+  bool check_empety_login(string user, string pass);
+  manager* Manager;
+};
+
+class SignupHandler : public RequestHandler {
+public:
+  SignupHandler(manager* _Manager) : Manager(_Manager) {}
+  Response *callback(Request *);
+  bool check_empety_signup(string user, string pass,string re_pass
+  ,string age,string email);
+  bool check_equality(string pass, string re_pass);
   manager* Manager;
 };
 

@@ -2,36 +2,37 @@
 #define EXCEPTIONS_H
 
 #include <iostream>
+#include <string>
 
 using namespace std;
 
 class exceptions
 {
 public:
-  virtual void what() = 0;
+  virtual string what() = 0;
 };
 
 class BadRequest : public exceptions {
 public:
-  void what()
+  string what()
   {
-    cout<<"Bad Request"<<endl;
+    return "Bad Request";
   }
 };
 
 class PermissionDenied : public exceptions {
 public:
-  void what()
+  string what()
   {
-    cout<<"Permission Denied"<<endl;
+    return "Permission Denied";
   }
 };
 
 class NotFound : public exceptions {
 public:
-  void what()
+  string what()
   {
-    cout<<"Not Found"<<endl;
+    return "Not Found";
   }
 };
 
