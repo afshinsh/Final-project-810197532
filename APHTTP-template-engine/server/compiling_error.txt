@@ -1,0 +1,88 @@
+/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o: In function `_start':
+(.text+0x20): undefined reference to `main'
+/tmp/ccPU0DtA.o: In function `parseRawReq(char*, unsigned long)':
+server.cpp:(.text+0x24f): undefined reference to `split(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, bool)'
+server.cpp:(.text+0x3f1): undefined reference to `split(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, bool)'
+server.cpp:(.text+0x5c0): undefined reference to `split(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, bool)'
+server.cpp:(.text+0x6b9): undefined reference to `Request::Request(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+server.cpp:(.text+0x708): undefined reference to `Request::setPath(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+server.cpp:(.text+0x72d): undefined reference to `Request::getPath[abi:cxx11]()'
+server.cpp:(.text+0x781): undefined reference to `Request::getPath[abi:cxx11]()'
+server.cpp:(.text+0x808): undefined reference to `Request::getPath[abi:cxx11]()'
+server.cpp:(.text+0x849): undefined reference to `split(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, bool)'
+server.cpp:(.text+0x91b): undefined reference to `split(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, bool)'
+server.cpp:(.text+0x9c8): undefined reference to `Request::setQueryParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, bool)'
+server.cpp:(.text+0xa99): undefined reference to `Request::getPath[abi:cxx11]()'
+server.cpp:(.text+0xace): undefined reference to `Request::setPath(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+server.cpp:(.text+0xb75): undefined reference to `Request::getHeader(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+server.cpp:(.text+0xc88): undefined reference to `Request::getHeader(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+server.cpp:(.text+0xcd1): undefined reference to `Request::getHeader(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+server.cpp:(.text+0xe3c): undefined reference to `split(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, bool)'
+server.cpp:(.text+0xf5b): undefined reference to `Request::setHeader(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, bool)'
+server.cpp:(.text+0xfaf): undefined reference to `toLowerCase(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+server.cpp:(.text+0xff1): undefined reference to `toLowerCase(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+server.cpp:(.text+0x1100): undefined reference to `Request::getHeader(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+server.cpp:(.text+0x1190): undefined reference to `Request::getHeader(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+server.cpp:(.text+0x1235): undefined reference to `split(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, bool)'
+server.cpp:(.text+0x12f8): undefined reference to `split(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, bool)'
+server.cpp:(.text+0x13a5): undefined reference to `Request::setBodyParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, bool)'
+server.cpp:(.text+0x144b): undefined reference to `Request::setBodyParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, bool)'
+server.cpp:(.text+0x1563): undefined reference to `Request::getHeader(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+server.cpp:(.text+0x17b8): undefined reference to `Request::getHeader(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+server.cpp:(.text+0x18ae): undefined reference to `split(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, bool)'
+server.cpp:(.text+0x19a1): undefined reference to `toLowerCase(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+server.cpp:(.text+0x19e3): undefined reference to `toLowerCase(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+server.cpp:(.text+0x1ab3): undefined reference to `split(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, bool)'
+server.cpp:(.text+0x1b76): undefined reference to `split(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, bool)'
+server.cpp:(.text+0x1bf7): undefined reference to `toLowerCase(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+server.cpp:(.text+0x1c39): undefined reference to `toLowerCase(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+server.cpp:(.text+0x1e0f): undefined reference to `toLowerCase(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+server.cpp:(.text+0x1e51): undefined reference to `toLowerCase(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+server.cpp:(.text+0x1ef2): undefined reference to `toLowerCase(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+/tmp/ccPU0DtA.o:server.cpp:(.text+0x1f34): more undefined references to `toLowerCase(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)' follow
+/tmp/ccPU0DtA.o: In function `parseRawReq(char*, unsigned long)':
+server.cpp:(.text+0x22af): undefined reference to `Request::setBodyParam(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, bool)'
+/tmp/ccPU0DtA.o: In function `Server::get(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, RequestHandler*)':
+server.cpp:(.text+0x3720): undefined reference to `Route::Route(Method, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+server.cpp:(.text+0x3743): undefined reference to `Route::setHandler(RequestHandler*)'
+/tmp/ccPU0DtA.o: In function `Server::post(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, RequestHandler*)':
+server.cpp:(.text+0x3804): undefined reference to `Route::Route(Method, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+server.cpp:(.text+0x3827): undefined reference to `Route::setHandler(RequestHandler*)'
+/tmp/ccPU0DtA.o: In function `Server::run()':
+server.cpp:(.text+0x3aa5): undefined reference to `Request::log()'
+server.cpp:(.text+0x3abf): undefined reference to `Response::Response(int)'
+server.cpp:(.text+0x3b2f): undefined reference to `Request::getPath[abi:cxx11]()'
+server.cpp:(.text+0x3b3e): undefined reference to `Request::getMethod()'
+server.cpp:(.text+0x3b54): undefined reference to `Route::isMatch(Method, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+server.cpp:(.text+0x3b9b): undefined reference to `Route::handle(Request*)'
+server.cpp:(.text+0x3c58): undefined reference to `Response::log(bool)'
+server.cpp:(.text+0x3c78): undefined reference to `Response::print[abi:cxx11](int&)'
+/tmp/ccPU0DtA.o: In function `Server::~Server()':
+server.cpp:(.text+0x4020): undefined reference to `Route::~Route()'
+/tmp/ccPU0DtA.o: In function `ShowFile::callback(Request*)':
+server.cpp:(.text+0x41fc): undefined reference to `Response::Response(int)'
+server.cpp:(.text+0x4251): undefined reference to `Response::setHeader(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+server.cpp:(.text+0x4297): undefined reference to `readFile[abi:cxx11](char const*)'
+server.cpp:(.text+0x42aa): undefined reference to `Response::setBody(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+/tmp/ccPU0DtA.o: In function `ShowPage::ShowPage(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)':
+server.cpp:(.text+0x439f): undefined reference to `getExtension(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+/tmp/ccPU0DtA.o: In function `ShowImage::ShowImage(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)':
+server.cpp:(.text+0x44f3): undefined reference to `getExtension(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+/tmp/ccPU0DtA.o: In function `TemplateHandler::TemplateHandler(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)':
+server.cpp:(.text+0x47aa): undefined reference to `TemplateParser::TemplateParser(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+/tmp/ccPU0DtA.o: In function `TemplateHandler::callback(Request*)':
+server.cpp:(.text+0x48d5): undefined reference to `Response::Response(int)'
+server.cpp:(.text+0x4948): undefined reference to `Response::setHeader(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+server.cpp:(.text+0x49b8): undefined reference to `TemplateParser::getHtml(std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >)'
+server.cpp:(.text+0x49ce): undefined reference to `Response::setBody(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+/tmp/ccPU0DtA.o: In function `NotFoundHandler::callback(Request*)':
+server.cpp:(.text._ZN15NotFoundHandler8callbackEP7Request[_ZN15NotFoundHandler8callbackEP7Request]+0x41): undefined reference to `Response::Response(int)'
+server.cpp:(.text._ZN15NotFoundHandler8callbackEP7Request[_ZN15NotFoundHandler8callbackEP7Request]+0x99): undefined reference to `getExtension(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+server.cpp:(.text._ZN15NotFoundHandler8callbackEP7Request[_ZN15NotFoundHandler8callbackEP7Request]+0xf3): undefined reference to `Response::setHeader(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+server.cpp:(.text._ZN15NotFoundHandler8callbackEP7Request[_ZN15NotFoundHandler8callbackEP7Request]+0x15a): undefined reference to `readFile[abi:cxx11](char const*)'
+server.cpp:(.text._ZN15NotFoundHandler8callbackEP7Request[_ZN15NotFoundHandler8callbackEP7Request]+0x170): undefined reference to `Response::setBody(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+/tmp/ccPU0DtA.o: In function `ServerErrorHandler::callback(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)':
+server.cpp:(.text._ZN18ServerErrorHandler8callbackENSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE[_ZN18ServerErrorHandler8callbackENSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE]+0x34): undefined reference to `Response::Response(int)'
+server.cpp:(.text._ZN18ServerErrorHandler8callbackENSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE[_ZN18ServerErrorHandler8callbackENSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE]+0x95): undefined reference to `Response::setHeader(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+server.cpp:(.text._ZN18ServerErrorHandler8callbackENSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE[_ZN18ServerErrorHandler8callbackENSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE]+0x109): undefined reference to `Response::setBody(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+collect2: error: ld returned 1 exit status
