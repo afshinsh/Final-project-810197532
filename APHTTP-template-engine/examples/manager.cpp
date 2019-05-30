@@ -105,9 +105,23 @@ void manager::find_user(string username, string password)
   if(current_user == NULL)
   {
     current_user = previous_user;
-    throw BadRequest();
+    throw NotFound();
   }
   previous_user = NULL;
+}
+
+
+void manager::set_films(string &body, int user_id)
+{
+  body += "<p>Name    |    Price    |    Year    |    lenght    |    Rate    |    Director</P>";
+  for(int i = 0; i < films.size(); i++)
+    if(!films[i]->get_deleted())
+    {
+      body += films[i]->get_name() + "  |  " + films[i]->get_price_s() + "  |  "  + films[i]->get_year() + "  |  "
+       + films[i]->get_length() + "  |  "  + to_string(films[i]->give_avrage_rate()) + "  |  "
+       + films[i]->get_director();
+      body += " <br> ";
+    }
 }
 
 void manager::process_command_login(string &username, string &password)
@@ -147,6 +161,7 @@ void manager::process_command_signup(string &email, string &username
 , string &password, string &age, string &publisher)
 {
   int parametr_counter = 5;
+  sentence_part = achieve_part();
   while(true)
   {
     sentence_part = achieve_part();
@@ -174,6 +189,7 @@ void manager::POST_signup()
 {
   if(second_part == "signup" )
   {
+    cout<<"kkkkkkkkkkkkkkkkkkkkkk";
     string email, username, password, age, publisher = EMPTEY_STRING;
     process_command_signup(email, username, password, age, publisher);
     check_repeated_username(username);

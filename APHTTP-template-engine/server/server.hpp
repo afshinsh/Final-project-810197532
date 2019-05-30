@@ -43,8 +43,6 @@ public:
   virtual ~RequestHandler();
   virtual Response *callback(Request *req) = 0;
   Response *show_alert_msg(string msg);
-protected:
-  manager* Manager;
   customer* current_user;
 };
 

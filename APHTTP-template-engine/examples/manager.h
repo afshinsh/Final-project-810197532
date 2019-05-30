@@ -19,6 +19,7 @@ public:
   void set_first_part();
   void GET_purchased();
   void set_second_part();
+  void set_films(string &body, int user_id);
   void GET_notifications_read();
   void process_command_GET_notif(string &limit);
   void get_copy_films();
@@ -62,6 +63,7 @@ public:
   , string &summary, string &length, string &director, string &film_id);
   void initialize_film(string name, string year, string length
   , string price, string summary, string director);
+  int size() { return users.size(); }
   void process_command_followers(string &user_id);
   void check_GET_second_part();
   void set_info(string &info);
@@ -117,7 +119,7 @@ protected:
   vector<int*> films_graph;
   int ID_counter = 2;
   int ID_counter_film = 1;
-  customer* current_user = NULL;
+  customer* current_user;
   string first_part = EMPTEY_STRING ;
   string second_part = EMPTEY_STRING;
   string sentence_part;

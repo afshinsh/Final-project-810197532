@@ -20,6 +20,13 @@ public:
   manager* Manager;
 };
 
+class HomeHandler : public RequestHandler {
+public:
+  HomeHandler(manager* _Manager) : Manager(_Manager) {}
+  Response *callback(Request *);
+  manager* Manager;
+};
+
 class SignupHandler : public RequestHandler {
 public:
   SignupHandler(manager* _Manager) : Manager(_Manager) {}

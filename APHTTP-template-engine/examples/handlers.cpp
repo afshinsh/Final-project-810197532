@@ -24,7 +24,8 @@ Response *RandomNumberHandler::callback(Request *req) {
   return res;
 }
 
-bool SignupHandler::check_empety_signup(string user, string pass,string re_pass, string age, string email)
+bool SignupHandler::check_empety_signup(string user, string pass,string re_pass
+  , string age, string email)
 {
   if(user == "" || pass == "" || re_pass == "" || age == "" || email == "")
     return true;
@@ -58,14 +59,14 @@ Response *SignupHandler::callback(Request *req) {
   if(check_equality(password, re_password))
     return show_alert_msg("not match for password!");
   try {
-    Manager->set_command("POST signup ? username" + username + "password"
-    + password + "age" + age + "email" + email + "publisher" + publisher);
-    Manager->POST_signup();
+    Manager->set_command("POST signup ? email " + email + " username " + username + " password "
+    + password + " age " + age  + " publisher " + publisher);
+    Manager->process_users();
     current_user = Manager->get_curr_user();
   } catch(exceptions &ex) {
       return show_alert_msg(ex.what());
   }
-  Response *res = Response::redirect("/rand"); ///////////////////
+  Response *res = Response::redirect("/home"); ///////////////////
   res->setSessionId(to_string(current_user->get_ID()));
   return res;
 }
@@ -81,8 +82,24 @@ Response *LoginHandler::callback(Request *req) {
   } catch(exceptions &ex) {
       return show_alert_msg(ex.what());
   }
-  Response *res = Response::redirect("/rand"); ///////////////////
+  Response *res = Response::redirect("/home"); ///////////////////
   res->setSessionId(to_string(current_user->get_ID()));
+  return res;
+}
+
+Response *HomeHandler::callback(Request *req) {
+  Response *res = new Response;
+  res->setHeader("Content-Type", "text/html");
+  string body;
+  body += "<!DOCTYPE html>";
+  body += "<html>";
+  body += "<body style=\"text-align: center;\">";
+  body += "<h1>NETFLIX</h1>";
+  int user_id = stoi(req->getSessionId());
+  Manager->set_films(body, user_id);
+  body += "</body>";
+  body += "</html>";
+  res->setBody(body);
   return res;
 }
 
