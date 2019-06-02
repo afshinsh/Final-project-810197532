@@ -113,17 +113,20 @@ Response *NewFilmHandler::callback(Request *req) {
   return res;
 }
 
-Response *HomeHandler::callback(Request *req) {
-  Response *res = new Response;
-  int user_id = stoi(req->getSessionId());
-  current_user = Manager->get_curr_user();
-  res->setHeader("Content-Type", "text/html");
-  string body;
+void HomeHandler::set_Body(string &body, int user_id, string filter)
+{
   body += "<!DOCTYPE html>";
   body += "<html>";
   body += "<body style=\"text-align: center;\">";
   body += "<h1> NETFLIX </h1>";
-  Manager->set_films(body, user_id);
+  body += "<form action=\"/home\" >";
+  body += "Filter by name of director : <input type=\"submit\" name=\"filter\" />";
+  body += "</form>";
+  body += "<br>";
+  if(filter == "submit")
+    Manager->set_sort_film(body, user_id);
+  else
+    Manager->set_films(body, user_id);
   for(int i = 0; i < 4; i++)
     body += "<br>";
   if(current_user->get_publisher())
@@ -136,6 +139,22 @@ Response *HomeHandler::callback(Request *req) {
   body += "<a href = \"/\">Logout</a>";
   body += "</body>";
   body += "</html>";
+}
+
+Response *HomeHandler::callback(Request *req) {
+  Response *res = new Response;
+  int user_id = stoi(req->getSessionId());
+  current_user = Manager->get_curr_user();
+  res->setHeader("Content-Type", "text/html");
+  string Delete = req->getQueryParam("DLT");
+  string filter = req->getQueryParam("filter");
+  if(Delete == "true")
+  {
+    string film_id = req->getQueryParam("ID");
+    Manager->POST_delete_film(film_id);
+  }
+  string body;
+  set_Body(body, user_id, filter);
   res->setSessionId(req->getSessionId());
   res->setBody(body);
   return res;

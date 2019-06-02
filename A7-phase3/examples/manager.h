@@ -78,12 +78,13 @@ public:
   void process_command_login(string &username, string &password);
   void POST_replies();
   void POST_logout();
+  void set_sort_film(string &body, int user_id);
   void show_features(film* Film);
   void get_property_of_system();
   void get_money_for_customer();
   void GET_money();
   void show_comments(film* Film);
-  void POST_delete_film();
+  void POST_delete_film(string film_id);
   void show_recommendation(film* Film);
   bool check_is_not_integer(string s);
   void regist_film();
@@ -106,13 +107,13 @@ public:
   void POST_buy(string _film_id);
   void set_matrix();
   void GET_films();
-  void set_film_id(string _film_id) { film_id = _film_id; }
+  void set_film_id(string _film_id) { film_i = _film_id; }
   void set_curr() { current_user = NULL; }
   void set_recomm(map <string,string> &context, int film_id);
   void POST_comments();
   void check_for_buy(string film_id);
   int get_film_id() { return ID_counter_film; }
-  string get_s_film_id() { return film_id; }
+  string get_s_film_id() { return film_i; }
   void set_info_of_film(map <string,string> &context, int film_id) ;
 protected:
   vector<film*> films;
@@ -127,7 +128,7 @@ protected:
   int ID_counter = 2;
   int ID_counter_film = 1;
   customer* current_user;
-  string film_id;
+  string film_i;
   string first_part = EMPTEY_STRING ;
   string second_part = EMPTEY_STRING;
   string sentence_part;

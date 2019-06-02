@@ -36,6 +36,7 @@ public:
   HomeHandler(manager* _Manager) : Manager(_Manager) {}
   Response *callback(Request *);
   customer* current_user;
+  void set_Body(string &body, int user_id, string filter);
   manager* Manager;
 };
 

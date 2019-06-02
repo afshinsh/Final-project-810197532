@@ -128,6 +128,31 @@ void manager::set_info_of_film(map <string,string> &context, int film_id) {
   context["price"] = films[film_id]->get_price_s();
 }
 
+struct compare_director
+{
+  inline bool operator() (film* f1, film* f2)
+  {
+    return (f1->get_director() > f2->get_director());
+  }
+};
+
+void manager::set_sort_film(string &body, int user_id)
+{
+  body += "<h2>Name    |    Price    |    Year    |    lenght    |    Rate    |    Director</h2>";
+  vector<film*> s_films = films;
+  sort(s_films.begin(), s_films.end(), compare_director());
+  for(int i = 0; i < s_films.size(); i++)
+    if(!s_films[i]->get_deleted() && (current_user->get_money() >= s_films[i]->get_price()))
+    {
+      body += to_string(i) + ".<P>" + s_films[i]->get_name() + "  |  " + s_films[i]->get_price_s() + "  |  "  + s_films[i]->get_year() + "  |  "+ s_films[i]->get_length() + "  |  "  + to_string(s_films[i]->give_avrage_rate()) + "  |  " + s_films[i]->get_director() +  "</p>";
+      if(s_films[i]->get_publisher() == current_user)
+        body += "<a href = '/home?DLT=true&ID=" + to_string(s_films[i]->get_ID()) + "'>Delete</a> <br> ";
+      if(s_films[i]->get_publisher() != current_user)
+        body += "<a href = '/detail?ID=" + to_string(s_films[i]->get_ID()) + "'>Details and buy</a> <br>";
+      body += " <br> ";
+    }
+}
+
 void manager::set_films(string &body, int user_id)
 {
   body += "<h2>Name    |    Price    |    Year    |    lenght    |    Rate    |    Director</h2>";
@@ -136,7 +161,7 @@ void manager::set_films(string &body, int user_id)
     {
       body += to_string(i) + ".<P>" + films[i]->get_name() + "  |  " + films[i]->get_price_s() + "  |  "  + films[i]->get_year() + "  |  "+ films[i]->get_length() + "  |  "  + to_string(films[i]->give_avrage_rate()) + "  |  " + films[i]->get_director() +  "</p>";
       if(films[i]->get_publisher() == current_user)
-        body += "<a href = '/details?ID=" + to_string(films[i]->get_ID()) + "'>Delete</a> <br> ";
+        body += "<a href = '/home?DLT=true?ID=" + to_string(films[i]->get_ID()) + "'>Delete</a> <br> ";
       if(films[i]->get_publisher() != current_user)
         body += "<a href = '/detail?ID=" + to_string(films[i]->get_ID()) + "'>Details and buy</a> <br>";
       body += " <br> ";
@@ -463,6 +488,7 @@ struct compare_rate
 };
 
 
+
 void manager::set_recommendation(film* f)
 {
   recommendation_films.clear();
@@ -648,7 +674,7 @@ void manager::process_POST_command()
   POST_replies();
   POST_put_film();
   POST_delete_comments();
-  POST_delete_film();
+  // POST_delete_film();
   POST_logout();
 }
 
@@ -736,24 +762,10 @@ void manager::process_command_delete(string &film_id)
     throw BadRequest();
 }
 
-void manager::POST_delete_film()
+void manager::POST_delete_film(string film_id)
 {
-  if(second_part == "delete_films")
-  {
-    if(achieve_part() != QUERY)
-      throw BadRequest();
-    string film_id;
-    process_command_delete(film_id);
-    if(check_is_not_integer(film_id))
-      throw BadRequest();
-    if(stoi(film_id) >= ID_counter_film)
-      throw NotFound();
-    if(current_user != films[stoi(film_id)]->get_publisher())
-      throw PermissionDenied();
-    current_user->delete_film(stoi(film_id));
-    films[stoi(film_id)]->set_delete();
-    cout<<"OK"<<endl;
-  }
+  current_user->delete_film(stoi(film_id));
+  films[stoi(film_id)]->set_delete();
 }
 
 void manager::process_command_delete_comments(string &film_id,string &comment_id)
