@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+	<h2 style = "color: purple;"> Details of film</h2>
+	<body style="text-align: center;">
+	Name : 
+	<%
+                cout << context["name"];
+            %>
+	<br>
+	Price :
+	<%
+                cout << context["price"];
+            %>
+	<br>
+	Lenght : 
+	<%
+                cout << context["lenght"];
+            %>
+	<br>
+	Rate : 
+	<%
+                cout << context["rate"];
+            %>
+	<br>
+	Year : 
+	<%
+                cout << context["year"];
+            %>
+	<br>
+	Director : 
+	<%
+                cout << context["director"];
+            %>
+	<br>
+	Summary : 
+	<%
+                cout << context["summary"];
+            %>
+	<br>
+	<br>
+	
+ 	<form action="/detail?ID=0">
+	    <%
+	    if(context["check"] == "")
+	    {
+	    %>
+	    <div style="color:navy; height: 10px;">
+		<button type="submit" style="display:block; width: 100%; 				padding: 7px;">Buy</button>
+	    </div>
+	    <%
+		}
+	    %>
+		<br>
+</form>
+
+	<form action="/detail?ID=00">
+	 	<%
+	    if(context["check"] == "false")
+	    {
+	    %>
+	    <div style="color:navy; height: 10px;">
+		<input name="rate" type="text" 			placeholder="Rate : 1 to 10" style="display:block; margin: auto; margin-bottom: 7px; padding: 5px; width: 94%;" />
+	<button type="submit" style="display:block; margin: auto; margin-bottom: 7px; padding: 5px; width: 94%;">Rate</button>
+	    </div>
+	    <%
+		}
+	    %>
+	</form>
+	</br>
+	<br>
+	<br>
+	<h3>Recommendation films : </h3>
+	<%
+                cout << context["recomm"];
+            %>
+	<br>
+<br>
+	<a href = "/profile">Profile</a>
+	<br>
+	<br>
+	<a href = "/home">Home</a>
+	<br>
+	<br>
+	<a href = "/">Logout</a>
+	</body>
+	
+</html>
+
+    <%
+        if(context["color"] == "red")
+        {
+    %>
+    <div style="color:red; height: 10px;">
+        <%
+                cout << context["name"];
+            %>
+    </div>
+    <%
+        }
+    %>

@@ -136,7 +136,7 @@ void manager::set_films(string &body, int user_id)
     {
       body += to_string(i) + ".<P>" + films[i]->get_name() + "  |  " + films[i]->get_price_s() + "  |  "  + films[i]->get_year() + "  |  "+ films[i]->get_length() + "  |  "  + to_string(films[i]->give_avrage_rate()) + "  |  " + films[i]->get_director() +  "</p>";
       if(films[i]->get_publisher() == current_user)
-        body += "<a href = '/details?ID=" + to_string(films[i]->get_ID()) + "'>Delete</a> <br> ";
+        body += "<a href = '/detail?ID=" + to_string(films[i]->get_ID()) + "'>Delete</a> <br> ";
       if(films[i]->get_publisher() != current_user)
         body += "<a href = '/detail?ID=" + to_string(films[i]->get_ID()) + "'>Details and buy</a> <br>";
       body += " <br> ";
@@ -206,12 +206,17 @@ void manager::process_command_signup(string &email, string &username
 
 void manager::POST_signup(string email, string username, string password, string age, string publisher)
 {
-  check_repeated_username(username);
-  if(check_is_not_integer(age))
-    throw BadRequest();
-  if(!check_email(email))
-    throw BadRequest();
-  initialize_user(email, username, password, age, publisher);
+  // if(second_part == "signup" )
+  // {
+    // string email, username, password, age, publisher = EMPTEY_STRING;
+    // process_command_signup(email, username, password, age, publisher);
+    check_repeated_username(username);
+    if(check_is_not_integer(age))
+      throw BadRequest();
+    if(!check_email(email))
+      throw BadRequest();
+    initialize_user(email, username, password, age, publisher);
+  // }
 }
 
 void manager::set_matrix()
@@ -430,9 +435,9 @@ void manager::process_command_buy(string &film_id)
     throw BadRequest();
 }
 
-void manager::POST_buy(string _film_id)
+void manager::POST_buy(string film_id)
 {
-  film* bought_film = films[stoi(_film_id)];
+  film* bought_film = films[stoi(film_id)];
   if(!current_user->check_is_not_bought(bought_film))
     return;
   current_user->buy_film(bought_film);
@@ -642,7 +647,7 @@ void manager::process_POST_command()
   POST_film();
   POST_followers();
   POST_money();
-  // POST_buy();
+  POST_buy();
   POST_rate();
   POST_comments();
   POST_replies();
@@ -1227,3 +1232,4 @@ string manager::achieve_part()
   command_chars_counter - begin_of_word);
   return str;
 }
+

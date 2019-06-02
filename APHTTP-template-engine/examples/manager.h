@@ -43,7 +43,7 @@ public:
   void show_result();
   void process_command_buy(string &film_id);
   void POST_film();
-  void POST_signup(string email, string username, string password, string age, string publisher);
+  void POST_signup();
   void check_min_rate(string min_rate);
   void set_result_films(string name, string min_year, string price
 , string max_year, string min_rate, string director);
@@ -95,7 +95,6 @@ public:
   void POST_put_film();
   void check_log_status();
   void catch_money();
-  customer* get_current_user(int id) { return users[id]; }
   void pay_money(double percent, int i);
   void check_repeated_username(string username);
   void process_command_replies(string &film_id, string &comment_id
@@ -103,17 +102,11 @@ public:
   void process_command_GET_films(string &name, string &min_year, string &price
 , string &max_year, string &min_rate, string &director);
   void GET_film();
-  void POST_buy(string _film_id);
+  void POST_buy();
   void set_matrix();
   void GET_films();
-  void set_film_id(string _film_id) { film_id = _film_id; }
-  void set_curr() { current_user = NULL; }
-  void set_recomm(map <string,string> &context, int film_id);
   void POST_comments();
   void check_for_buy(string film_id);
-  int get_film_id() { return ID_counter_film; }
-  string get_s_film_id() { return film_id; }
-  void set_info_of_film(map <string,string> &context, int film_id) ;
 protected:
   vector<film*> films;
   vector<customer*> users;
@@ -127,7 +120,6 @@ protected:
   int ID_counter = 2;
   int ID_counter_film = 1;
   customer* current_user;
-  string film_id;
   string first_part = EMPTEY_STRING ;
   string second_part = EMPTEY_STRING;
   string sentence_part;

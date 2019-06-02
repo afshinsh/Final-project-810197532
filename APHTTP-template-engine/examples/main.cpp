@@ -16,11 +16,6 @@ int main(int argc, char **argv) {
     server.get("/signup", new ShowPage("static/signupcss.html"));
     server.post("/signup", new SignupHandler(Manager));
     server.get("/home", new HomeHandler(Manager));
-    server.get("/newfilm", new ShowPage("static/newfilm.html"));
-    server.post("/newfilm", new NewFilmHandler(Manager));
-    server.get("/profile", new ProfileHandler(Manager,"static/profile.html"));
-    server.get("/detail",new DetailHandler(Manager, "static/detail.html"));
-    // server.post("/profile", new ProfileHandler(Manager,"static/profile.html"));
     server.get("/rand", new RandomNumberHandler());
     server.get("/netflix2.png", new ShowImage("static/netflix2.png"));
     server.get("/", new ShowPage("static/first_page.html"));

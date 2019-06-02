@@ -110,35 +110,16 @@ void manager::find_user(string username, string password)
   previous_user = NULL;
 }
 
-void manager::set_recomm(map <string,string> &context, int film_id) {
-  set_recommendation(films[film_id]);
-  context["recomm"] = "Name  |  Director  |  Year\n";
-  for(int i = 0; i < recommendation_films.size() && i < 4; i++)
-    context["recomm"] += recommendation_films[i]->get_name() + " | " +
-    recommendation_films[i]->get_director() + " | " + recommendation_films[i]->get_year() + "\n";
-}
-
-void manager::set_info_of_film(map <string,string> &context, int film_id) {
-  context["name"] = films[film_id]->get_name();
-  context["year"] = films[film_id]->get_year();
-  context["director"] = films[film_id]->get_director();
-  context["summary"] = films[film_id]->get_summary();
-  context["lenght"] = films[film_id]->get_length();
-  context["rate"] = to_string(films[film_id]->give_avrage_rate());
-  context["price"] = films[film_id]->get_price_s();
-}
 
 void manager::set_films(string &body, int user_id)
 {
-  body += "<h2>Name    |    Price    |    Year    |    lenght    |    Rate    |    Director</h2>";
+  body += "<p>Name    |    Price    |    Year    |    lenght    |    Rate    |    Director</P>";
   for(int i = 0; i < films.size(); i++)
-    if(!films[i]->get_deleted() && (current_user->get_money() >= films[i]->get_price()))
+    if(!films[i]->get_deleted())
     {
-      body += to_string(i) + ".<P>" + films[i]->get_name() + "  |  " + films[i]->get_price_s() + "  |  "  + films[i]->get_year() + "  |  "+ films[i]->get_length() + "  |  "  + to_string(films[i]->give_avrage_rate()) + "  |  " + films[i]->get_director() +  "</p>";
-      if(films[i]->get_publisher() == current_user)
-        body += "<a href = '/details?ID=" + to_string(films[i]->get_ID()) + "'>Delete</a> <br> ";
-      if(films[i]->get_publisher() != current_user)
-        body += "<a href = '/detail?ID=" + to_string(films[i]->get_ID()) + "'>Details and buy</a> <br>";
+      body += films[i]->get_name() + "  |  " + films[i]->get_price_s() + "  |  "  + films[i]->get_year() + "  |  "
+       + films[i]->get_length() + "  |  "  + to_string(films[i]->give_avrage_rate()) + "  |  "
+       + films[i]->get_director();
       body += " <br> ";
     }
 }
@@ -204,14 +185,21 @@ void manager::process_command_signup(string &email, string &username
     throw BadRequest();
 }
 
-void manager::POST_signup(string email, string username, string password, string age, string publisher)
+void manager::POST_signup()
 {
-  check_repeated_username(username);
-  if(check_is_not_integer(age))
-    throw BadRequest();
-  if(!check_email(email))
-    throw BadRequest();
-  initialize_user(email, username, password, age, publisher);
+  if(second_part == "signup" )
+  {
+    cout<<"kkkkkkkkkkkkkkkkkkkkkk";
+    string email, username, password, age, publisher = EMPTEY_STRING;
+    process_command_signup(email, username, password, age, publisher);
+    check_repeated_username(username);
+    if(check_is_not_integer(age))
+      throw BadRequest();
+    if(!check_email(email))
+      throw BadRequest();
+    initialize_user(email, username, password, age, publisher);
+    cout<<"OK"<<endl;
+  }
 }
 
 void manager::set_matrix()
@@ -430,15 +418,28 @@ void manager::process_command_buy(string &film_id)
     throw BadRequest();
 }
 
-void manager::POST_buy(string _film_id)
+void manager::POST_buy()
 {
-  film* bought_film = films[stoi(_film_id)];
-  if(!current_user->check_is_not_bought(bought_film))
-    return;
-  current_user->buy_film(bought_film);
-  bought_film->set_owner(current_user);
-  current_user->set_graph_films(films_graph, bought_film);
-  property +=  bought_film->get_price();
+  if(second_part == "buy")
+  {
+    if(achieve_part() != QUERY)
+      throw BadRequest();
+    string film_id;
+    process_command_buy(film_id);
+    check_for_buy(film_id);
+    film* bought_film = films[stoi(film_id)];
+    if(!current_user->check_is_not_bought(bought_film))
+    {
+      cout<<"OK"<<endl;
+      return;
+    }
+    current_user->buy_film(bought_film);
+    bought_film->set_owner(current_user);
+    current_user->set_graph_films(films_graph, bought_film);
+    (bought_film->get_publisher())->set_notif_for_buy(current_user, bought_film);
+    property +=  bought_film->get_price();
+    cout<<"OK"<<endl;
+  }
 }
 
 
@@ -637,12 +638,12 @@ void manager::POST_logout()
 void manager::process_POST_command()
 {
   check_POST_second_part();
-  // POST_signup();
+  POST_signup();
   POST_login();
   POST_film();
   POST_followers();
   POST_money();
-  // POST_buy();
+  POST_buy();
   POST_rate();
   POST_comments();
   POST_replies();

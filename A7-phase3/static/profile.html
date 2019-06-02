@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang = "en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+
+<body  style="text-align: center;">
+	<h1>Films System</h1>
+	<h3>Name  |  Year  |  Price  |  lenght  |  Director  |  Rate</h3>
+	<h4>bought films :</h4>
+
+    <div style="text-align: center;">
+        <%
+                cout << context["films"];
+           %>
+    </div>
+     <br>
+	<br>
+    <form action="/profile">
+	<span>
+		charge account :
+        	<input name="amount" type="text" placeholder="amount" 			style="display:block; margin: auto; margin-bottom: 3px; 			padding:5px; width: 94%;" />
+	</span>
+        <input type="submit" />
+    </form>
+	</br>
+	<br>
+	<a href="/home">Home</a>
+	</br>
+	<br>
+	<a href="/">Logout</a>
+ </body> 
+</html>

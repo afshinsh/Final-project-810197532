@@ -1,4 +1,3 @@
-
 #ifndef CUSTOMER_H
 #define CUSTOMER_H
 
@@ -47,13 +46,11 @@ public:
   void set_notif_for_rate(film* rated_film, customer* rater);
   void score_watched_film(int film_id, int score);
   double get_rate(int film_id, double &count);
-  vector<film*> get_bought_films() { return bought_films; }
+  film* fget_bought_film(int film_id);
   void add_to_unread_notif(string notif) { unread_notif.push_back(notif); }
   virtual void set_notif_for_follow(customer* follower) { return; }
   virtual void set_notif_for_buy(customer* buyer, film* bought_film) { return; }
   void show_unread_notif();
-  void set_p(string _p) { p = _p; }
-  string get_p() { return p; }
   int get_hash_password() { return hashed_password; }
   void show_read_notif(int limit);
   void set_graph_films(vector<int*> &films_graph, film* bought_film);
@@ -64,7 +61,6 @@ protected:
   string password;
   int hashed_password;
   int ID;
-  string p;
   string age;
   bool publish;
   vector<customer*> followed_publishers;

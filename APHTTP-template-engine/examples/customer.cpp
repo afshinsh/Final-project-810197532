@@ -39,12 +39,21 @@ void customer::buy_film(film* new_film)
   new_film->get_director(), new_film->get_ID(), new_film->get_publisher());
   bought_films.push_back(bought_film);
   new_film->increase_unpaid_money();
-  money -= new_film->get_price();
+  if(money >= new_film->get_price())
+    money -= new_film->get_price();
+  else
+    throw PermissionDenied();
 }
 
 void customer::score_watched_film(int film_id, int score)
 {
-  scores[film_id] = score;
+  for(int i = 0; i < bought_films.size(); i++)
+    if(bought_films[i]->get_ID() == film_id)
+    {
+      scores[film_id] = score;
+      return;
+    }
+  throw BadRequest();
 }
 
 void customer::show_read_notif(int limit)

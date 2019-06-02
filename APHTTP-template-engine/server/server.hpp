@@ -43,6 +43,7 @@ public:
   virtual ~RequestHandler();
   virtual Response *callback(Request *req) = 0;
   Response *show_alert_msg(string msg);
+  customer* current_user;
 };
 
 class ShowFile : public RequestHandler {

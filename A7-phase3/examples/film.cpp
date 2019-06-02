@@ -3,7 +3,7 @@
 film::film(string _name, string _year, string _price, string _length
 , string _summary , string _director, int _ID_counter_film, customer* _publisher)
  : name(_name), year(_year), price(_price), length(_length), summary(_summary)
- , director(_director), ID(_ID_counter_film), publisher(_publisher) {}
+ , director(_director), ID(_ID_counter_film), publisher(_publisher) { set_owner(_publisher); }
 
  void film::set_owner(customer* new_custormer)
 {

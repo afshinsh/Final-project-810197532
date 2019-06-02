@@ -18,24 +18,12 @@ public:
   Response *callback(Request *);
   bool check_empety_login(string user, string pass);
   manager* Manager;
-  customer* current_user;
-};
-
-class NewFilmHandler : public RequestHandler {
-public:
-  NewFilmHandler(manager* _Manager) : Manager(_Manager) {}
-  Response *callback(Request *);
-  bool check_empety_new_film(string name, string year, string lenght
-  , string price, string summary, string rate, string director);
-  manager* Manager;
-  customer* current_user;
 };
 
 class HomeHandler : public RequestHandler {
 public:
   HomeHandler(manager* _Manager) : Manager(_Manager) {}
   Response *callback(Request *);
-  customer* current_user;
   manager* Manager;
 };
 
@@ -46,30 +34,12 @@ public:
   bool check_empety_signup(string user, string pass,string re_pass
   ,string age,string email);
   bool check_equality(string pass, string re_pass);
-  customer* current_user;
   manager* Manager;
 };
 
 class UploadHandler : public RequestHandler {
 public:
   Response *callback(Request *);
-};
-
-class DetailHandler : public TemplateHandler {
-public:
-  DetailHandler(manager* _Manager, string _filePath) : Manager(_Manager), TemplateHandler(_filePath) {}
-  map<string, string> handle(Request *req);
-  customer* current_user;
-  manager* Manager;
-};
-
-class ProfileHandler : public TemplateHandler {
-public:
-  ProfileHandler(manager* _Manager, string _filePath) : Manager(_Manager) , TemplateHandler(_filePath) {}
-  map<string,string> handle(Request *req);
-  vector<string> write_films_in_vector(vector<film*> bought_films);
-  customer* current_user;
-  manager* Manager;
 };
 
 class ColorHandler : public TemplateHandler {

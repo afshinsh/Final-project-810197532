@@ -59,7 +59,7 @@ Response *SignupHandler::callback(Request *req) {
   string re_password = req->getBodyParam("re_password");
   string email = req->getBodyParam("email");
   string age = req->getBodyParam("age");
-  string publisher = req->getBodyParam("publisher");
+  string publisher = req->getQueryParam("publisher");
   if(check_empety_signup(username, password, re_password, age, email))
     return show_alert_msg("you have left one or more fields!");
   if(check_equality(password, re_password))
@@ -92,6 +92,8 @@ Response *LoginHandler::callback(Request *req) {
 }
 
 Response *NewFilmHandler::callback(Request *req) {
+  int user_id = stoi(req->getSessionId());
+  current_user = Manager->get_current_user(user_id);
   string name = req->getBodyParam("name");
   string year = req->getBodyParam("year");
   string price = req->getBodyParam("price");
@@ -116,7 +118,7 @@ Response *NewFilmHandler::callback(Request *req) {
 Response *HomeHandler::callback(Request *req) {
   Response *res = new Response;
   int user_id = stoi(req->getSessionId());
-  current_user = Manager->get_curr_user();
+  current_user = Manager->get_current_user(user_id);
   res->setHeader("Content-Type", "text/html");
   string body;
   body += "<!DOCTYPE html>";
@@ -126,8 +128,7 @@ Response *HomeHandler::callback(Request *req) {
   Manager->set_films(body, user_id);
   for(int i = 0; i < 4; i++)
     body += "<br>";
-  if(current_user->get_publisher())
-    body += "<a href = \"/newfilm\">publish new film</a>";
+  body += "<a href = \"/newfilm\">publish new film</a>";
   for(int i = 0; i < 4; i++)
     body += "<br>";
   body += "<a href = \"/profile\">Profile</a>";
@@ -160,30 +161,19 @@ vector<string> ProfileHandler::write_films_in_vector(vector<film*> bought_films)
 }
 
 map<string,string> DetailHandler::handle(Request* req) {
-  map <string,string> context;
+  map<string,string> context;
   int user_id = stoi(req->getSessionId());
   current_user = Manager->get_curr_user();
   string film_id = req->getQueryParam("ID");
-  string rate = req->getQueryParam("rate");
-  if(film_id == "" && rate == "")
+  if(film_id == "")
   {
-    context["check"] = "false";
     film_id = Manager->get_s_film_id();
     Manager->POST_buy(film_id);
     Manager->set_info_of_film(context, stoi(film_id));
     Manager->set_recomm(context,stoi(film_id));
   }
-  else if(film_id == "" && rate != "")
-  {
-    context["check"] = "false";
-    film_id = Manager->get_s_film_id();
-    current_user->score_watched_film(stoi(film_id), stoi(rate));
-    Manager->set_info_of_film(context, stoi(film_id));
-    Manager->set_recomm(context,stoi(film_id));
-  }
   else
   {
-    context["check"] = "";
     Manager->set_info_of_film(context, stoi(film_id));
     Manager->set_recomm(context,stoi(film_id));
     Manager->set_film_id(film_id);
@@ -218,3 +208,4 @@ map<string, string> ColorHandler::handle(Request *req) {
   context["color"] = req->getQueryParam("color");
   return context;
 }
+
