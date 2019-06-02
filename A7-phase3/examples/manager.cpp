@@ -112,10 +112,10 @@ void manager::find_user(string username, string password)
 
 void manager::set_recomm(map <string,string> &context, int film_id) {
   set_recommendation(films[film_id]);
-  context["recomm"] = "Name  |  Director  |  Year\n";
+  context["recomm"] = "Name  |  Director  |  Year <br>";
   for(int i = 0; i < recommendation_films.size() && i < 4; i++)
-    context["recomm"] += recommendation_films[i]->get_name() + " | " +
-    recommendation_films[i]->get_director() + " | " + recommendation_films[i]->get_year() + "\n";
+    context["recomm"] += to_string(i + 1) + "." + recommendation_films[i]->get_name() + " | " +
+    recommendation_films[i]->get_director() + " | " + recommendation_films[i]->get_year() + "<br>";
 }
 
 void manager::set_info_of_film(map <string,string> &context, int film_id) {
@@ -132,39 +132,47 @@ struct compare_director
 {
   inline bool operator() (film* f1, film* f2)
   {
-    return (f1->get_director() > f2->get_director());
+    return (f1->get_director() < f2->get_director());
   }
 };
 
 void manager::set_sort_film(string &body, int user_id)
 {
-  body += "<h2>Name    |    Price    |    Year    |    lenght    |    Rate    |    Director</h2>";
-  vector<film*> s_films = films;
+  body += "<h2 style = \"color:purple;\"> Films : </h2>";
+  body += "<h2 style = \"color:purple;\">Name    |    Price    |    Year    |    lenght    |    Rate    |    Director</h2>";
+  vector<film*> s_films;
+  for(int i =0 ;i < films.size(); i++)
+    s_films.push_back(films[i]);
   sort(s_films.begin(), s_films.end(), compare_director());
+  int j = 1;
   for(int i = 0; i < s_films.size(); i++)
-    if(!s_films[i]->get_deleted() && (current_user->get_money() >= s_films[i]->get_price()))
+    if(!s_films[i]->get_deleted() && (current_user->get_money() >= s_films[i]->get_price() || s_films[i]->get_publisher() == current_user) && current_user->check_is_not_bought(s_films[i]))
     {
-      body += to_string(i) + ".<P>" + s_films[i]->get_name() + "  |  " + s_films[i]->get_price_s() + "  |  "  + s_films[i]->get_year() + "  |  "+ s_films[i]->get_length() + "  |  "  + to_string(s_films[i]->give_avrage_rate()) + "  |  " + s_films[i]->get_director() +  "</p>";
+      body += "<h4>" + to_string(j) + "." + s_films[i]->get_name() + "  |  " + s_films[i]->get_price_s() + "  |  "  + s_films[i]->get_year() + "  |  "+ s_films[i]->get_length() + "  |  "  + to_string(s_films[i]->give_avrage_rate()) + "  |  " + s_films[i]->get_director() +  "</h4>";
       if(s_films[i]->get_publisher() == current_user)
-        body += "<a href = '/home?DLT=true&ID=" + to_string(s_films[i]->get_ID()) + "'>Delete</a> <br> ";
+        body += "<a href = '/home?DLT=true&ID=" + to_string(s_films[i]->get_ID()) + "'style = \"color:red; font-size:15px;\">Delete</a> <br> ";
       if(s_films[i]->get_publisher() != current_user)
-        body += "<a href = '/detail?ID=" + to_string(s_films[i]->get_ID()) + "'>Details and buy</a> <br>";
+        body += "<a href = '/detail?ID=" + to_string(s_films[i]->get_ID()) + "' style = \"color:blue; font-size:17px;\">Details and buy</a> <br>";
       body += " <br> ";
+      j++;
     }
 }
 
 void manager::set_films(string &body, int user_id)
 {
-  body += "<h2>Name    |    Price    |    Year    |    lenght    |    Rate    |    Director</h2>";
+  body += "<h2 style = \"color:purple;\"> Films : </h2>";
+  body += "<h2 style = \"color:purple;\">Name    |    Price    |    Year    |    lenght    |    Rate    |    Director</h2>";
+  int j = 1;
   for(int i = 0; i < films.size(); i++)
-    if(!films[i]->get_deleted() && (current_user->get_money() >= films[i]->get_price()))
+    if(!films[i]->get_deleted() && (current_user->get_money() >= films[i]->get_price()  || films[i]->get_publisher() == current_user) && current_user->check_is_not_bought(films[i]))
     {
-      body += to_string(i) + ".<P>" + films[i]->get_name() + "  |  " + films[i]->get_price_s() + "  |  "  + films[i]->get_year() + "  |  "+ films[i]->get_length() + "  |  "  + to_string(films[i]->give_avrage_rate()) + "  |  " + films[i]->get_director() +  "</p>";
+      body += "<h4>" + to_string(j) + ". " + films[i]->get_name() + "  |  " + films[i]->get_price_s() + "  |  "  + films[i]->get_year() + "  |  "+ films[i]->get_length() + "  |  "  + to_string(films[i]->give_avrage_rate()) + "  |  " + films[i]->get_director() +  "</h4>";
       if(films[i]->get_publisher() == current_user)
-        body += "<a href = '/home?DLT=true?ID=" + to_string(films[i]->get_ID()) + "'>Delete</a> <br> ";
+        body += "<a href = '/home?DLT=true&ID=" + to_string(films[i]->get_ID()) + "' style = \"color:red; font-size:15px; \">Delete</a> <br> ";
       if(films[i]->get_publisher() != current_user)
-        body += "<a href = '/detail?ID=" + to_string(films[i]->get_ID()) + "'>Details and buy</a> <br>";
+        body += "<a href = '/detail?ID=" + to_string(films[i]->get_ID()) + "'style = \"color:blue; font-size:17px;\">Details and buy</a> <br>";
       body += " <br> ";
+      j++;
     }
 }
 

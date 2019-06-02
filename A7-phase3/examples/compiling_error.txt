@@ -1,0 +1,61 @@
+/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o: In function `_start':
+(.text+0x20): undefined reference to `main'
+/tmp/ccC7H1GJ.o: In function `manager::manager()':
+manager.cpp:(.text+0x2a3): undefined reference to `customer::customer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, int, bool)'
+manager.cpp:(.text+0x54c): undefined reference to `film::film(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, int, customer*)'
+/tmp/ccC7H1GJ.o: In function `manager::initialize_user(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&)':
+manager.cpp:(.text+0xe92): undefined reference to `customer::customer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, int, bool)'
+manager.cpp:(.text+0x100d): undefined reference to `publisher::publisher(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, int, bool)'
+/tmp/ccC7H1GJ.o: In function `manager::set_info_of_film(std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >&, int)':
+manager.cpp:(.text+0x1b3a): undefined reference to `film::give_avrage_rate()'
+/tmp/ccC7H1GJ.o: In function `manager::set_sort_film(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, int)':
+manager.cpp:(.text+0x1f8e): undefined reference to `film::give_avrage_rate()'
+/tmp/ccC7H1GJ.o: In function `manager::set_films(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, int)':
+manager.cpp:(.text+0x28bb): undefined reference to `film::give_avrage_rate()'
+/tmp/ccC7H1GJ.o: In function `manager::initialize_film(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)':
+manager.cpp:(.text+0x3c6f): undefined reference to `film::film(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, int, customer*)'
+/tmp/ccC7H1GJ.o: In function `manager::POST_followers()':
+manager.cpp:(.text+0x4a03): undefined reference to `customer::follow_publisher(customer*)'
+/tmp/ccC7H1GJ.o: In function `manager::catch_money()':
+manager.cpp:(.text+0x4f6c): undefined reference to `film::give_avrage_rate()'
+manager.cpp:(.text+0x4fc1): undefined reference to `film::give_avrage_rate()'
+manager.cpp:(.text+0x4feb): undefined reference to `film::give_avrage_rate()'
+manager.cpp:(.text+0x5053): undefined reference to `film::give_avrage_rate()'
+manager.cpp:(.text+0x5081): undefined reference to `film::give_avrage_rate()'
+/tmp/ccC7H1GJ.o: In function `manager::POST_buy(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)':
+manager.cpp:(.text+0x5543): undefined reference to `customer::check_is_not_bought(film*)'
+manager.cpp:(.text+0x5564): undefined reference to `customer::buy_film(film*)'
+manager.cpp:(.text+0x557e): undefined reference to `film::set_owner(customer*)'
+manager.cpp:(.text+0x55a3): undefined reference to `customer::set_graph_films(std::vector<int*, std::allocator<int*> >&, film*)'
+/tmp/ccC7H1GJ.o: In function `manager::check_inputs_for_rate(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)':
+manager.cpp:(.text+0x57df): undefined reference to `customer::check_is_not_bought(film*)'
+/tmp/ccC7H1GJ.o: In function `manager::set_recommendation(film*)':
+manager.cpp:(.text+0x58f4): undefined reference to `customer::check_is_not_bought(film*)'
+/tmp/ccC7H1GJ.o: In function `manager::POST_rate()':
+manager.cpp:(.text+0x616d): undefined reference to `customer::score_watched_film(int, int)'
+manager.cpp:(.text+0x61ac): undefined reference to `customer::get_bought_film(int)'
+/tmp/ccC7H1GJ.o: In function `manager::POST_comments()':
+manager.cpp:(.text+0x661e): undefined reference to `customer::check_bought_film(film*)'
+manager.cpp:(.text+0x6697): undefined reference to `film::set_comment(int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, customer*)'
+/tmp/ccC7H1GJ.o: In function `manager::POST_replies()':
+manager.cpp:(.text+0x7302): undefined reference to `film::reply_cm(int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+/tmp/ccC7H1GJ.o: In function `manager::POST_delete_comments()':
+manager.cpp:(.text+0x8806): undefined reference to `film::delete_comment(int)'
+/tmp/ccC7H1GJ.o: In function `manager::show_features(film*)':
+manager.cpp:(.text+0x8ce7): undefined reference to `film::give_avrage_rate()'
+/tmp/ccC7H1GJ.o: In function `manager::show_comments(film*)':
+manager.cpp:(.text+0x8e74): undefined reference to `film::show_comment()'
+/tmp/ccC7H1GJ.o: In function `manager::set_result_films(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)':
+manager.cpp:(.text+0x9c18): undefined reference to `film::give_avrage_rate()'
+/tmp/ccC7H1GJ.o: In function `manager::show_result()':
+manager.cpp:(.text+0xa386): undefined reference to `film::give_avrage_rate()'
+/tmp/ccC7H1GJ.o: In function `manager::GET_purchased()':
+manager.cpp:(.text+0xb0fc): undefined reference to `customer::get_copy_bought_film(std::vector<film*, std::allocator<film*> >&, std::vector<film*, std::allocator<film*> >)'
+/tmp/ccC7H1GJ.o: In function `manager::GET_notifications_read()':
+manager.cpp:(.text+0xbd25): undefined reference to `customer::show_read_notif(int)'
+/tmp/ccC7H1GJ.o: In function `manager::GET_notifications()':
+manager.cpp:(.text+0xbe68): undefined reference to `customer::show_unread_notif()'
+/tmp/ccC7H1GJ.o: In function `compare_rate::operator()(film*, film*)':
+manager.cpp:(.text._ZN12compare_rateclEP4filmS1_[_ZN12compare_rateclEP4filmS1_]+0x1d): undefined reference to `film::get_graph()'
+manager.cpp:(.text._ZN12compare_rateclEP4filmS1_[_ZN12compare_rateclEP4filmS1_]+0x2b): undefined reference to `film::get_graph()'
+collect2: error: ld returned 1 exit status

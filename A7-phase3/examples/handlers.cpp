@@ -118,25 +118,26 @@ void HomeHandler::set_Body(string &body, int user_id, string filter)
   body += "<!DOCTYPE html>";
   body += "<html>";
   body += "<body style=\"text-align: center;\">";
-  body += "<h1> NETFLIX </h1>";
+  body += "<h1 style = \"color:purple;\"> NETFLIX </h1>";
   body += "<form action=\"/home\" >";
-  body += "Filter by name of director : <input type=\"submit\" name=\"filter\" />";
+  body += "<h3 style = \"color:blue;\">Filter by name of director :</h3> <input type=\"submit\" name=\"filter\" style = \"color:blue;\"/>";
   body += "</form>";
   body += "<br>";
-  if(filter == "submit")
+  if(filter == "Submit")
     Manager->set_sort_film(body, user_id);
   else
     Manager->set_films(body, user_id);
-  for(int i = 0; i < 4; i++)
+  body += "<h2>----------------------------------------------------------------------------------------------</h2>";
+  for(int i = 0; i < 2; i++)
     body += "<br>";
   if(current_user->get_publisher())
-    body += "<a href = \"/newfilm\">publish new film</a>";
+    body += "<br> <a href = \"/newfilm\" style = \"color:purple; font-size:20px;\">publish new film</a>";
+  for(int i = 0; i < 2; i++)
+    body += "<br>";
+  body += "<a href = \"/profile\" style = \"color:purple; font-size:20px;\">Profile</a>";
   for(int i = 0; i < 4; i++)
     body += "<br>";
-  body += "<a href = \"/profile\">Profile</a>";
-  for(int i = 0; i < 4; i++)
-    body += "<br>";
-  body += "<a href = \"/\">Logout</a>";
+  body += "<a href = \"/\" style = \"color:red; font-size:20px;\">Logout</a>";
   body += "</body>";
   body += "</html>";
 }
@@ -172,9 +173,9 @@ vector<string> ProfileHandler::write_films_in_vector(vector<film*> bought_films)
 {
   vector<string> films;
   for(int i = 0; i < bought_films.size(); i++)
-    films.push_back(bought_films[i]->get_name() + " | " + bought_films[i]->get_year()
+    films.push_back(to_string(i + 1) + ". " + bought_films[i]->get_name() + " | " + bought_films[i]->get_year()
     + " | " + bought_films[i]->get_price_s() + " | " + bought_films[i]->get_length()
-    + " | " + bought_films[i]->get_director() + " | " +  to_string(bought_films[i]->give_avrage_rate()) );
+    + " | " + bought_films[i]->get_director() + " | " +  to_string(bought_films[i]->give_avrage_rate()) + "<br>");
   return films;
 }
 
@@ -219,10 +220,7 @@ map<string,string> ProfileHandler::handle(Request* req) {
   vector<string> films = write_films_in_vector(current_user->get_bought_films());
   string films_text;
   for(int i = 0; i < films.size(); i++)
-  {
     films_text += films[i];
-    films_text += "\n";
-  }
   map<string,string> context;
   context["films"] = films_text;
   return context;
