@@ -4,7 +4,7 @@
 
 
 This is the final AP project. It is going to be similar to a film system.
-Involve 3 phase,domain-AI-service that the 1st and 2nd developed with c++
+Involve 3 phase, domain, AI-service that the 1st and 2nd developed with c++
 and 3th is developed by a library named of APHTTP that let us to code html and css and...
 with c++.
 
